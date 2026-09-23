@@ -1,0 +1,3675 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supplier Portal — SESB eProcurement</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --p: #006784;
+        --p10: rgba(0, 103, 132, 0.1);
+        --p08: rgba(0, 103, 132, 0.08);
+        --p15: rgba(0, 103, 132, 0.15);
+        --p20: rgba(0, 103, 132, 0.2);
+        --success: #1abc9c;
+        --sbg: rgba(26, 188, 156, 0.1);
+        --danger: #f03c3c;
+        --dbg: rgba(240, 60, 60, 0.09);
+        --warning: #f0a500;
+        --wbg: rgba(240, 165, 0, 0.1);
+        --purple: #7c4dab;
+        --pubg: rgba(124, 77, 171, 0.1);
+        --info: #2e87a6;
+        --ibg: rgba(46, 135, 166, 0.1);
+        --sw: 244px;
+        --th: 64px;
+        --bg: #f5f5f5;
+        --card: #fff;
+        --bdr: #e8e8e8;
+        --div: #dddddd;
+        --tx: #313a46;
+        --mu: #6c757d;
+        --lb: #495057;
+        --r: 4px;
+        --sh: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        background: var(--bg);
+        color: var(--tx);
+        height: 100%;
+      }
+
+      /* ── Layout ── */
+      .shell {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .sidebar {
+        width: var(--sw);
+        min-width: var(--sw);
+        background: #fff;
+        box-shadow: 1px 0 8px rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        z-index: 100;
+      }
+      .sidebar-logo {
+        height: var(--th);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 10px;
+        border-bottom: 1px solid var(--bdr);
+        flex-shrink: 0;
+      }
+      .lbars {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+      }
+      .lb {
+        width: 4px;
+        border-radius: 2px;
+        background: var(--p);
+      }
+      .lb:nth-child(1) {
+        height: 18px;
+      }
+      .lb:nth-child(2) {
+        height: 24px;
+      }
+      .lb:nth-child(3) {
+        height: 14px;
+      }
+      .lb:nth-child(4) {
+        height: 20px;
+      }
+      .ltxt {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--tx);
+      }
+      .vendor-badge {
+        margin: 16px 16px 4px;
+        background: var(--p10);
+        border: 1px solid var(--p20);
+        border-radius: var(--r);
+        padding: 12px 14px;
+      }
+      .vb-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--p);
+      }
+      .vb-reg {
+        font-size: 11px;
+        color: var(--mu);
+        margin-top: 2px;
+      }
+      .vb-cats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 7px;
+      }
+      .vb-cat {
+        font-size: 10px;
+        font-weight: 600;
+        background: var(--p);
+        color: #fff;
+        padding: 2px 7px;
+        border-radius: 20px;
+      }
+      .snav {
+        padding: 8px 0 24px;
+        flex: 1;
+      }
+      .slbl {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--mu);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 14px 20px 6px;
+      }
+      .ni {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 20px;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--lb);
+        cursor: pointer;
+        text-decoration: none;
+        position: relative;
+        transition:
+          background 0.12s,
+          color 0.12s;
+      }
+      .ni:hover {
+        background: var(--p08);
+        color: var(--p);
+      }
+      .ni.on {
+        background: var(--p10);
+        color: var(--p);
+        font-weight: 600;
+      }
+      .ni.on::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--p);
+        border-radius: 0 2px 2px 0;
+      }
+      .nic {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        opacity: 0.7;
+      }
+      .ni.on .nic,
+      .ni:hover .nic {
+        opacity: 1;
+      }
+      .nbadge {
+        margin-left: auto;
+        background: var(--danger);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 20px;
+      }
+      .nbadge.nbg {
+        background: var(--warning);
+      }
+
+      /* ── Main ── */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .topbar {
+        height: var(--th);
+        background: #fff;
+        border-bottom: 1px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .ham {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: var(--r);
+        color: var(--mu);
+      }
+      .ham:hover {
+        background: var(--bg);
+      }
+      .tsrch {
+        flex: 0 0 220px;
+        position: relative;
+      }
+      .tsrch input {
+        width: 100%;
+        padding: 7px 12px 7px 34px;
+        border: 1px solid var(--bdr);
+        border-radius: 20px;
+        font-family: "Poppins", sans-serif;
+        font-size: 12.5px;
+        background: var(--bg);
+        outline: none;
+      }
+      .tsrch input:focus {
+        border-color: var(--p);
+      }
+      .si {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--mu);
+        pointer-events: none;
+      }
+      .tsp {
+        flex: 1;
+      }
+      .tacts {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tic {
+        width: 34px;
+        height: 34px;
+        border-radius: var(--r);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--lb);
+        position: relative;
+        transition: background 0.12s;
+      }
+      .tic:hover {
+        background: var(--bg);
+      }
+      .ndot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--danger);
+        border: 2px solid #fff;
+      }
+      .tdv {
+        width: 1px;
+        height: 24px;
+        background: var(--bdr);
+        margin: 0 4px;
+      }
+      .avbtn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 4px 8px 4px 4px;
+        border-radius: 20px;
+        transition: background 0.12s;
+      }
+      .avbtn:hover {
+        background: var(--bg);
+      }
+      .av {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--p);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .avnm {
+        font-size: 12.5px;
+        font-weight: 500;
+      }
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+
+      /* ── Page top ── */
+      .ptop {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .ptitle {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--tx);
+      }
+      .psub {
+        font-size: 12px;
+        color: var(--mu);
+        margin-top: 2px;
+      }
+      .bcrumb {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: var(--mu);
+      }
+      .bcrumb a {
+        color: var(--p);
+        text-decoration: none;
+      }
+
+      /* ── Section tabs ── */
+      .stabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid var(--bdr);
+        margin-bottom: 20px;
+      }
+      .stab {
+        padding: 10px 20px;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--mu);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        transition:
+          color 0.15s,
+          border-color 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .stab:hover {
+        color: var(--tx);
+      }
+      .stab.on {
+        color: var(--p);
+        border-bottom-color: var(--p);
+        font-weight: 600;
+      }
+      .stab-panel {
+        display: none;
+      }
+      .stab-panel.on {
+        display: block;
+      }
+
+      /* ── KPI row ── */
+      .krow {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .kcard {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: var(--r);
+        padding: 16px 18px;
+        box-shadow: var(--sh);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: box-shadow 0.15s;
+      }
+      .kcard:hover {
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+      }
+      .kico {
+        width: 46px;
+        height: 46px;
+        border-radius: var(--r);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .kico.kb {
+        background: var(--p10);
+        color: var(--p);
+      }
+      .kico.kg {
+        background: var(--sbg);
+        color: var(--success);
+      }
+      .kico.kw {
+        background: var(--wbg);
+        color: var(--warning);
+      }
+      .kico.kr {
+        background: var(--dbg);
+        color: var(--danger);
+      }
+      .kico.kpu {
+        background: var(--pubg);
+        color: var(--purple);
+      }
+      .kval {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--tx);
+        line-height: 1;
+      }
+      .klbl {
+        font-size: 11.5px;
+        color: var(--mu);
+        margin-top: 3px;
+      }
+      .kdelta {
+        font-size: 11px;
+        font-weight: 500;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .kdelta.up {
+        color: var(--success);
+      }
+      .kdelta.dn {
+        color: var(--danger);
+      }
+      .kdelta.nu {
+        color: var(--mu);
+      }
+
+      /* ── Grid ── */
+      .g2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .g62 {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .g26 {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .mb16 {
+        margin-bottom: 16px;
+      }
+      .mb0 {
+        margin-bottom: 0;
+      }
+
+      /* ── Card ── */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--bdr);
+        border-radius: var(--r);
+        box-shadow: var(--sh);
+        overflow: hidden;
+      }
+      .ch {
+        background: var(--p08);
+        border-bottom: 1px solid var(--bdr);
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .ch-l {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .ch-ico {
+        color: var(--p);
+        display: flex;
+        align-items: center;
+      }
+      .ch-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--p);
+      }
+      .ch-sub {
+        font-size: 11px;
+        color: var(--mu);
+      }
+      .ch-r {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cb {
+        padding: 16px 18px;
+      }
+      .cb0 {
+        padding: 0;
+      }
+
+      /* ── Buttons ── */
+      .btn {
+        font-family: "Poppins", sans-serif;
+        font-size: 11.5px;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: var(--r);
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition:
+          background 0.12s,
+          opacity 0.12s;
+        line-height: 1;
+      }
+      .btn-o {
+        background: #fff;
+        color: var(--lb);
+        border-color: var(--bdr);
+      }
+      .btn-o:hover {
+        background: var(--bg);
+      }
+      .btn-p {
+        background: var(--p);
+        color: #fff;
+      }
+      .btn-p:hover {
+        background: #005570;
+      }
+      .btn-g {
+        background: var(--success);
+        color: #fff;
+      }
+      .btn-g:hover {
+        background: #16a085;
+      }
+      .btn-w {
+        background: var(--warning);
+        color: #fff;
+      }
+      .btn-sm {
+        padding: 4px 10px;
+        font-size: 11px;
+      }
+
+      /* ── Pills ── */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 20px;
+      }
+      .pill::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .p-flt {
+        background: var(--p10);
+        color: var(--p);
+      }
+      .p-cls {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .p-end {
+        background: #e8f5e9;
+        color: #1b5e20;
+      }
+      .p-sub {
+        background: #e3f2fd;
+        color: #0d47a1;
+      }
+      .p-rej {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+      .p-can {
+        background: #f5f5f5;
+        color: #6c757d;
+      }
+      .p-draft {
+        background: #fff8e1;
+        color: #b38600;
+      }
+      .p-crit {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+      .p-warn {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .p-ok {
+        background: #e8f5e9;
+        color: #1b5e20;
+      }
+      .p-new {
+        background: var(--p10);
+        color: var(--p);
+      }
+      .p-eval {
+        background: var(--pubg);
+        color: var(--purple);
+      }
+      .p-shortlist {
+        background: #e0f7fa;
+        color: #006064;
+      }
+      .p-award {
+        background: #e8f5e9;
+        color: #1b5e20;
+      }
+      .p-pass {
+        background: #e8f5e9;
+        color: #1b5e20;
+      }
+      .p-fail {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+      .p-exp {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+      .p-expiring {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .p-active {
+        background: #e8f5e9;
+        color: #1b5e20;
+      }
+
+      /* ── Tables ── */
+      .dtbl {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .dtbl th {
+        background: var(--p08);
+        color: var(--p);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 9px 14px;
+        text-align: left;
+        border-bottom: 2px solid var(--p15);
+        white-space: nowrap;
+      }
+      .dtbl td {
+        padding: 9px 14px;
+        font-size: 12px;
+        color: var(--tx);
+        border-bottom: 1px solid var(--bdr);
+      }
+      .dtbl tr:last-child td {
+        border-bottom: none;
+      }
+      .dtbl tr:hover td {
+        background: #fafcfe;
+      }
+
+      /* ── Tender cards ── */
+      .tcard-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .tcard {
+        background: #fff;
+        border: 1px solid var(--bdr);
+        border-radius: var(--r);
+        overflow: hidden;
+        box-shadow: var(--sh);
+        transition:
+          box-shadow 0.15s,
+          border-color 0.15s;
+      }
+      .tcard:hover {
+        box-shadow: 0 4px 16px rgba(0, 103, 132, 0.12);
+        border-color: var(--p20);
+      }
+      .tcard.urgent {
+        border-left: 3px solid var(--danger);
+      }
+      .tcard.watch {
+        border-left: 3px solid var(--warning);
+      }
+      .tcard.normal {
+        border-left: 3px solid var(--p);
+      }
+      .tc-head {
+        padding: 13px 16px;
+        border-bottom: 1px solid var(--bdr);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .tc-num {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--p);
+      }
+      .tc-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--tx);
+        margin-top: 3px;
+        line-height: 1.4;
+      }
+      .tc-body {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tc-row {
+        display: flex;
+        gap: 0;
+      }
+      .tc-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 16px;
+      }
+      .tc-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .tc-lbl {
+        font-size: 10px;
+        color: var(--mu);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+      }
+      .tc-val {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--tx);
+        margin-top: 2px;
+      }
+      .tc-foot {
+        padding: 10px 16px;
+        border-top: 1px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafcfe;
+      }
+      .tc-days {
+        font-size: 11.5px;
+        font-weight: 700;
+      }
+      .tc-days.critical {
+        color: var(--danger);
+      }
+      .tc-days.watch {
+        color: var(--warning);
+      }
+      .tc-days.ok {
+        color: var(--success);
+      }
+
+      /* ── Filter bar ── */
+      .fbar {
+        background: #fff;
+        border: 1px solid var(--bdr);
+        border-radius: var(--r);
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        box-shadow: var(--sh);
+      }
+      .fbar select,
+      .fbar input {
+        font-family: "Poppins", sans-serif;
+        font-size: 12px;
+        padding: 6px 10px;
+        border: 1px solid var(--bdr);
+        border-radius: var(--r);
+        outline: none;
+        background: #fff;
+        color: var(--tx);
+      }
+      .fbar select:focus,
+      .fbar input:focus {
+        border-color: var(--p);
+      }
+      .fsp {
+        flex: 1;
+      }
+
+      /* ── Bid status track ── */
+      .bid-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--bdr);
+      }
+      .bid-row:last-child {
+        border-bottom: none;
+      }
+      .bid-ico {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .bid-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .bid-num {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--p);
+      }
+      .bid-title {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--tx);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .bid-meta {
+        font-size: 11px;
+        color: var(--mu);
+        margin-top: 2px;
+      }
+      .bid-right {
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .bid-amt {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tx);
+      }
+      .bid-sub {
+        font-size: 11px;
+        color: var(--mu);
+        margin-top: 2px;
+      }
+
+      /* ── Progress bar ── */
+      .pgw {
+        background: var(--bdr);
+        border-radius: 20px;
+        height: 6px;
+      }
+      .pgb {
+        height: 6px;
+        border-radius: 20px;
+      }
+      .pg-p {
+        background: var(--p);
+      }
+      .pg-g {
+        background: var(--success);
+      }
+      .pg-w {
+        background: var(--warning);
+      }
+      .pg-r {
+        background: var(--danger);
+      }
+
+      /* ── Document items ── */
+      .doc-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--bdr);
+      }
+      .doc-item:last-child {
+        border-bottom: none;
+      }
+      .doc-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--r);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .doc-icon.pdf {
+        background: #fde8e8;
+        color: var(--danger);
+      }
+      .doc-icon.doc {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .doc-icon.xls {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .doc-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .doc-name {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--tx);
+      }
+      .doc-meta {
+        font-size: 11px;
+        color: var(--mu);
+        margin-top: 2px;
+      }
+      .doc-exp {
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+      .doc-exp.ok {
+        color: var(--success);
+      }
+      .doc-exp.warn {
+        color: var(--warning);
+      }
+      .doc-exp.crit {
+        color: var(--danger);
+      }
+
+      /* ── Profile card ── */
+      .prof-header {
+        background: linear-gradient(135deg, var(--p) 0%, #004e63 100%);
+        padding: 28px 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .prof-av {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .prof-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .prof-reg {
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.75);
+        margin-top: 3px;
+      }
+      .prof-since {
+        font-size: 11.5px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 4px;
+      }
+      .prof-cats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+      }
+      .prof-cat {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .reg-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0;
+        border-top: 1px solid var(--bdr);
+      }
+      .reg-item {
+        padding: 14px 18px;
+        border-right: 1px solid var(--bdr);
+      }
+      .reg-item:last-child {
+        border-right: none;
+      }
+      .reg-lbl {
+        font-size: 11px;
+        color: var(--mu);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .reg-val {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--tx);
+        margin-top: 3px;
+      }
+
+      /* ── Score ring ── */
+      .score-wrap {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .score-label {
+        font-size: 28px;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .score-sub {
+        font-size: 12px;
+        color: var(--mu);
+        margin-top: 3px;
+      }
+      .score-items {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .score-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .score-name {
+        font-size: 12px;
+        color: var(--tx);
+        width: 130px;
+        flex-shrink: 0;
+      }
+      .score-pct {
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--mu);
+        width: 32px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+
+      /* ── Notification items ── */
+      .notif-item {
+        display: flex;
+        gap: 12px;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--bdr);
+      }
+      .notif-item:last-child {
+        border-bottom: none;
+      }
+      .notif-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+      .notif-body {
+        flex: 1;
+      }
+      .notif-txt {
+        font-size: 12.5px;
+        color: var(--tx);
+        line-height: 1.4;
+      }
+      .notif-txt strong {
+        color: var(--p);
+      }
+      .notif-time {
+        font-size: 11px;
+        color: var(--mu);
+        margin-top: 2px;
+      }
+      .notif-item.unread .notif-txt {
+        font-weight: 500;
+      }
+
+      /* ── Misc ── */
+      hr.s {
+        border: none;
+        border-top: 1px solid var(--div);
+        margin: 14px 0;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d0d0d0;
+        border-radius: 3px;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 32px 20px;
+        color: var(--mu);
+      }
+      .empty-state svg {
+        opacity: 0.3;
+        margin-bottom: 10px;
+      }
+      .empty-state p {
+        font-size: 12.5px;
+      }
+
+      /* ── Bid detail panel (inline) ── */
+      .detail-panel {
+        background: #f7fbfc;
+        border: 1px solid var(--p20);
+        border-radius: var(--r);
+        padding: 18px;
+        margin-top: 14px;
+        display: none;
+      }
+      .detail-panel.open {
+        display: block;
+      }
+      .dp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .dp-field {
+        display: flex;
+        flex-direction: column;
+      }
+      .dp-lbl {
+        font-size: 10.5px;
+        color: var(--mu);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .dp-val {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--tx);
+        margin-top: 3px;
+      }
+
+      @media (max-width: 900px) {
+        .sidebar {
+          display: none;
+        }
+        .krow {
+          grid-template-columns: 1fr 1fr;
+        }
+        .g2,
+        .g62,
+        .g26 {
+          grid-template-columns: 1fr;
+        }
+        .tcard-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- ══ SIDEBAR ══ -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div class="lbars">
+            <div class="lb"></div>
+            <div class="lb"></div>
+            <div class="lb"></div>
+            <div class="lb"></div>
+          </div>
+          <span class="ltxt">SESB</span>
+        </div>
+
+        <!-- Vendor identity chip -->
+        <div class="vendor-badge">
+          <div class="vb-name">Mega Infra Sdn. Bhd.</div>
+          <div class="vb-reg">VEN/2019/004821 · Registered Vendor</div>
+          <div class="vb-cats">
+            <span class="vb-cat">Electrical</span>
+            <span class="vb-cat">Civil</span>
+            <span class="vb-cat">Supply</span>
+          </div>
+        </div>
+
+        <nav class="snav">
+          <a class="ni on" href="#" onclick="return false;">
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+          </a>
+          <div class="slbl">Tenders</div>
+          <a
+            class="ni"
+            href="#"
+            onclick="
+              switchTab('tenders', this);
+              return false;
+            "
+          >
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 4h16v16H4z" />
+              <path d="M9 9h6M9 12h6M9 15h4" />
+            </svg>
+            Active Tenders
+            <span class="nbadge nbg">5</span>
+          </a>
+          <a
+            class="ni"
+            href="#"
+            onclick="
+              switchTab('bids', this);
+              return false;
+            "
+          >
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+            </svg>
+            My Bids
+          </a>
+          <div class="slbl">Profile</div>
+          <a
+            class="ni"
+            href="#"
+            onclick="
+              switchTab('profile', this);
+              return false;
+            "
+          >
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Company Profile
+          </a>
+          <a
+            class="ni"
+            href="#"
+            onclick="
+              switchTab('docs', this);
+              return false;
+            "
+          >
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6" />
+            </svg>
+            Documents
+            <span class="nbadge">2</span>
+          </a>
+          <div class="slbl">Support</div>
+          <a class="ni" href="#" onclick="return false;">
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Help &amp; FAQ
+          </a>
+          <a class="ni" href="#" onclick="return false;">
+            <svg
+              class="nic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+              />
+            </svg>
+            Contact SESB
+          </a>
+        </nav>
+      </aside>
+
+      <!-- ══ MAIN ══ -->
+      <div class="main">
+        <header class="topbar">
+          <div class="ham">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </div>
+          <div class="tsrch">
+            <svg
+              class="si"
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text" placeholder="Search tenders, bids…" />
+          </div>
+          <div class="tsp"></div>
+          <div class="tacts">
+            <div class="tic">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
+                />
+              </svg>
+              <span class="ndot"></span>
+            </div>
+            <div class="tdv"></div>
+            <div class="avbtn">
+              <div class="av">MI</div>
+              <span class="avnm">Mega Infra S.B.</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="content">
+          <div class="ptop">
+            <div>
+              <div class="ptitle">Supplier Portal</div>
+              <div class="psub">
+                Welcome back, Mega Infra Sdn. Bhd. &nbsp;·&nbsp; 31 July 2026
+              </div>
+            </div>
+            <div class="bcrumb">
+              <a href="#">SESB eTender</a><span style="opacity: 0.4">›</span
+              ><span>Supplier Dashboard</span>
+            </div>
+          </div>
+
+          <!-- ══ SECTION TABS ══ -->
+          <div class="stabs">
+            <div
+              class="stab on"
+              id="stab-dashboard"
+              onclick="switchTab('dashboard', this)"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+              Overview
+            </div>
+            <div
+              class="stab"
+              id="stab-tenders"
+              onclick="switchTab('tenders', this)"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M4 4h16v16H4z" />
+                <path d="M9 9h6M9 12h6" />
+              </svg>
+              Active Tenders
+              <span
+                style="
+                  background: var(--warning);
+                  color: #fff;
+                  font-size: 10px;
+                  font-weight: 700;
+                  padding: 1px 6px;
+                  border-radius: 20px;
+                  margin-left: 2px;
+                "
+                >5</span
+              >
+            </div>
+            <div class="stab" id="stab-bids" onclick="switchTab('bids', this)">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 11l3 3L22 4" />
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+              </svg>
+              My Bids &amp; Quotations
+            </div>
+            <div
+              class="stab"
+              id="stab-profile"
+              onclick="switchTab('profile', this)"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Profile &amp; Registration
+            </div>
+            <div class="stab" id="stab-docs" onclick="switchTab('docs', this)">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <path d="M14 2v6h6" />
+              </svg>
+              Documents
+              <span
+                style="
+                  background: var(--danger);
+                  color: #fff;
+                  font-size: 10px;
+                  font-weight: 700;
+                  padding: 1px 6px;
+                  border-radius: 20px;
+                  margin-left: 2px;
+                "
+                >2</span
+              >
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════
+         OVERVIEW TAB
+    ══════════════════════════════ -->
+          <div class="stab-panel on" id="panel-dashboard">
+            <!-- KPIs -->
+            <div class="krow">
+              <div class="kcard">
+                <div class="kico kb">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M4 4h16v16H4z" />
+                    <path d="M9 9h6M9 12h6M9 15h4" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="kval">31</div>
+                  <div class="klbl">Open Tenders</div>
+                  <div class="kdelta kw" style="color: var(--warning)">
+                    5 match your categories
+                  </div>
+                </div>
+              </div>
+              <div class="kcard">
+                <div class="kico kg">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M9 11l3 3L22 4" />
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="kval">8</div>
+                  <div class="klbl">Active Bids Submitted</div>
+                  <div class="kdelta up">↑ 2 this month</div>
+                </div>
+              </div>
+              <div class="kcard">
+                <div class="kico kw">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="kval" style="color: var(--danger)">2</div>
+                  <div class="klbl">Docs Expiring Soon</div>
+                  <div class="kdelta dn">Action required</div>
+                </div>
+              </div>
+              <div class="kcard">
+                <div class="kico kpu">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="kval">87%</div>
+                  <div class="klbl">Vendor Score</div>
+                  <div class="kdelta up">↑ Top 15% of vendors</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="g62">
+              <!-- Tenders closing soon widget -->
+              <div class="card mb16">
+                <div class="ch">
+                  <div class="ch-l">
+                    <div class="ch-ico" style="color: var(--danger)">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                        />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="ch-title" style="color: var(--danger)">
+                        Tenders Closing Soon
+                      </div>
+                      <div class="ch-sub">
+                        Matching your registered categories
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn-o"
+                    onclick="
+                      switchTab(
+                        'tenders',
+                        document.getElementById('stab-tenders'),
+                      )
+                    "
+                  >
+                    View All
+                  </button>
+                </div>
+                <div class="cb0" style="overflow-x: auto">
+                  <table class="dtbl">
+                    <thead>
+                      <tr>
+                        <th>T/Q No.</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Closing</th>
+                        <th>Days Left</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="color: var(--p); font-weight: 700">
+                          QTN/2026/018
+                        </td>
+                        <td>Supply of Stationery &amp; Consumables</td>
+                        <td><span class="pill p-flt">Supply</span></td>
+                        <td>1 Aug 2026</td>
+                        <td>
+                          <span style="color: var(--danger); font-weight: 700"
+                            >1 day</span
+                          >
+                        </td>
+                        <td>
+                          <button
+                            class="btn btn-p btn-sm"
+                            onclick="
+                              switchTab(
+                                'tenders',
+                                document.getElementById('stab-tenders'),
+                              )
+                            "
+                          >
+                            Bid Now
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="color: var(--p); font-weight: 700">
+                          TDR/2026/001
+                        </td>
+                        <td>Installation of Distribution Panel – Tawau</td>
+                        <td><span class="pill p-flt">Electrical</span></td>
+                        <td>2 Aug 2026</td>
+                        <td>
+                          <span style="color: var(--danger); font-weight: 700"
+                            >2 days</span
+                          >
+                        </td>
+                        <td>
+                          <button
+                            class="btn btn-p btn-sm"
+                            onclick="
+                              switchTab(
+                                'tenders',
+                                document.getElementById('stab-tenders'),
+                              )
+                            "
+                          >
+                            Bid Now
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="color: var(--p); font-weight: 700">
+                          TDR/2026/002
+                        </td>
+                        <td>Supply &amp; Delivery of Transformers 132kV</td>
+                        <td><span class="pill p-flt">Electrical</span></td>
+                        <td>8 Aug 2026</td>
+                        <td>
+                          <span style="color: var(--warning); font-weight: 700"
+                            >8 days</span
+                          >
+                        </td>
+                        <td><button class="btn btn-o btn-sm">View</button></td>
+                      </tr>
+                      <tr>
+                        <td style="color: var(--p); font-weight: 700">
+                          TDR/2026/003
+                        </td>
+                        <td>CCTV Installation – Substations</td>
+                        <td><span class="pill p-flt">Supply</span></td>
+                        <td>25 Aug 2026</td>
+                        <td>
+                          <span style="color: var(--success); font-weight: 700"
+                            >25 days</span
+                          >
+                        </td>
+                        <td><button class="btn btn-o btn-sm">View</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Bid summary -->
+              <div class="card mb16">
+                <div class="ch">
+                  <div class="ch-l">
+                    <div class="ch-ico">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="ch-title">Bid Pipeline</div>
+                      <div class="ch-sub">FY 2025/2026</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="cb">
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      gap: 10px;
+                      margin-bottom: 14px;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          font-size: 12px;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        <span style="font-weight: 600">Submitted</span
+                        ><span style="color: var(--mu)">8</span>
+                      </div>
+                      <div class="pgw">
+                        <div class="pgb pg-p" style="width: 100%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          font-size: 12px;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        <span style="font-weight: 600">Under Evaluation</span
+                        ><span style="color: var(--mu)">3</span>
+                      </div>
+                      <div class="pgw">
+                        <div class="pgb pg-p" style="width: 38%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          font-size: 12px;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        <span style="font-weight: 600">Shortlisted</span
+                        ><span style="color: var(--success)">2</span>
+                      </div>
+                      <div class="pgw">
+                        <div class="pgb pg-g" style="width: 25%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          font-size: 12px;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        <span style="font-weight: 600">Awarded</span
+                        ><span style="color: var(--success)">1</span>
+                      </div>
+                      <div class="pgw">
+                        <div class="pgb pg-g" style="width: 13%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          font-size: 12px;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        <span style="font-weight: 600">Unsuccessful</span
+                        ><span style="color: var(--danger)">2</span>
+                      </div>
+                      <div class="pgw">
+                        <div class="pgb pg-r" style="width: 25%"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr class="s" style="margin: 10px 0" />
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      font-size: 12px;
+                    "
+                  >
+                    <span style="color: var(--mu)">Win rate (FY2026)</span>
+                    <span style="font-weight: 700; color: var(--p)"
+                      >33.3% (1 of 3 closed)</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: notifications + profile health -->
+            <div class="g2">
+              <!-- Notifications -->
+              <div class="card">
+                <div class="ch">
+                  <div class="ch-l">
+                    <div class="ch-ico">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
+                        />
+                      </svg>
+                    </div>
+                    <div class="ch-title">Notifications</div>
+                  </div>
+                  <button class="btn btn-o btn-sm">Mark All Read</button>
+                </div>
+                <div class="cb">
+                  <div class="notif-item unread">
+                    <div
+                      class="notif-dot"
+                      style="background: var(--danger)"
+                    ></div>
+                    <div class="notif-body">
+                      <div class="notif-txt">
+                        Your <strong>CIDB Certificate</strong> expires in
+                        <strong>14 days</strong>. Please renew and re-upload.
+                      </div>
+                      <div class="notif-time">Today, 8:30 AM</div>
+                    </div>
+                  </div>
+                  <div class="notif-item unread">
+                    <div
+                      class="notif-dot"
+                      style="background: var(--warning)"
+                    ></div>
+                    <div class="notif-body">
+                      <div class="notif-txt">
+                        New tender <strong>TDR/2026/003</strong> matches your
+                        Electrical category — closing 25 Aug.
+                      </div>
+                      <div class="notif-time">Today, 7:45 AM</div>
+                    </div>
+                  </div>
+                  <div class="notif-item">
+                    <div class="notif-dot" style="background: var(--p)"></div>
+                    <div class="notif-body">
+                      <div class="notif-txt">
+                        Your bid for <strong>TDR/2026/001</strong> is
+                        <span style="color: var(--purple); font-weight: 700"
+                          >shortlisted</span
+                        >. Await further instructions.
+                      </div>
+                      <div class="notif-time">Yesterday, 3:12 PM</div>
+                    </div>
+                  </div>
+                  <div class="notif-item">
+                    <div
+                      class="notif-dot"
+                      style="background: var(--success)"
+                    ></div>
+                    <div class="notif-body">
+                      <div class="notif-txt">
+                        Addendum <strong>ADD/2026/002</strong> issued for
+                        <strong>QTN/2026/015</strong>. Please review revised
+                        specs.
+                      </div>
+                      <div class="notif-time">28 Jul 2026, 10:00 AM</div>
+                    </div>
+                  </div>
+                  <div class="notif-item">
+                    <div
+                      class="notif-dot"
+                      style="background: var(--danger)"
+                    ></div>
+                    <div class="notif-body">
+                      <div class="notif-txt">
+                        Bid <strong>BID/QTN/2026/010</strong> was
+                        <span style="color: var(--danger); font-weight: 700"
+                          >unsuccessful</span
+                        >. Award went to another vendor.
+                      </div>
+                      <div class="notif-time">25 Jul 2026, 2:00 PM</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Profile / doc health -->
+              <div class="card">
+                <div class="ch">
+                  <div class="ch-l">
+                    <div class="ch-ico">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="ch-title">
+                        Vendor Score &amp; Profile Health
+                      </div>
+                      <div class="ch-sub">Based on PPP criteria</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="cb">
+                  <div class="score-wrap" style="margin-bottom: 16px">
+                    <div>
+                      <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="#e8e8e8"
+                          stroke-width="10"
+                        />
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="#006784"
+                          stroke-width="10"
+                          stroke-dasharray="175 26"
+                          stroke-dashoffset="0"
+                          transform="rotate(-90 40 40)"
+                        />
+                        <text
+                          x="40"
+                          y="44"
+                          font-size="16"
+                          font-weight="800"
+                          fill="#313a46"
+                          text-anchor="middle"
+                        >
+                          87%
+                        </text>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="score-label" style="color: var(--p)">
+                        87 / 100
+                      </div>
+                      <div class="score-sub">Vendor Performance Score</div>
+                      <div style="margin-top: 6px">
+                        <span class="pill p-ok">Top Tier</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="score-items">
+                    <div class="score-row">
+                      <span class="score-name">Document Completeness</span>
+                      <div class="pgw" style="flex: 1">
+                        <div class="pgb pg-w" style="width: 80%"></div>
+                      </div>
+                      <span class="score-pct">80%</span>
+                    </div>
+                    <div class="score-row">
+                      <span class="score-name">On-time Submission</span>
+                      <div class="pgw" style="flex: 1">
+                        <div class="pgb pg-g" style="width: 95%"></div>
+                      </div>
+                      <span class="score-pct">95%</span>
+                    </div>
+                    <div class="score-row">
+                      <span class="score-name">Bid Accuracy</span>
+                      <div class="pgw" style="flex: 1">
+                        <div class="pgb pg-g" style="width: 90%"></div>
+                      </div>
+                      <span class="score-pct">90%</span>
+                    </div>
+                    <div class="score-row">
+                      <span class="score-name">Compliance History</span>
+                      <div class="pgw" style="flex: 1">
+                        <div class="pgb pg-p" style="width: 85%"></div>
+                      </div>
+                      <span class="score-pct">85%</span>
+                    </div>
+                    <div class="score-row">
+                      <span class="score-name">Bumiputera Status</span>
+                      <div class="pgw" style="flex: 1">
+                        <div class="pgb pg-g" style="width: 100%"></div>
+                      </div>
+                      <span class="score-pct">Yes</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /overview panel -->
+
+          <!-- ══════════════════════════════
+         ACTIVE TENDERS TAB
+    ══════════════════════════════ -->
+          <div class="stab-panel" id="panel-tenders">
+            <!-- Filter bar -->
+            <div class="fbar">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                style="color: var(--mu); flex-shrink: 0"
+              >
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              <select>
+                <option>All Categories</option>
+                <option selected>My Categories (Elec / Civil / Supply)</option>
+                <option>Electrical Works</option>
+                <option>Civil Works</option>
+                <option>Supply &amp; Delivery</option>
+              </select>
+              <select>
+                <option>All Types</option>
+                <option>Tender</option>
+                <option>Quotation</option>
+              </select>
+              <select>
+                <option>All Statuses</option>
+                <option>Floating</option>
+                <option>Closing Soon</option>
+              </select>
+              <div class="fsp"></div>
+              <button class="btn btn-p">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+                Search
+              </button>
+            </div>
+
+            <!-- Tender cards -->
+            <div class="tcard-grid">
+              <!-- CRITICAL -->
+              <div class="tcard urgent">
+                <div class="tc-head">
+                  <div>
+                    <div class="tc-num">QTN/2026/018</div>
+                    <div class="tc-title">
+                      Supply of Stationery &amp; Consumables
+                    </div>
+                  </div>
+                  <span class="pill p-crit">Critical</span>
+                </div>
+                <div class="tc-body">
+                  <div class="tc-meta">
+                    <div class="tc-item">
+                      <span class="tc-lbl">Type</span
+                      ><span class="tc-val">Quotation · Mode 7.2</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Floated On</span
+                      ><span class="tc-val">15 Jul 2026</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Closing</span
+                      ><span class="tc-val" style="color: var(--danger)"
+                        >1 Aug 2026, 4:00 PM</span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Doc. Price</span
+                      ><span class="tc-val">RM 50.00</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Category</span
+                      ><span class="tc-val"
+                        ><span class="pill p-flt">Supply</span></span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Bid Status</span
+                      ><span class="tc-val"
+                        ><span class="pill p-draft">Not Submitted</span></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="tc-foot">
+                  <div>
+                    <div class="tc-days critical">1 day left</div>
+                    <div style="font-size: 10.5px; color: var(--mu)">
+                      Deadline: 1 Aug 2026
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <button class="btn btn-o btn-sm">Download Docs</button>
+                    <button class="btn btn-p btn-sm">Submit Bid →</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CRITICAL 2 -->
+              <div class="tcard urgent">
+                <div class="tc-head">
+                  <div>
+                    <div class="tc-num">TDR/2026/001</div>
+                    <div class="tc-title">
+                      Installation of Distribution Panel – Tawau Substation
+                    </div>
+                  </div>
+                  <span class="pill p-shortlist">Shortlisted</span>
+                </div>
+                <div class="tc-body">
+                  <div class="tc-meta">
+                    <div class="tc-item">
+                      <span class="tc-lbl">Type</span
+                      ><span class="tc-val">Tender · Mode 7.1</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Floated On</span
+                      ><span class="tc-val">01 Jul 2026</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Closing</span
+                      ><span class="tc-val" style="color: var(--danger)"
+                        >2 Aug 2026, 12:00 PM</span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Doc. Price</span
+                      ><span class="tc-val">RM 200.00</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Category</span
+                      ><span class="tc-val"
+                        ><span class="pill p-flt">Electrical</span></span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Bid Status</span
+                      ><span class="tc-val"
+                        ><span class="pill p-shortlist">Shortlisted</span></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="tc-foot">
+                  <div>
+                    <div class="tc-days critical">2 days left</div>
+                    <div style="font-size: 10.5px; color: var(--mu)">
+                      Deadline: 2 Aug 2026
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <button class="btn btn-o btn-sm">View Submission</button>
+                    <button class="btn btn-o btn-sm">Addendum (1)</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- WATCH -->
+              <div class="tcard watch">
+                <div class="tc-head">
+                  <div>
+                    <div class="tc-num">TDR/2026/002</div>
+                    <div class="tc-title">
+                      Supply &amp; Delivery of Transformers 132kV
+                    </div>
+                  </div>
+                  <span class="pill p-warn">Watch</span>
+                </div>
+                <div class="tc-body">
+                  <div class="tc-meta">
+                    <div class="tc-item">
+                      <span class="tc-lbl">Type</span
+                      ><span class="tc-val">Tender · Mode 7.1</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Floated On</span
+                      ><span class="tc-val">05 Jul 2026</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Closing</span
+                      ><span class="tc-val">8 Aug 2026, 4:00 PM</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Doc. Price</span
+                      ><span class="tc-val">RM 500.00</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Category</span
+                      ><span class="tc-val"
+                        ><span class="pill p-flt">Electrical</span></span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Bid Status</span
+                      ><span class="tc-val"
+                        ><span class="pill p-sub">Submitted</span></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="tc-foot">
+                  <div>
+                    <div class="tc-days watch">8 days left</div>
+                    <div style="font-size: 10.5px; color: var(--mu)">
+                      Deadline: 8 Aug 2026
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <button class="btn btn-o btn-sm">View Submission</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- NORMAL -->
+              <div class="tcard normal">
+                <div class="tc-head">
+                  <div>
+                    <div class="tc-num">QTN/2026/020</div>
+                    <div class="tc-title">
+                      Annual Pest Control Services – All SESB Buildings
+                    </div>
+                  </div>
+                  <span class="pill p-warn">Watch</span>
+                </div>
+                <div class="tc-body">
+                  <div class="tc-meta">
+                    <div class="tc-item">
+                      <span class="tc-lbl">Type</span
+                      ><span class="tc-val">Quotation · Mode 7.3</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Floated On</span
+                      ><span class="tc-val">18 Jul 2026</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Closing</span
+                      ><span class="tc-val">5 Aug 2026, 4:00 PM</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Doc. Price</span
+                      ><span class="tc-val">RM 50.00</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Category</span
+                      ><span class="tc-val"
+                        ><span class="pill p-flt">Supply</span></span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Bid Status</span
+                      ><span class="tc-val"
+                        ><span class="pill p-draft">Not Submitted</span></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="tc-foot">
+                  <div>
+                    <div class="tc-days watch">5 days left</div>
+                    <div style="font-size: 10.5px; color: var(--mu)">
+                      Deadline: 5 Aug 2026
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <button class="btn btn-o btn-sm">Download Docs</button>
+                    <button class="btn btn-p btn-sm">Submit Bid →</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OK -->
+              <div class="tcard normal">
+                <div class="tc-head">
+                  <div>
+                    <div class="tc-num">TDR/2026/003</div>
+                    <div class="tc-title">
+                      CCTV Installation – All Substations (Phase 2)
+                    </div>
+                  </div>
+                  <span class="pill p-ok">Monitor</span>
+                </div>
+                <div class="tc-body">
+                  <div class="tc-meta">
+                    <div class="tc-item">
+                      <span class="tc-lbl">Type</span
+                      ><span class="tc-val">Tender · Mode 7.5</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Floated On</span
+                      ><span class="tc-val">12 Jul 2026</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Closing</span
+                      ><span class="tc-val">25 Aug 2026, 4:00 PM</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Doc. Price</span
+                      ><span class="tc-val">RM 200.00</span>
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Category</span
+                      ><span class="tc-val"
+                        ><span class="pill p-flt">Supply</span></span
+                      >
+                    </div>
+                    <div class="tc-item">
+                      <span class="tc-lbl">Bid Status</span
+                      ><span class="tc-val"
+                        ><span class="pill p-draft">Not Submitted</span></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="tc-foot">
+                  <div>
+                    <div class="tc-days ok">25 days left</div>
+                    <div style="font-size: 10.5px; color: var(--mu)">
+                      Deadline: 25 Aug 2026
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px">
+                    <button class="btn btn-o btn-sm">Download Docs</button>
+                    <button class="btn btn-p btn-sm">Submit Bid →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /tcard-grid -->
+          </div>
+          <!-- /tenders panel -->
+
+          <!-- ══════════════════════════════
+         MY BIDS TAB
+    ══════════════════════════════ -->
+          <div class="stab-panel" id="panel-bids">
+            <div class="fbar">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                style="color: var(--mu); flex-shrink: 0"
+              >
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              <select>
+                <option>All Statuses</option>
+                <option>Submitted</option>
+                <option>Under Evaluation</option>
+                <option>Shortlisted</option>
+                <option>Awarded</option>
+                <option>Unsuccessful</option>
+              </select>
+              <select>
+                <option>All Years</option>
+                <option selected>FY 2025/2026</option>
+                <option>FY 2024/2025</option>
+              </select>
+              <div class="fsp"></div>
+              <button class="btn btn-p btn-sm">Export CSV</button>
+            </div>
+
+            <div class="card mb16">
+              <div class="ch">
+                <div class="ch-l">
+                  <div class="ch-ico">
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M9 11l3 3L22 4" />
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="ch-title">My Bids &amp; Quotations</div>
+                    <div class="ch-sub">8 active bids · FY 2025/2026</div>
+                  </div>
+                </div>
+              </div>
+              <div class="cb0" style="overflow-x: auto">
+                <table class="dtbl">
+                  <thead>
+                    <tr>
+                      <th>Bid Ref.</th>
+                      <th>T/Q No.</th>
+                      <th>Title</th>
+                      <th>Submitted</th>
+                      <th>Bid Amount (RM)</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/TDR/2026/001
+                      </td>
+                      <td>TDR/2026/001</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Installation of Distribution Panel – Tawau
+                      </td>
+                      <td style="white-space: nowrap">02 Jul 2026</td>
+                      <td style="font-weight: 700">345,000.00</td>
+                      <td><span class="pill p-shortlist">Shortlisted</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/TDR/2026/002
+                      </td>
+                      <td>TDR/2026/002</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Supply &amp; Delivery of Transformers 132kV
+                      </td>
+                      <td style="white-space: nowrap">06 Jul 2026</td>
+                      <td style="font-weight: 700">1,240,000.00</td>
+                      <td><span class="pill p-eval">Under Evaluation</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/TDR/2025/007
+                      </td>
+                      <td>TDR/2025/007</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        HV Line Upgrade – Keningau to Tambunan
+                      </td>
+                      <td style="white-space: nowrap">14 Mar 2026</td>
+                      <td style="font-weight: 700">2,870,000.00</td>
+                      <td><span class="pill p-award">Awarded</span></td>
+                      <td>
+                        <button class="btn btn-g btn-sm">View Contract</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/QTN/2026/015
+                      </td>
+                      <td>QTN/2026/015</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Maintenance of Office Equipment – HQ
+                      </td>
+                      <td style="white-space: nowrap">20 Jul 2026</td>
+                      <td style="font-weight: 700">43,500.00</td>
+                      <td><span class="pill p-eval">Under Evaluation</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/QTN/2026/012
+                      </td>
+                      <td>QTN/2026/012</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Supply of Safety Signage – All Sites
+                      </td>
+                      <td style="white-space: nowrap">15 Jul 2026</td>
+                      <td style="font-weight: 700">18,900.00</td>
+                      <td><span class="pill p-eval">Under Evaluation</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/QTN/2026/010
+                      </td>
+                      <td>QTN/2026/010</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Printing &amp; Delivery of Annual Report 2025
+                      </td>
+                      <td style="white-space: nowrap">28 Jun 2026</td>
+                      <td style="font-weight: 700">67,000.00</td>
+                      <td><span class="pill p-rej">Unsuccessful</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/TDR/2025/004
+                      </td>
+                      <td>TDR/2025/004</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Substation Automation – Sandakan
+                      </td>
+                      <td style="white-space: nowrap">10 Dec 2025</td>
+                      <td style="font-weight: 700">980,000.00</td>
+                      <td><span class="pill p-rej">Unsuccessful</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                    <tr>
+                      <td style="color: var(--p); font-weight: 700">
+                        BID/TDR/2025/001
+                      </td>
+                      <td>TDR/2025/001</td>
+                      <td
+                        style="
+                          max-width: 200px;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          white-space: nowrap;
+                        "
+                      >
+                        Civil Works – SESB Warehouse Extension
+                      </td>
+                      <td style="white-space: nowrap">01 Sep 2025</td>
+                      <td style="font-weight: 700">1,450,000.00</td>
+                      <td><span class="pill p-end">Completed</span></td>
+                      <td><button class="btn btn-o btn-sm">View</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /bids panel -->
+
+          <!-- ══════════════════════════════
+         PROFILE & REGISTRATION TAB
+    ══════════════════════════════ -->
+          <div class="stab-panel" id="panel-profile">
+            <div class="g62">
+              <div class="card mb16">
+                <div class="prof-header">
+                  <div class="prof-av">MI</div>
+                  <div>
+                    <div class="prof-name">Mega Infra Sdn. Bhd.</div>
+                    <div class="prof-reg">
+                      VEN/2019/004821 &nbsp;·&nbsp; SSM: 1234567-A
+                    </div>
+                    <div class="prof-since">
+                      Registered since 14 March 2019 &nbsp;·&nbsp;
+                      <span
+                        style="
+                          background: rgba(255, 255, 255, 0.2);
+                          padding: 1px 8px;
+                          border-radius: 20px;
+                          font-size: 11px;
+                        "
+                        >Bumiputera</span
+                      >
+                    </div>
+                    <div class="prof-cats">
+                      <span class="prof-cat">Electrical Works</span>
+                      <span class="prof-cat">Civil Works</span>
+                      <span class="prof-cat">Supply &amp; Delivery</span>
+                    </div>
+                  </div>
+                  <div style="margin-left: auto; text-align: right">
+                    <button
+                      class="btn"
+                      style="
+                        background: rgba(255, 255, 255, 0.2);
+                        color: #fff;
+                        border: 1px solid rgba(255, 255, 255, 0.4);
+                      "
+                    >
+                      Edit Profile
+                    </button>
+                  </div>
+                </div>
+                <div class="reg-grid">
+                  <div class="reg-item">
+                    <div class="reg-lbl">Registration Status</div>
+                    <div class="reg-val">
+                      <span class="pill p-active" style="font-size: 12px"
+                        >Active</span
+                      >
+                    </div>
+                  </div>
+                  <div class="reg-item">
+                    <div class="reg-lbl">Expiry Date</div>
+                    <div class="reg-val" style="color: var(--warning)">
+                      14 Mar 2027
+                    </div>
+                  </div>
+                  <div class="reg-item">
+                    <div class="reg-lbl">Renewal Status</div>
+                    <div class="reg-val">
+                      <span class="pill p-ok">Not Due</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="cb">
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 16px;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          font-weight: 700;
+                          color: var(--mu);
+                          text-transform: uppercase;
+                          letter-spacing: 0.4px;
+                          margin-bottom: 8px;
+                        "
+                      >
+                        Contact Information
+                      </div>
+                      <div
+                        style="
+                          font-size: 12.5px;
+                          display: flex;
+                          flex-direction: column;
+                          gap: 5px;
+                        "
+                      >
+                        <div>
+                          <span
+                            style="
+                              color: var(--mu);
+                              width: 100px;
+                              display: inline-block;
+                            "
+                            >Person</span
+                          ><strong>Ahmad Syafiq Bin Harun</strong>
+                        </div>
+                        <div>
+                          <span
+                            style="
+                              color: var(--mu);
+                              width: 100px;
+                              display: inline-block;
+                            "
+                            >Designation</span
+                          >Managing Director
+                        </div>
+                        <div>
+                          <span
+                            style="
+                              color: var(--mu);
+                              width: 100px;
+                              display: inline-block;
+                            "
+                            >Phone</span
+                          >+6088-123456
+                        </div>
+                        <div>
+                          <span
+                            style="
+                              color: var(--mu);
+                              width: 100px;
+                              display: inline-block;
+                            "
+                            >Email</span
+                          >contact@example.invalid
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style="
+                          font-size: 11px;
+                          font-weight: 700;
+                          color: var(--mu);
+                          text-transform: uppercase;
+                          letter-spacing: 0.4px;
+                          margin-bottom: 8px;
+                        "
+                      >
+                        Business Address
+                      </div>
+                      <div
+                        style="
+                          font-size: 12.5px;
+                          color: var(--tx);
+                          line-height: 1.7;
+                        "
+                      >
+                        No. 12, Lorong Karamunsing 3,<br />
+                        Off Jalan Tuaran,<br />
+                        88300 Kota Kinabalu,<br />
+                        Sabah, Malaysia.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 16px">
+                <!-- Bank details -->
+                <div class="card">
+                  <div class="ch">
+                    <div class="ch-l">
+                      <div class="ch-ico">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <rect x="2" y="5" width="20" height="14" rx="2" />
+                          <line x1="2" y1="10" x2="22" y2="10" />
+                        </svg>
+                      </div>
+                      <div class="ch-title">Bank Details</div>
+                    </div>
+                    <button class="btn btn-o btn-sm">Edit</button>
+                  </div>
+                  <div class="cb">
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        font-size: 12.5px;
+                      "
+                    >
+                      <div>
+                        <span
+                          style="
+                            color: var(--mu);
+                            width: 110px;
+                            display: inline-block;
+                          "
+                          >Bank</span
+                        ><strong>Maybank Berhad</strong>
+                      </div>
+                      <div>
+                        <span
+                          style="
+                            color: var(--mu);
+                            width: 110px;
+                            display: inline-block;
+                          "
+                          >Account No.</span
+                        >1234 5678 9012
+                      </div>
+                      <div>
+                        <span
+                          style="
+                            color: var(--mu);
+                            width: 110px;
+                            display: inline-block;
+                          "
+                          >Account Name</span
+                        >Mega Infra Sdn. Bhd.
+                      </div>
+                      <div>
+                        <span
+                          style="
+                            color: var(--mu);
+                            width: 110px;
+                            display: inline-block;
+                          "
+                          >Swift Code</span
+                        >MBBEMYKL
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vendor score -->
+                <div class="card">
+                  <div class="ch">
+                    <div class="ch-l">
+                      <div class="ch-ico">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                          />
+                        </svg>
+                      </div>
+                      <div><div class="ch-title">Performance Record</div></div>
+                    </div>
+                  </div>
+                  <div class="cb">
+                    <div
+                      style="
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 0;
+                        text-align: center;
+                        border: 1px solid var(--bdr);
+                        border-radius: var(--r);
+                        overflow: hidden;
+                        margin-bottom: 12px;
+                      "
+                    >
+                      <div
+                        style="
+                          padding: 10px;
+                          border-right: 1px solid var(--bdr);
+                        "
+                      >
+                        <div
+                          style="
+                            font-size: 18px;
+                            font-weight: 700;
+                            color: var(--p);
+                          "
+                        >
+                          14
+                        </div>
+                        <div style="font-size: 10.5px; color: var(--mu)">
+                          Total Bids
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          padding: 10px;
+                          border-right: 1px solid var(--bdr);
+                        "
+                      >
+                        <div
+                          style="
+                            font-size: 18px;
+                            font-weight: 700;
+                            color: var(--success);
+                          "
+                        >
+                          3
+                        </div>
+                        <div style="font-size: 10.5px; color: var(--mu)">
+                          Awarded
+                        </div>
+                      </div>
+                      <div style="padding: 10px">
+                        <div
+                          style="
+                            font-size: 18px;
+                            font-weight: 700;
+                            color: var(--purple);
+                          "
+                        >
+                          21%
+                        </div>
+                        <div style="font-size: 10.5px; color: var(--mu)">
+                          Win Rate
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: var(--mu);
+                        text-align: center;
+                      "
+                    >
+                      Overall vendor score:
+                      <span style="color: var(--p); font-weight: 700"
+                        >87 / 100</span
+                      >
+                      &nbsp;·&nbsp;
+                      <span class="pill p-ok" style="font-size: 10.5px"
+                        >Top Tier</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /profile panel -->
+
+          <!-- ══════════════════════════════
+         DOCUMENTS TAB
+    ══════════════════════════════ -->
+          <div class="stab-panel" id="panel-docs">
+            <!-- Alert banner -->
+            <div
+              style="
+                background: #fde8e8;
+                border: 1px solid rgba(240, 60, 60, 0.3);
+                border-radius: var(--r);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              "
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--danger)"
+                stroke-width="2"
+              >
+                <path
+                  d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <div style="flex: 1">
+                <div
+                  style="
+                    font-size: 12.5px;
+                    font-weight: 700;
+                    color: var(--danger);
+                  "
+                >
+                  2 documents expiring soon
+                </div>
+                <div style="font-size: 11.5px; color: var(--mu)">
+                  CIDB Certificate expires in 14 days. MOF Registration expires
+                  in 45 days. Please renew and re-upload.
+                </div>
+              </div>
+              <button class="btn btn-o btn-sm">Dismiss</button>
+            </div>
+
+            <div class="g2">
+              <!-- Mandatory documents -->
+              <div class="card mb16">
+                <div class="ch">
+                  <div class="ch-l">
+                    <div class="ch-ico">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                        <path d="M16 13H8M16 17H8M10 9H8" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="ch-title">Mandatory Documents</div>
+                      <div class="ch-sub">7 of 9 complete</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-p btn-sm">Upload New</button>
+                </div>
+                <div class="cb">
+                  <div class="doc-item">
+                    <div class="doc-icon pdf">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">
+                        SSM Certificate of Incorporation
+                      </div>
+                      <div class="doc-meta">
+                        Uploaded 14 Mar 2024 · PDF · 245 KB
+                      </div>
+                      <div class="doc-exp ok">Valid until: 14 Mar 2027</div>
+                    </div>
+                    <span class="pill p-active">Valid</span>
+                  </div>
+                  <div class="doc-item">
+                    <div class="doc-icon pdf">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">MOF Registration Certificate</div>
+                      <div class="doc-meta">
+                        Uploaded 01 Sep 2025 · PDF · 182 KB
+                      </div>
+                      <div class="doc-exp warn">
+                        Expires: 14 Sep 2026 (45 days)
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+                        align-items: flex-end;
+                      "
+                    >
+                      <span class="pill p-expiring">Expiring</span>
+                      <button class="btn btn-w btn-sm" style="font-size: 10px">
+                        Renew
+                      </button>
+                    </div>
+                  </div>
+                  <div class="doc-item">
+                    <div class="doc-icon pdf">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">
+                        CIDB Certificate (G5 – Electrical)
+                      </div>
+                      <div class="doc-meta">
+                        Uploaded 15 Aug 2024 · PDF · 310 KB
+                      </div>
+                      <div class="doc-exp crit">
+                        Expires: 14 Aug 2026 (14 days)
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+                        align-items: flex-end;
+                      "
+                    >
+                      <span class="pill p-exp">Critical</span>
+                      <button
+                        class="btn btn-sm"
+                        style="
+                          background: var(--danger);
+                          color: #fff;
+                          font-size: 10px;
+                        "
+                      >
+                        Renew Now
+                      </button>
+                    </div>
+                  </div>
+                  <div class="doc-item">
+                    <div class="doc-icon pdf">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">
+                        Bumiputera Status Letter (PUNB / SKM)
+                      </div>
+                      <div class="doc-meta">
+                        Uploaded 22 Jan 2026 · PDF · 89 KB
+                      </div>
+                      <div class="doc-exp ok">Valid until: 22 Jan 2028</div>
+                    </div>
+                    <span class="pill p-active">Valid</span>
+                  </div>
+                  <div class="doc-item">
+                    <div class="doc-icon xls">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">
+                        Audited Financial Statements FY2024
+                      </div>
+                      <div class="doc-meta">
+                        Uploaded 30 Apr 2026 · XLSX · 1.2 MB
+                      </div>
+                      <div class="doc-exp ok">Valid for FY2024</div>
+                    </div>
+                    <span class="pill p-active">Valid</span>
+                  </div>
+                  <div class="doc-item">
+                    <div class="doc-icon doc">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">
+                        Company Profile &amp; Track Record
+                      </div>
+                      <div class="doc-meta">
+                        Uploaded 14 Mar 2024 · DOCX · 3.4 MB
+                      </div>
+                      <div class="doc-exp ok">No expiry</div>
+                    </div>
+                    <span class="pill p-active">Valid</span>
+                  </div>
+                  <div class="doc-item">
+                    <div class="doc-icon pdf">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                        />
+                        <path d="M14 2v6h6" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name">
+                        Directors' Identity Documents (IC)
+                      </div>
+                      <div class="doc-meta">
+                        Uploaded 14 Mar 2024 · PDF · 512 KB
+                      </div>
+                      <div class="doc-exp ok">No expiry</div>
+                    </div>
+                    <span class="pill p-active">Valid</span>
+                  </div>
+                  <!-- Missing -->
+                  <div class="doc-item" style="opacity: 0.6">
+                    <div
+                      class="doc-icon"
+                      style="background: #f5f5f5; color: var(--mu)"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="16" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name" style="color: var(--mu)">
+                        EPF / KWSP Contribution Statement
+                      </div>
+                      <div class="doc-meta">Not uploaded</div>
+                    </div>
+                    <button class="btn btn-p btn-sm">Upload</button>
+                  </div>
+                  <div class="doc-item" style="opacity: 0.6">
+                    <div
+                      class="doc-icon"
+                      style="background: #f5f5f5; color: var(--mu)"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="16" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
+                      </svg>
+                    </div>
+                    <div class="doc-info">
+                      <div class="doc-name" style="color: var(--mu)">
+                        LHDN Tax Clearance Letter
+                      </div>
+                      <div class="doc-meta">Not uploaded</div>
+                    </div>
+                    <button class="btn btn-p btn-sm">Upload</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Document summary + upload history -->
+              <div style="display: flex; flex-direction: column; gap: 16px">
+                <!-- Completeness card -->
+                <div class="card">
+                  <div class="ch">
+                    <div class="ch-l">
+                      <div class="ch-ico">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                          <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                      </div>
+                      <div class="ch-title">Document Completeness</div>
+                    </div>
+                  </div>
+                  <div class="cb">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        margin-bottom: 14px;
+                      "
+                    >
+                      <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="#e8e8e8"
+                          stroke-width="10"
+                        />
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="32"
+                          fill="none"
+                          stroke="#1abc9c"
+                          stroke-width="10"
+                          stroke-dasharray="142 59"
+                          stroke-dashoffset="0"
+                          transform="rotate(-90 40 40)"
+                        />
+                        <text
+                          x="40"
+                          y="44"
+                          font-size="15"
+                          font-weight="800"
+                          fill="#313a46"
+                          text-anchor="middle"
+                        >
+                          78%
+                        </text>
+                      </svg>
+                      <div>
+                        <div
+                          style="
+                            font-size: 22px;
+                            font-weight: 800;
+                            color: var(--success);
+                          "
+                        >
+                          7 / 9
+                        </div>
+                        <div style="font-size: 12px; color: var(--mu)">
+                          Documents uploaded
+                        </div>
+                        <div style="margin-top: 6px">
+                          <span class="pill p-warn">2 Missing</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        font-size: 12px;
+                      "
+                    >
+                      <div
+                        style="display: flex; justify-content: space-between"
+                      >
+                        <span style="color: var(--success); font-weight: 600"
+                          >✓ Valid</span
+                        ><span>5 docs</span>
+                      </div>
+                      <div
+                        style="display: flex; justify-content: space-between"
+                      >
+                        <span style="color: var(--warning); font-weight: 600"
+                          >⚠ Expiring Soon</span
+                        ><span>1 doc (MOF, 45d)</span>
+                      </div>
+                      <div
+                        style="display: flex; justify-content: space-between"
+                      >
+                        <span style="color: var(--danger); font-weight: 600"
+                          >✕ Critical</span
+                        ><span>1 doc (CIDB, 14d)</span>
+                      </div>
+                      <div
+                        style="display: flex; justify-content: space-between"
+                      >
+                        <span style="color: var(--mu)">— Not Uploaded</span
+                        ><span>2 docs</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recent uploads -->
+                <div class="card">
+                  <div class="ch">
+                    <div class="ch-l">
+                      <div class="ch-ico">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <polyline points="16 16 12 12 8 16" />
+                          <line x1="12" y1="12" x2="12" y2="21" />
+                          <path
+                            d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"
+                          />
+                        </svg>
+                      </div>
+                      <div class="ch-title">Recent Uploads</div>
+                    </div>
+                  </div>
+                  <div class="cb">
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                        font-size: 12px;
+                      "
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        "
+                      >
+                        <span><strong>Audited FS FY2024.xlsx</strong></span
+                        ><span style="color: var(--mu)">30 Apr 2026</span>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        "
+                      >
+                        <span><strong>Bumiputera Letter.pdf</strong></span
+                        ><span style="color: var(--mu)">22 Jan 2026</span>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        "
+                      >
+                        <span><strong>MOF Cert 2025.pdf</strong></span
+                        ><span style="color: var(--mu)">01 Sep 2025</span>
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        "
+                      >
+                        <span><strong>CIDB G5 Cert.pdf</strong></span
+                        ><span style="color: var(--mu)">15 Aug 2024</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /docs panel -->
+        </div>
+        <!-- /content -->
+      </div>
+      <!-- /main -->
+    </div>
+    <!-- /shell -->
+
+    <script>
+      function switchTab(id, el) {
+        // Deactivate all stab navlinks in sidebar
+        document
+          .querySelectorAll(".ni")
+          .forEach((n) => n.classList.remove("on"));
+        // Deactivate all stabs and panels
+        document
+          .querySelectorAll(".stab")
+          .forEach((t) => t.classList.remove("on"));
+        document
+          .querySelectorAll(".stab-panel")
+          .forEach((p) => p.classList.remove("on"));
+        // Activate clicked tab
+        if (el) el.classList.add("on");
+        const tabEl = document.getElementById("stab-" + id);
+        if (tabEl) tabEl.classList.add("on");
+        const panel = document.getElementById("panel-" + id);
+        if (panel) panel.classList.add("on");
+      }
+    </script>
+  </body>
+</html>

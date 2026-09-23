@@ -1,0 +1,47 @@
+name: CI
+
+# Runs on Linux, where the Windows Smart App Control policy that blocks
+# flutter_tester.exe locally does not apply. This is currently the only
+# place the test suite can execute.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Matches the SDK this project was developed against. Bump it
+          # deliberately rather than tracking whatever is newest, so a
+          # toolchain change is a visible commit.
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Fails on anything the analyzer flags as a warning or error, so the
+      # build does not quietly rot. The two remaining `info` lints are not
+      # treated as failures.
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Check formatting
+        run: dart format --set-exit-if-changed lib test
+
+      # The suite has never run on the Windows dev machine, so expect this
+      # to surface real failures the first time it executes.
+      - name: Test
+        run: flutter test --reporter expanded
+
+      # Proves the app still builds for the platform it is demoed on.
+      - name: Build web
+        run: flutter build web --release
