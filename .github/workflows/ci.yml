@@ -9,6 +9,18 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Needed by the deploy job to publish to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue them instead of cancelling, so a push
+# that follows another still ends up live.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
@@ -29,19 +41,60 @@ jobs:
         run: flutter pub get
 
       # Fails on anything the analyzer flags as a warning or error, so the
-      # build does not quietly rot. The two remaining `info` lints are not
-      # treated as failures.
+      # build does not quietly rot.
       - name: Analyze
         run: flutter analyze
 
       - name: Check formatting
         run: dart format --set-exit-if-changed lib test
 
-      # The suite has never run on the Windows dev machine, so expect this
-      # to surface real failures the first time it executes.
       - name: Test
         run: flutter test --reporter expanded
 
-      # Proves the app still builds for the platform it is demoed on.
+      # Proves the app still builds, including on pull requests that never
+      # reach the deploy job below.
       - name: Build web
         run: flutter build web --release
+
+  # Publishes the demo to https://<owner>.github.io/<repo>/
+  #
+  # Requires GitHub Pages to be enabled once, by hand:
+  #   Settings -> Pages -> Build and deployment -> Source: GitHub Actions
+  deploy-demo:
+    needs: analyze-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # A project Pages site is served from /<repo>/, not the domain root,
+      # so the base href has to match or every asset 404s and the page
+      # renders blank. Taken from the repository name rather than hardcoded,
+      # so a rename does not silently break the demo.
+      - name: Build web for Pages
+        run: |
+          flutter build web --release \
+            --base-href "/${GITHUB_REPOSITORY#*/}/"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
