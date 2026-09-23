@@ -69,7 +69,9 @@ void main() {
     test('terminal is exactly the rejections plus the closed-out pair', () {
       expect(SupplierStatus.terminal, containsAll(SupplierStatus.rejected));
       expect(SupplierStatus.terminal, containsAll(SupplierStatus.closedOut));
-      expect(SupplierStatus.terminal, hasLength(5));
+      // One rejection since the three gates collapsed into
+      // 'Request Rejected', plus Participated and No Participate.
+      expect(SupplierStatus.terminal, hasLength(3));
       expect(
         SupplierStatus.terminal.intersection(SupplierStatus.open),
         isEmpty,
