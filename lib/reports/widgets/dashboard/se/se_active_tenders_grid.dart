@@ -1,13 +1,12 @@
 // lib/reports/widgets/dashboard/se/se_active_tenders_grid.dart
 //
 // Every tender still open for bidding as its own card, two across.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/tender_status.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_primitives.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SeActiveTendersGrid extends StatelessWidget {
   const SeActiveTendersGrid({super.key, required this.records});
@@ -39,10 +38,10 @@ class SeActiveTendersGrid extends StatelessWidget {
           });
 
     if (active.isEmpty) {
-      return DashCard(
+      return const DashCard(
         icon: Icons.campaign_outlined,
         title: 'Active Tenders',
-        child: const Text(
+        child: Text(
           'Nothing is currently open for bidding.',
           style: TextStyle(fontSize: 12, color: DashTheme.muted),
         ),
@@ -255,11 +254,9 @@ class SeTenderCard extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: DashTheme.background,
-                    border: const Border(
-                      top: BorderSide(color: DashTheme.border),
-                    ),
+                    border: Border(top: BorderSide(color: DashTheme.border)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

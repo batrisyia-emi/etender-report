@@ -3,30 +3,28 @@ import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/data/actions/unimplemented_report_actions.dart';
 import 'package:etender_reports/data/repositories/mock_report_repository.dart';
 import 'package:etender_reports/data/repositories/report_repository.dart';
-import 'package:etender_reports/reports/views/dashboard_view.dart';
-import 'package:etender_reports/reports/views/supplier_dashboard_view.dart';
 import 'package:etender_reports/reports/bloc/erfc/erfc_bloc.dart';
+import 'package:etender_reports/reports/bloc/report_selection_cubit.dart';
 import 'package:etender_reports/reports/bloc/supplier/supplier_bloc.dart';
-import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
 import 'package:etender_reports/reports/bloc/tender_security/tender_security_bloc.dart';
+import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
 import 'package:etender_reports/reports/bloc/toc/toc_bloc.dart';
-import 'package:etender_reports/reports/bloc/vtm_monitoring/vtm_monitoring_bloc.dart';
-import 'package:etender_reports/shared/utils/run_report_action.dart';
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
+import 'package:etender_reports/reports/bloc/vtm_monitoring/vtm_monitoring_bloc.dart';
+import 'package:etender_reports/reports/report_type.dart';
+import 'package:etender_reports/reports/views/dashboard_view.dart';
+import 'package:etender_reports/reports/views/erfc_report_view.dart';
+import 'package:etender_reports/reports/views/supplier_dashboard_view.dart';
+import 'package:etender_reports/reports/views/supplier_report_view.dart';
+import 'package:etender_reports/reports/views/tender_security_view.dart';
+import 'package:etender_reports/reports/views/tender_summary_view.dart';
+import 'package:etender_reports/reports/views/toc_report_view.dart';
+import 'package:etender_reports/reports/views/vendor_participation_view.dart';
+import 'package:etender_reports/reports/views/vtm_monitoring_view.dart';
+import 'package:etender_reports/shared/utils/run_report_action.dart';
 import 'package:etender_reports/shared/widgets/sidebar_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:etender_reports/reports/bloc/report_selection_cubit.dart';
-
-import 'package:etender_reports/reports/report_type.dart';
-import 'package:etender_reports/reports/views/erfc_report_view.dart';
-import 'package:etender_reports/reports/views/supplier_report_view.dart';
-import 'package:etender_reports/reports/views/tender_summary_view.dart';
-import 'package:etender_reports/reports/views/tender_security_view.dart';
-import 'package:etender_reports/reports/views/toc_report_view.dart';
-import 'package:etender_reports/reports/views/vtm_monitoring_view.dart';
-import 'package:etender_reports/reports/views/vendor_participation_view.dart';
 
 /// Provides the selection cubit and one bloc per report. Use this as the
 /// route/home widget.

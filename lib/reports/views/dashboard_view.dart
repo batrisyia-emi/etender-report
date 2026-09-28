@@ -7,22 +7,21 @@
 import 'package:etender_reports/reports/bloc/erfc/erfc_bloc.dart';
 import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
+import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/tender_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/status/erfc_status.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
+import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
+import 'package:etender_reports/reports/widgets/dashboard/dashboard_tabs.dart';
+import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
+import 'package:etender_reports/reports/widgets/dashboard/se/se_active_tenders_grid.dart';
+import 'package:etender_reports/reports/widgets/dashboard/se/se_breakdown_cards.dart';
+import 'package:etender_reports/reports/widgets/dashboard/se/se_closing_soon_card.dart';
+import 'package:etender_reports/reports/widgets/dashboard/se/se_kpi_row.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:etender_reports/reports/models/erfc_metrics.dart';
-import 'package:etender_reports/reports/models/erfc_status.dart';
-import 'package:etender_reports/reports/models/tender_metrics.dart';
-import 'package:etender_reports/reports/models/tender_status.dart';
-import 'package:etender_reports/reports/models/vendor_metrics.dart';
-import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
-import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
-import 'package:etender_reports/reports/widgets/dashboard/dashboard_tabs.dart';
-import 'package:etender_reports/reports/widgets/dashboard/se/se_kpi_row.dart';
-import 'package:etender_reports/reports/widgets/dashboard/se/se_closing_soon_card.dart';
-import 'package:etender_reports/reports/widgets/dashboard/se/se_breakdown_cards.dart';
-import 'package:etender_reports/reports/widgets/dashboard/se/se_active_tenders_grid.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({

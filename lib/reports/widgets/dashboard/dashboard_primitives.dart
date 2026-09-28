@@ -4,9 +4,8 @@
 // tinted pill, an outlined or filled button, and the bar list the
 // breakdown panels use. They lived twice, once in each dashboard, until
 // the two files were split up.
-import 'package:flutter/material.dart';
-
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
+import 'package:flutter/material.dart';
 
 class DashMeasureBar extends StatelessWidget {
   const DashMeasureBar({

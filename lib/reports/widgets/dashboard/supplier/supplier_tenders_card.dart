@@ -1,13 +1,12 @@
 // lib/reports/widgets/dashboard/supplier/supplier_tenders_card.dart
 //
 // What is still open in the categories this supplier is registered for.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/supplier_dashboard_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/supplier_dashboard_metrics.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_primitives.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SupplierMatchingTendersCard extends StatelessWidget {
   const SupplierMatchingTendersCard({

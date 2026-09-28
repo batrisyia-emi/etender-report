@@ -1,8 +1,7 @@
 // lib/reports/models/records/tender_record.dart
 import 'package:equatable/equatable.dart';
-
-import 'package:etender_reports/reports/models/tender_status.dart';
 import 'package:etender_reports/reports/models/records/record_parsing.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 
 /// A tender closing within this many days counts as closing soon.
 const int kClosingSoonDays = 7;

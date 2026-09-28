@@ -11,7 +11,7 @@
 // feature.
 import 'package:equatable/equatable.dart';
 import 'package:etender_reports/reports/models/records/record_parsing.dart';
-import 'package:etender_reports/reports/models/toc_status.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
 
 /// One seat on a committee.
 class TocMember extends Equatable {

@@ -2,16 +2,15 @@
 //
 // One bar per stage: the tender lifecycle, the eRFC pipeline, the
 // vendor funnel, and the two eRFC panels beside them.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/erfc_metrics.dart';
-import 'package:etender_reports/reports/models/erfc_status.dart';
-import 'package:etender_reports/reports/models/tender_metrics.dart';
-import 'package:etender_reports/reports/models/tender_status.dart';
-import 'package:etender_reports/reports/models/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/tender_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/status/erfc_status.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_primitives.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
+import 'package:flutter/material.dart';
 
 class SeTenderStatusCard extends StatelessWidget {
   const SeTenderStatusCard({super.key, required this.records});

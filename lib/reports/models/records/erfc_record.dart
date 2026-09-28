@@ -1,13 +1,13 @@
 // lib/reports/models/records/erfc_record.dart
 import 'package:equatable/equatable.dart';
 
-import 'package:etender_reports/reports/models/erfc_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
 import 'package:etender_reports/reports/models/records/record_parsing.dart';
 
 // The status sets and the overdue threshold live in erfc_metrics.dart and
 // are re-exported here, so the record and the metric helpers can never drift
 // apart the way they did when each kept its own copy.
-export 'package:etender_reports/reports/models/erfc_metrics.dart'
+export 'package:etender_reports/reports/models/metrics/erfc_metrics.dart'
     show
         kErfcEndorsedStatuses,
         kErfcOverdueDays,

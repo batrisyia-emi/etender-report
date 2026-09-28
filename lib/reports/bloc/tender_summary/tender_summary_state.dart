@@ -1,12 +1,11 @@
 // lib/reports/bloc/tender_summary/tender_summary_state.dart
 import 'package:equatable/equatable.dart';
-
-import 'package:etender_reports/reports/models/procurement_modes.dart';
-import 'package:etender_reports/reports/models/record_matching.dart';
-import 'package:etender_reports/reports/models/report_filters.dart';
-import 'package:etender_reports/reports/models/tender_status.dart';
-import 'package:etender_reports/reports/models/tender_attributes.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
+import 'package:etender_reports/reports/models/attributes/procurement_modes.dart';
+import 'package:etender_reports/reports/models/attributes/tender_attributes.dart';
+import 'package:etender_reports/reports/models/filters/record_matching.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 
 class TenderSummaryState extends Equatable {
   const TenderSummaryState({

@@ -1,8 +1,7 @@
 // lib/reports/models/records/supplier_record.dart
 import 'package:equatable/equatable.dart';
-
-import 'package:etender_reports/reports/models/supplier_status.dart';
 import 'package:etender_reports/reports/models/records/record_parsing.dart';
+import 'package:etender_reports/reports/models/status/supplier_status.dart';
 
 /// One supplier's involvement in one tender or quotation, from the
 /// supplier's side of the portal.

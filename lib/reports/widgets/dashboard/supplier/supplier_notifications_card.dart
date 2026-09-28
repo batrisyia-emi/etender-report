@@ -1,12 +1,11 @@
 // lib/reports/widgets/dashboard/supplier/supplier_notifications_card.dart
 //
 // The portal's notification feed.
-import 'package:flutter/material.dart';
-
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_primitives.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SupplierNotificationsCard extends StatelessWidget {
   const SupplierNotificationsCard({

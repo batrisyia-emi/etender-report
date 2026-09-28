@@ -1,17 +1,16 @@
 // lib/reports/widgets/vtm_monitoring/vtm_monitoring_table.dart
 import 'package:data_table_2/data_table_2.dart';
-import 'package:etender_reports/shared/app_colors.dart';
-import 'package:etender_reports/shared/utils/formatters.dart';
-import 'package:flutter/material.dart';
-
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/models/metrics/vtm_monitoring_metrics.dart';
 import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/models/report_sorting.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_metrics.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_status.dart';
+import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
+import 'package:etender_reports/reports/models/status/vtm_monitoring_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/shared/app_colors.dart';
+import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 /// One row per eRFC, following the report spec's column order.
 ///
@@ -80,7 +79,7 @@ class _VtmMonitoringTableState extends State<VtmMonitoringTable> {
     (r) => r.approvedDate,
     (r) => r.floatingDate,
     (r) => r.closingDate,
-    (r) => vtmAgingDays(r),
+    vtmAgingDays,
   ];
 
   List<VtmMonitoringRecord> get _sortedRecords => sortRows(

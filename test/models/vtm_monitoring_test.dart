@@ -1,9 +1,9 @@
 // test/models/vtm_monitoring_test.dart
 import 'package:etender_reports/data/mock/vtm_monitoring_records.dart';
+import 'package:etender_reports/reports/models/filters/vtm_monitoring_filters.dart';
+import 'package:etender_reports/reports/models/metrics/vtm_monitoring_metrics.dart';
 import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_filters.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_metrics.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_status.dart';
+import 'package:etender_reports/reports/models/status/vtm_monitoring_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Fixed so aging never depends on when the suite runs.
@@ -36,7 +36,7 @@ VtmMonitoringRecord build({
   'estimatedValue': estimatedValue,
   'documentPrice': documentPrice,
   'status': status,
-  'preparedBy': {
+  'preparedBy': const {
     'userId': 'SE10231',
     'name': 'Admin Supervisor',
     'role': 'Admin Supervisor',
@@ -85,7 +85,7 @@ void main() {
     });
 
     test('a malformed actor degrades to null rather than throwing', () {
-      final record = VtmMonitoringRecord.fromJson({
+      final record = VtmMonitoringRecord.fromJson(const {
         'erfcNo': 'ERFC/1',
         'preparedBy': 'Admin Supervisor',
       });

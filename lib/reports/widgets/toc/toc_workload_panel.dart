@@ -1,10 +1,9 @@
 // lib/reports/widgets/toc/toc_workload_panel.dart
+import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
+import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
+import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/toc_metrics.dart';
-import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 
 /// Who is sitting on how many committees, busiest first.
 ///

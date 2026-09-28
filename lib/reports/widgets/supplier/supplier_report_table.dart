@@ -1,16 +1,15 @@
 // lib/reports/widgets/supplier/supplier_report_table.dart
 import 'package:data_table_2/data_table_2.dart';
-import 'package:etender_reports/shared/utils/formatters.dart';
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/models/report_sort_columns.dart';
-import 'package:etender_reports/reports/models/report_sorting.dart';
-import 'package:etender_reports/reports/models/supplier_metrics.dart';
-import 'package:etender_reports/reports/models/supplier_status.dart';
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/models/metrics/supplier_metrics.dart';
+import 'package:etender_reports/reports/models/sorting/report_sort_columns.dart';
+import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
+import 'package:etender_reports/reports/models/status/supplier_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 /// One row per supplier per tender: Tender/Quotation No, Title, Category,
 /// Supplier, Published, Requested, Decision, Document Fee, Closing, Bid
@@ -165,11 +164,11 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
       // Only value and date columns are sortable; the rest are plain labels
       // so nothing looks tappable when it is not.
       columns: [
-        DataColumn2(label: const Text('Tender/Quotation No'), fixedWidth: 155),
+        const DataColumn2(label: Text('Tender/Quotation No'), fixedWidth: 155),
         // The three text columns are flexible, so spare window width is
         // shared between them rather than left dead past the last column.
-        DataColumn2(label: const Text('Title'), fixedWidth: 300),
-        DataColumn2(label: const Text('Category'), fixedWidth: 130),
+        const DataColumn2(label: Text('Title'), fixedWidth: 300),
+        const DataColumn2(label: Text('Category'), fixedWidth: 130),
         DataColumn2(
           label: SortableHeader(
             'Published',
@@ -228,9 +227,9 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
         ),
         // 'Participation Requested' is the longest status; below this the
         // chip was ellipsised on every requested row.
-        DataColumn2(label: const Text('Current Status'), fixedWidth: 190),
+        const DataColumn2(label: Text('Current Status'), fixedWidth: 190),
         // Room for the schedule icon beside a three-digit count.
-        DataColumn2(label: const Text('Days to Close'), fixedWidth: 152),
+        const DataColumn2(label: Text('Days to Close'), fixedWidth: 152),
       ],
       rows: _sortedRecords.map(_buildRecordRow).toList(),
     );

@@ -1,17 +1,16 @@
 // lib/reports/widgets/toc/toc_report_table.dart
 import 'package:data_table_2/data_table_2.dart';
-import 'package:etender_reports/shared/app_colors.dart';
-import 'package:etender_reports/shared/utils/formatters.dart';
-import 'package:flutter/material.dart';
-
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/models/report_sorting.dart';
-import 'package:etender_reports/reports/models/toc_metrics.dart';
-import 'package:etender_reports/reports/models/toc_status.dart';
+import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/shared/app_colors.dart';
+import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 /// One row per tender or quotation: the document, its committee, and how far
 /// the opening has got.
@@ -104,7 +103,7 @@ class _TocReportTableState extends State<TocReportTable> {
         // the opening from Open to Opening Completed. An unrecognised
         // status sorts before all of them rather than crashing.
         (r) => r.statusValue?.index ?? -1,
-        (r) => tocAgingDays(r),
+        tocAgingDays,
       ];
 
   List<TocOpeningRecord> get _sortedRecords => sortRows(

@@ -1,5 +1,5 @@
 // lib/reports/widgets/tender_security/tender_security_filter_panel.dart
-import 'package:etender_reports/reports/models/tender_security_filters.dart';
+import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 import 'package:etender_reports/reports/widgets/shared/filter_fields.dart';
 import 'package:flutter/material.dart';
 

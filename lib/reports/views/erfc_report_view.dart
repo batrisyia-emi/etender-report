@@ -1,17 +1,16 @@
 // lib/reports/views/erfc_report_view.dart
 import 'package:etender_reports/reports/bloc/erfc/erfc_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 // The bloc file re-exports its event, state and ReportStatus.
-import 'package:etender_reports/reports/models/report_filters.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
+import 'package:etender_reports/reports/widgets/cards/erfc_kpi_cards.dart';
 import 'package:etender_reports/reports/widgets/erfc/erfc_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/erfc/erfc_processing_time_panel.dart';
 import 'package:etender_reports/reports/widgets/erfc/erfc_report_table.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
-import 'package:etender_reports/reports/views/cards/erfc_kpi_cards.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ErfcReportView extends StatefulWidget {
   const ErfcReportView({

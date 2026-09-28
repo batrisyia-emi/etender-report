@@ -1,15 +1,14 @@
 // lib/reports/widgets/vendor_participation/vendor_participation_table.dart
 import 'package:data_table_2/data_table_2.dart';
-import 'package:etender_reports/shared/utils/formatters.dart';
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/open_to.dart';
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/models/report_sort_columns.dart';
-import 'package:etender_reports/reports/models/report_sorting.dart';
+import 'package:etender_reports/reports/models/attributes/open_to.dart';
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/models/sorting/report_sort_columns.dart';
+import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 /// One row per vendor per tender/quotation: Tender/Quotation ID, Vendor
 /// Name, Invitation Status, Document Purchased, Participation, Submission
@@ -174,12 +173,12 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
         // These three are flexible so spare window width is shared between
         // them instead of sitting dead past the last column. Certification
         // stays pinned -- it is already the widest and should not grow.
-        DataColumn2(label: const Text('Tender/Quotation ID'), fixedWidth: 165),
-        DataColumn2(label: const Text('Vendor Name'), fixedWidth: 210),
-        DataColumn2(label: const Text('Invitation Status'), fixedWidth: 150),
-        DataColumn2(label: const Text('Document Purchased'), fixedWidth: 170),
-        DataColumn2(label: const Text('Participation'), fixedWidth: 150),
-        DataColumn2(label: const Text('Submission Status'), fixedWidth: 165),
+        const DataColumn2(label: Text('Tender/Quotation ID'), fixedWidth: 165),
+        const DataColumn2(label: Text('Vendor Name'), fixedWidth: 210),
+        const DataColumn2(label: Text('Invitation Status'), fixedWidth: 150),
+        const DataColumn2(label: Text('Document Purchased'), fixedWidth: 170),
+        const DataColumn2(label: Text('Participation'), fixedWidth: 150),
+        const DataColumn2(label: Text('Submission Status'), fixedWidth: 165),
         DataColumn2(
           label: SortableHeader(
             'Submission Date & Time',
@@ -189,11 +188,11 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
           fixedWidth: 190,
           onSort: _handleSort,
         ),
-        DataColumn2(label: const Text('Open To'), fixedWidth: 174),
+        const DataColumn2(label: Text('Open To'), fixedWidth: 174),
         // Pinned: this is the longest text in the app, and letting it flex
         // made it swallow every spare pixel. 380 fits the longest value.
-        DataColumn2(
-          label: const Text('Vendor Certification Type'),
+        const DataColumn2(
+          label: Text('Vendor Certification Type'),
           fixedWidth: 300,
         ),
       ],

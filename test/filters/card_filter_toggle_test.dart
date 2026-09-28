@@ -2,7 +2,7 @@
 //
 // The overview cards on the eRFC and vendor participation reports apply
 // their own slice of the data, and clear it when tapped a second time.
-import 'package:etender_reports/reports/models/report_filters.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

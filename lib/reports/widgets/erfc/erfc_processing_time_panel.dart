@@ -1,9 +1,8 @@
 // lib/reports/widgets/erfc/erfc_processing_time_panel.dart
+import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
+import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/erfc_metrics.dart';
-import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 
 /// Average processing time by division — report spec 6.2, Aging Metrics.
 ///

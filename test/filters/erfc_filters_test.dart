@@ -1,5 +1,5 @@
 // test/filters/erfc_filters_test.dart
-import 'package:etender_reports/reports/models/report_filters.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Submitted 1 Aug and still in flight, so it is comfortably overdue

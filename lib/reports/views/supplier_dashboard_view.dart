@@ -12,19 +12,18 @@
 import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/data/mock/report_mock_data.dart';
 import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
-import 'package:etender_reports/reports/models/supplier_dashboard_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/supplier_dashboard_metrics.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_tabs.dart';
-import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_profile_cards.dart';
-import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_tenders_card.dart';
+import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_bids_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_documents_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_notifications_card.dart';
+import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_profile_cards.dart';
+import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_tenders_card.dart';
 import 'package:etender_reports/shared/utils/run_report_action.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SupplierDashboardView extends StatefulWidget {
   const SupplierDashboardView({
@@ -72,10 +71,10 @@ class _SupplierDashboardViewState extends State<SupplierDashboardView> {
     // SE dashboard reads it; everything else belongs to the supplier.
     final tenders = context.watch<TenderSummaryBloc>().state.records;
 
-    final profile = ReportMockData.supplierProfile;
-    final bids = ReportMockData.supplierBidPipeline;
-    final documents = ReportMockData.supplierDocuments;
-    final notifications = ReportMockData.supplierNotifications;
+    const profile = ReportMockData.supplierProfile;
+    const bids = ReportMockData.supplierBidPipeline;
+    const documents = ReportMockData.supplierDocuments;
+    const notifications = ReportMockData.supplierNotifications;
 
     final categories = {
       for (final category in (profile['categories'] as List))
@@ -97,7 +96,7 @@ class _SupplierDashboardViewState extends State<SupplierDashboardView> {
           () => context.read<ReportActions>().viewTender(tenderNo),
         ),
       ),
-      2 => _BidsPanel(bids: bids),
+      2 => const _BidsPanel(bids: bids),
       3 => _ProfilePanel(
         profile: profile,
         certificates: documents,

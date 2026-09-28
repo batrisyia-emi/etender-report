@@ -7,8 +7,8 @@
 // same tender lodge two securities, each with its own unique number
 // (TS/YYYY/NNNNNN, generated when the supplier submits).
 import 'package:equatable/equatable.dart';
+import 'package:etender_reports/reports/models/attributes/tender_security_attributes.dart';
 import 'package:etender_reports/reports/models/records/record_parsing.dart';
-import 'package:etender_reports/reports/models/tender_security_attributes.dart';
 
 class TenderSecurityRecord extends Equatable {
   const TenderSecurityRecord({

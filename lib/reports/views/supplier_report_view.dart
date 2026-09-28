@@ -1,16 +1,15 @@
 // lib/reports/views/supplier_report_view.dart
 import 'package:etender_reports/reports/bloc/supplier/supplier_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 // The bloc file re-exports its event, state and ReportStatus.
-import 'package:etender_reports/reports/models/report_filters.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
+import 'package:etender_reports/reports/widgets/cards/supplier_kpi_cards.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
 import 'package:etender_reports/reports/widgets/supplier/supplier_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/supplier/supplier_report_table.dart';
-import 'package:etender_reports/reports/views/cards/supplier_kpi_cards.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SupplierReportView extends StatefulWidget {
   const SupplierReportView({

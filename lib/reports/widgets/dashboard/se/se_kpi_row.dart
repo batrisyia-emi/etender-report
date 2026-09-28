@@ -1,15 +1,14 @@
 // lib/reports/widgets/dashboard/se/se_kpi_row.dart
 //
 // The four cross-report headline figures across the top of the page.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/erfc_metrics.dart';
-import 'package:etender_reports/reports/models/tender_metrics.dart';
-import 'package:etender_reports/reports/models/tender_status.dart';
-import 'package:etender_reports/reports/models/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/tender_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SeKpiRow extends StatelessWidget {
   const SeKpiRow({

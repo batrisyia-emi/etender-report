@@ -1,5 +1,5 @@
 // test/filters/tender_status_toggle_test.dart
-import 'package:etender_reports/reports/models/report_filters.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The overview cards tap through [TenderFilters.toggleStatuses], so tapping

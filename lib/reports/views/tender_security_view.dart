@@ -8,19 +8,18 @@
 // gesture — see _applyEdit.
 import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/reports/bloc/tender_security/tender_security_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
-import 'package:etender_reports/reports/models/tender_security_filters.dart';
-import 'package:etender_reports/reports/views/cards/tender_security_kpi_cards.dart';
+import 'package:etender_reports/reports/widgets/cards/tender_security_kpi_cards.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
 import 'package:etender_reports/reports/widgets/tender_security/tender_security_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/tender_security/tender_security_table.dart';
 import 'package:etender_reports/shared/utils/run_report_action.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TenderSecurityReportView extends StatefulWidget {
   const TenderSecurityReportView({

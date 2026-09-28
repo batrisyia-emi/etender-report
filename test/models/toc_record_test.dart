@@ -1,6 +1,6 @@
 // test/models/toc_record_test.dart
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/toc_status.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Map<String, dynamic> member({
@@ -124,7 +124,7 @@ void main() {
     });
 
     test('a malformed committee degrades to empty instead of throwing', () {
-      final record = TocOpeningRecord.fromJson({
+      final record = TocOpeningRecord.fromJson(const {
         'tenderNo': 'T.10001',
         'committee': 'not a list',
       });

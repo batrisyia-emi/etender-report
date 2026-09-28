@@ -8,7 +8,7 @@
 // number is the key throughout.
 import 'package:equatable/equatable.dart';
 import 'package:etender_reports/reports/models/records/record_parsing.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_status.dart';
+import 'package:etender_reports/reports/models/status/vtm_monitoring_status.dart';
 
 /// Who carried out one step.
 class VtmActor extends Equatable {

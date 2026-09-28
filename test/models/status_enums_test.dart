@@ -4,8 +4,8 @@
 // These tests pin the wire text and the groups, so a rename that would have
 // silently zeroed a card fails here instead.
 import 'package:etender_reports/data/mock/report_mock_data.dart';
-import 'package:etender_reports/reports/models/erfc_status.dart';
-import 'package:etender_reports/reports/models/tender_status.dart';
+import 'package:etender_reports/reports/models/status/erfc_status.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Set<String> statusesIn(List<Map<String, dynamic>> records) =>

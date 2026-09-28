@@ -14,8 +14,8 @@ import 'package:etender_reports/reports/models/records/supplier_record.dart';
 import 'package:etender_reports/reports/models/records/tender_record.dart';
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/records/vendor_participation_record.dart';
+import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 
 /// What the reports need, one method per dataset.
 ///

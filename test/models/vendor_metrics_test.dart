@@ -4,7 +4,7 @@
 // purchased -> submitted. These pin the subset relationships the cards
 // divide by, so a footer can never report more than its denominator.
 import 'package:etender_reports/data/mock/report_mock_data.dart';
-import 'package:etender_reports/reports/models/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/vendor_metrics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Map<String, dynamic> record({
@@ -39,7 +39,7 @@ void main() {
   });
 
   group('sample data funnel', () {
-    final records = ReportMockData.vendorParticipationRecords;
+    const records = ReportMockData.vendorParticipationRecords;
 
     // A vendor only unlocks the document by clicking participate, so a
     // purchase without participation is not a state the system can reach.
@@ -56,7 +56,7 @@ void main() {
     test('every bid comes from a vendor holding the document', () {
       expect(
         records
-            .where((r) => vendorHasSubmitted(r))
+            .where(vendorHasSubmitted)
             .where((r) => r['documentPurchased'] != true),
         isEmpty,
       );

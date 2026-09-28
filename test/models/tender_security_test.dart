@@ -1,10 +1,10 @@
 // test/models/tender_security_test.dart
 import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/data/mock/tender_security_records.dart';
+import 'package:etender_reports/reports/models/attributes/tender_security_attributes.dart';
+import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
+import 'package:etender_reports/reports/models/metrics/tender_security_metrics.dart';
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
-import 'package:etender_reports/reports/models/tender_security_attributes.dart';
-import 'package:etender_reports/reports/models/tender_security_filters.dart';
-import 'package:etender_reports/reports/models/tender_security_metrics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Fixed so "expiring soon" never depends on when the suite runs.
@@ -77,7 +77,7 @@ void main() {
           reason: '$value should read as undecided',
         );
       }
-      final absent = TenderSecurityRecord.fromJson({'uniqueNo': 'TS/1'});
+      final absent = TenderSecurityRecord.fromJson(const {'uniqueNo': 'TS/1'});
       expect(absent.outcome, UnsuccessfulTenderer.notDecided);
     });
 

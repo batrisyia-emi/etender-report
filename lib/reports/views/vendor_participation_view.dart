@@ -1,16 +1,15 @@
 // lib/reports/views/vendor_participation_view.dart
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 // The bloc file re-exports its event, state and ReportStatus.
-import 'package:etender_reports/reports/models/report_filters.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
+import 'package:etender_reports/reports/widgets/cards/vendor_kpi_cards.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
 import 'package:etender_reports/reports/widgets/vendor_participation/vendor_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/vendor_participation/vendor_participation_table.dart';
-import 'package:etender_reports/reports/views/cards/vendor_kpi_cards.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VendorParticipationView extends StatefulWidget {
   const VendorParticipationView({

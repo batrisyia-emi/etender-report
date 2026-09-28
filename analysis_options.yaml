@@ -33,6 +33,40 @@ linter:
   rules:
     # One import style: package: for our own code.
     always_use_package_imports: true
+
+    # --- Correctness ---------------------------------------------------
+    # A dropped Future is a silent failure. Everything async here is a
+    # repository read or a file save, and both can fail.
+    unawaited_futures: true
+    discarded_futures: true
+    # dynamic defeats the record classes' whole purpose. JSON arrives as
+    # dynamic and must be narrowed in fromJson, not carried further.
+    avoid_dynamic_calls: true
+    # Comparing values of unrelated types is always a bug, and easy to
+    # write when a wire string is compared against an enum.
+    unrelated_type_equality_checks: true
+    avoid_slow_async_io: true
+    no_adjacent_strings_in_list: true
+    throw_in_finally: true
+
+    # --- Widget performance --------------------------------------------
+    # const widgets are not rebuilt. These reports rebuild large trees on
+    # every filter change, so this is the cheapest win available.
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    use_colored_box: true
+    use_decorated_box: true
+
+    # --- Readability for whoever picks this up -------------------------
+    directives_ordering: true
+    prefer_final_locals: true
+    always_declare_return_types: true
+    unnecessary_parenthesis: true
+    unnecessary_lambdas: true
+    use_string_buffers: true
+    sized_box_for_whitespace: true
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 

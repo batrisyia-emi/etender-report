@@ -1,5 +1,5 @@
 // test/models/supplier_metrics_test.dart
-import 'package:etender_reports/reports/models/supplier_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/supplier_metrics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 final DateTime asOf = DateTime(2026, 9, 8);

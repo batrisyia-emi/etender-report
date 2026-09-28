@@ -1,6 +1,6 @@
 // lib/reports/bloc/tender_security/tender_security_event.dart
 import 'package:equatable/equatable.dart';
-import 'package:etender_reports/reports/models/tender_security_filters.dart';
+import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 
 sealed class TenderSecurityEvent extends Equatable {
   const TenderSecurityEvent();

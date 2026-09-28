@@ -1,17 +1,16 @@
 // lib/reports/widgets/tender_security/tender_security_table.dart
 import 'package:data_table_2/data_table_2.dart';
-import 'package:etender_reports/shared/app_colors.dart';
-import 'package:etender_reports/shared/utils/formatters.dart';
-import 'package:flutter/material.dart';
-
+import 'package:etender_reports/reports/models/attributes/tender_security_attributes.dart';
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/models/metrics/tender_security_metrics.dart';
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/models/report_sorting.dart';
-import 'package:etender_reports/reports/models/tender_security_attributes.dart';
-import 'package:etender_reports/reports/models/tender_security_metrics.dart';
+import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/shared/app_colors.dart';
+import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 /// One row per tenderer per tender.
 ///

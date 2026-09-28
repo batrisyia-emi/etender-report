@@ -1,12 +1,11 @@
 // lib/reports/widgets/dashboard/se/se_closing_soon_card.dart
 //
 // The tenders whose closing date is still ahead, soonest first.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/tender_status.dart';
+import 'package:etender_reports/reports/models/status/tender_status.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SeClosingSoonCard extends StatelessWidget {
   const SeClosingSoonCard({super.key, required this.records, this.limit = 6});

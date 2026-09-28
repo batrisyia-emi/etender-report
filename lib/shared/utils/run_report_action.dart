@@ -41,7 +41,11 @@ void runReportAction(BuildContext context, FutureOr<void> Function() action) {
     // onError catches only this type; anything else stays unhandled, which
     // is what a real bug should do.
     if (result is Future<void>) {
-      result.onError<UnimplementedError>((error, _) => report(error));
+      // Deliberately not awaited: runReportAction is called from onTap and
+      // returns void. The handler below is the only thing that has to run.
+      unawaited(
+        result.onError<UnimplementedError>((error, _) => report(error)),
+      );
     }
   } on UnimplementedError catch (error) {
     report(error);

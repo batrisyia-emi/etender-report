@@ -1,12 +1,11 @@
 // lib/reports/bloc/supplier/supplier_state.dart
 import 'package:equatable/equatable.dart';
-
-import 'package:etender_reports/reports/models/open_to.dart';
-import 'package:etender_reports/reports/models/record_matching.dart';
-import 'package:etender_reports/reports/models/report_filters.dart';
-import 'package:etender_reports/reports/models/supplier_status.dart';
-import 'package:etender_reports/reports/models/tender_attributes.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
+import 'package:etender_reports/reports/models/attributes/open_to.dart';
+import 'package:etender_reports/reports/models/attributes/tender_attributes.dart';
+import 'package:etender_reports/reports/models/filters/record_matching.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
+import 'package:etender_reports/reports/models/status/supplier_status.dart';
 
 class SupplierState extends Equatable {
   const SupplierState({

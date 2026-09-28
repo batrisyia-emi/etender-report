@@ -1,8 +1,7 @@
 // lib/reports/widgets/report_status_panel.dart
+import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 
 /// Bordered panel with the standard blue header. Used for load failures and
 /// for reports that are not built yet.

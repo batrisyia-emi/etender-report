@@ -2,13 +2,12 @@
 //
 // The Documents tab: the expiry banner, the mandatory list, and the two
 // summary cards beside it.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/supplier_dashboard_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/supplier_dashboard_metrics.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_primitives.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SupplierExpiryBanner extends StatelessWidget {
   const SupplierExpiryBanner({

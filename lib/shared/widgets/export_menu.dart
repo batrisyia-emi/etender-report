@@ -1,5 +1,5 @@
 // lib/reports/widgets/shared/export_menu.dart
-import 'package:etender_reports/reports/models/report_export.dart';
+import 'package:etender_reports/reports/models/export/report_export.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:flutter/material.dart';
 

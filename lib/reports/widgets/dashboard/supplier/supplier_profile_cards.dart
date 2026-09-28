@@ -2,13 +2,12 @@
 //
 // The panels that describe the supplier itself: who the portal thinks
 // they are, their headline figures, and the score behind them.
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/supplier_dashboard_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/supplier_dashboard_metrics.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_primitives.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 class SupplierVendorBadge extends StatelessWidget {
   const SupplierVendorBadge({
@@ -31,7 +30,11 @@ class SupplierVendorBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       child: Row(
         children: [
-          Icon(Icons.storefront_outlined, size: 22, color: DashTheme.primary),
+          const Icon(
+            Icons.storefront_outlined,
+            size: 22,
+            color: DashTheme.primary,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

@@ -1,11 +1,10 @@
 // lib/reports/bloc/supplier/supplier_bloc.dart
 import 'package:bloc/bloc.dart';
 import 'package:etender_reports/data/repositories/report_repository.dart';
-
-import 'package:etender_reports/reports/models/report_filters.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
 import 'package:etender_reports/reports/bloc/supplier/supplier_event.dart';
 import 'package:etender_reports/reports/bloc/supplier/supplier_state.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
 
 // Re-exported so a widget only ever imports this one file.
 export 'package:etender_reports/reports/bloc/report_status.dart';

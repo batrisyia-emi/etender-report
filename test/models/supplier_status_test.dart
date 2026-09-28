@@ -4,7 +4,7 @@
 // supplier report. These pin the wire text and the groups, so a rename that
 // would have silently zeroed a card fails here instead.
 import 'package:etender_reports/data/mock/report_mock_data.dart';
-import 'package:etender_reports/reports/models/supplier_status.dart';
+import 'package:etender_reports/reports/models/status/supplier_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

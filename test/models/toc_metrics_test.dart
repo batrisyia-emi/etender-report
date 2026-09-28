@@ -1,7 +1,7 @@
 // test/models/toc_metrics_test.dart
+import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/toc_metrics.dart';
-import 'package:etender_reports/reports/models/toc_status.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Fixed so aging and the day-based flags never depend on when the suite

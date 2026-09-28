@@ -1,5 +1,5 @@
 // lib/reports/widgets/vendor_filter_panel.dart
-import 'package:etender_reports/reports/models/open_to.dart';
+import 'package:etender_reports/reports/models/attributes/open_to.dart';
 import 'package:etender_reports/reports/widgets/shared/filter_fields.dart';
 import 'package:flutter/material.dart';
 

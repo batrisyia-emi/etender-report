@@ -4,9 +4,8 @@
 //
 //   .kcard  a tinted 46px icon square beside a value, a label and a delta
 //   .card   a tinted header strip (.ch) over a body (.cb, or .cb0 for tables)
-import 'package:flutter/material.dart';
-
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
+import 'package:flutter/material.dart';
 
 /// `.kcard` — the headline figures across the top of the page.
 class DashKpiCard extends StatelessWidget {

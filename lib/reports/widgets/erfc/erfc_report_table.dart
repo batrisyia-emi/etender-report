@@ -1,16 +1,15 @@
 // lib/reports/widgets/erfc/erfc_report_table.dart
 import 'package:data_table_2/data_table_2.dart';
-import 'package:etender_reports/shared/utils/formatters.dart';
-import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/erfc_metrics.dart';
-import 'package:etender_reports/reports/models/erfc_status.dart';
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/models/report_sort_columns.dart';
-import 'package:etender_reports/reports/models/report_sorting.dart';
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
+import 'package:etender_reports/reports/models/sorting/report_sort_columns.dart';
+import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
+import 'package:etender_reports/reports/models/status/erfc_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/shared/utils/formatters.dart';
+import 'package:flutter/material.dart';
 
 /// One row per RFC: RFC Number, Division/Dept, Unit, Mode of Procurement,
 /// Value (RM), Submission Date, Verified 1, Verified 2, Endorsed Date,
@@ -173,16 +172,16 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
       // Only value and date columns are sortable; the rest are
       // plain labels so nothing looks tappable when it is not.
       columns: [
-        DataColumn2(label: const Text('RFC Number'), fixedWidth: 175),
+        const DataColumn2(label: Text('RFC Number'), fixedWidth: 175),
         // The three text columns are flexible, so spare window width is
         // shared between them rather than left dead past the last column.
         // Splitting it three ways keeps any one of them from ballooning the
         // way a single flexible column does. Proportional sizing keeps
         // each still clears its longest value: 296 for Division / Dept (43
         // characters), 247 for Mode of Procurement (36), 247 for Unit (21).
-        DataColumn2(label: const Text('Division / Dept'), fixedWidth: 260),
-        DataColumn2(label: const Text('Unit'), fixedWidth: 165),
-        DataColumn2(label: const Text('Mode of Procurement'), fixedWidth: 250),
+        const DataColumn2(label: Text('Division / Dept'), fixedWidth: 260),
+        const DataColumn2(label: Text('Unit'), fixedWidth: 165),
+        const DataColumn2(label: Text('Mode of Procurement'), fixedWidth: 250),
         DataColumn2(
           label: SortableHeader(
             'Estimated Value (RM)',
@@ -231,9 +230,9 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         ),
         // 'System Cancelled' is the longest status; at 122 the chip was
         // ellipsised on every cancelled row.
-        DataColumn2(label: const Text('Current Status'), fixedWidth: 190),
+        const DataColumn2(label: Text('Current Status'), fixedWidth: 190),
         // Room for the overdue warning icon beside a three-digit count.
-        DataColumn2(label: const Text('Aging'), fixedWidth: 171),
+        const DataColumn2(label: Text('Aging'), fixedWidth: 171),
       ],
       rows: _sortedRecords.map(_buildRecordRow).toList(),
     );

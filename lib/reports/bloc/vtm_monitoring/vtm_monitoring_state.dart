@@ -1,8 +1,8 @@
 // lib/reports/bloc/vtm_monitoring/vtm_monitoring_state.dart
 import 'package:equatable/equatable.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
+import 'package:etender_reports/reports/models/filters/vtm_monitoring_filters.dart';
 import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
-import 'package:etender_reports/reports/models/vtm_monitoring_filters.dart';
 
 /// Holds typed records rather than maps, like the TOC and tender security
 /// reports: the nested actor objects do not survive a map row cleanly.

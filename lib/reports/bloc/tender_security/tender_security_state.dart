@@ -1,8 +1,8 @@
 // lib/reports/bloc/tender_security/tender_security_state.dart
 import 'package:equatable/equatable.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
+import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
-import 'package:etender_reports/reports/models/tender_security_filters.dart';
 
 /// Holds typed records rather than maps, like the TOC report: four of the
 /// columns are edited in place, and patching a map row by key is how a typo

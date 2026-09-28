@@ -4,7 +4,7 @@ import 'package:etender_reports/data/repositories/report_repository.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
 import 'package:etender_reports/reports/bloc/tender_security/tender_security_event.dart';
 import 'package:etender_reports/reports/bloc/tender_security/tender_security_state.dart';
-import 'package:etender_reports/reports/models/tender_security_filters.dart';
+import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 
 // Re-exported so a widget only ever imports this one file.
 export 'package:etender_reports/reports/bloc/report_status.dart';

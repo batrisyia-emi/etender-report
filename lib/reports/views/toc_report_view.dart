@@ -7,13 +7,10 @@
 // touches bid data. See the warning on [TocOpeningRecord].
 import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/reports/bloc/toc/toc_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 // The bloc file re-exports its event, state and ReportStatus.
-import 'package:etender_reports/reports/models/toc_filters.dart';
-import 'package:etender_reports/reports/models/toc_metrics.dart';
-import 'package:etender_reports/reports/views/cards/toc_kpi_cards.dart';
+import 'package:etender_reports/reports/models/filters/toc_filters.dart';
+import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
+import 'package:etender_reports/reports/widgets/cards/toc_kpi_cards.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
@@ -22,6 +19,8 @@ import 'package:etender_reports/reports/widgets/toc/toc_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/toc/toc_report_table.dart';
 import 'package:etender_reports/reports/widgets/toc/toc_workload_panel.dart';
 import 'package:etender_reports/shared/utils/run_report_action.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TocReportView extends StatefulWidget {
   const TocReportView({

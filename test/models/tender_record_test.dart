@@ -116,7 +116,9 @@ void main() {
     });
 
     test('an absent documentType is empty rather than a crash', () {
-      final record = TenderRecord.fromJson({'tenderNo': 'SESB/D/2026/007'});
+      final record = TenderRecord.fromJson(const {
+        'tenderNo': 'SESB/D/2026/007',
+      });
       expect(record.documentType, isEmpty);
     });
   });

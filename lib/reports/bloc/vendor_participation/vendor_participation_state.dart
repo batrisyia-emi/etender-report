@@ -1,10 +1,9 @@
 // lib/reports/bloc/vendor_participation/vendor_participation_state.dart
 import 'package:equatable/equatable.dart';
-
-import 'package:etender_reports/reports/models/certification_types.dart';
-import 'package:etender_reports/reports/models/open_to.dart';
-import 'package:etender_reports/reports/models/report_filters.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
+import 'package:etender_reports/reports/models/attributes/certification_types.dart';
+import 'package:etender_reports/reports/models/attributes/open_to.dart';
+import 'package:etender_reports/reports/models/filters/report_filters.dart';
 
 class VendorParticipationState extends Equatable {
   const VendorParticipationState({

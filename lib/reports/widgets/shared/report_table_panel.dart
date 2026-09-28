@@ -1,11 +1,10 @@
 // lib/reports/widgets/report_table_panel.dart
 import 'package:data_table_2/data_table_2.dart';
+import 'package:etender_reports/reports/models/export/report_export.dart';
+import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:etender_reports/shared/widgets/export_menu.dart';
 import 'package:flutter/material.dart';
-
-import 'package:etender_reports/reports/models/report_export.dart';
-import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
 
 /// Everything the three report tables had in common: the panel frame, the
 /// count pill, the DataTable2 configuration, the table and scrollbar themes,

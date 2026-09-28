@@ -4,9 +4,9 @@
 // when they open the report. These pin the things it is meant to show, at
 // any date, because its dates are relative to the day it is read.
 import 'package:etender_reports/data/mock/toc_records.dart';
+import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/toc_metrics.dart';
-import 'package:etender_reports/reports/models/toc_status.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 List<TocOpeningRecord> sampleAt(DateTime day) => [

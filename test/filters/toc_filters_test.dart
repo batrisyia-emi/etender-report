@@ -1,7 +1,7 @@
 // test/filters/toc_filters_test.dart
+import 'package:etender_reports/reports/models/filters/toc_filters.dart';
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/toc_filters.dart';
-import 'package:etender_reports/reports/models/toc_status.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -221,6 +221,6 @@ void main() {
     expect(const TocFilters(tenderNoQuery: 'T').isEmpty, isFalse);
     expect(const TocFilters(memberQuery: 'a').isEmpty, isFalse);
     expect(const TocFilters(documentType: 'Tender').isEmpty, isFalse);
-    expect(TocFilters(statuses: {'Opening Completed'}).isEmpty, isFalse);
+    expect(const TocFilters(statuses: {'Opening Completed'}).isEmpty, isFalse);
   });
 }

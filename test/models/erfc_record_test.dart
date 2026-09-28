@@ -44,12 +44,12 @@ void main() {
     });
 
     test('a numeric value sent as a string still parses', () {
-      final record = ErfcRecord.fromJson({'value': '250000.00'});
+      final record = ErfcRecord.fromJson(const {'value': '250000.00'});
       expect(record.value, 250000.0);
     });
 
     test('missing fields fall back rather than throwing', () {
-      final record = ErfcRecord.fromJson({});
+      final record = ErfcRecord.fromJson(const {});
 
       expect(record.rfcNumber, '');
       expect(record.value, 0);
@@ -124,7 +124,9 @@ void main() {
 
   test('divisionAndDepartment falls back when there is no department', () {
     expect(build().divisionAndDepartment, 'Distribution / Asset Management');
-    final noDepartment = ErfcRecord.fromJson({'division': 'Distribution'});
+    final noDepartment = ErfcRecord.fromJson(const {
+      'division': 'Distribution',
+    });
     expect(noDepartment.divisionAndDepartment, 'Distribution');
   });
 }

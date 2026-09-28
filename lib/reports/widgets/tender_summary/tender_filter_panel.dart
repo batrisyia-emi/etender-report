@@ -1,7 +1,6 @@
 // lib/reports/widgets/tender_summary/tender_filter_panel.dart
-import 'package:flutter/material.dart';
-
 import 'package:etender_reports/reports/widgets/shared/filter_fields.dart';
+import 'package:flutter/material.dart';
 
 /// Filters for the tender/quotation summary report: organisational ownership,
 /// procurement type, financial threshold and the date ranges.
