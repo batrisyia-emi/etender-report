@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 
 /// Column header that advertises it can be sorted.
 ///
-/// DataTable2 draws an arrow only on the column currently sorted, which
-/// leaves every other header looking inert. This adds a faint double chevron
-/// to the inactive ones and steps aside on the active one so the real arrow
-/// is not doubled up.
+/// The label only. The sort indicator is drawn by `ReportTablePanel`'s
+/// `sortArrowBuilder`, in the 16px slot every sortable heading cell reserves
+/// whether or not it is the active column.
+///
+/// This used to draw its own chevron beside that slot, which meant a
+/// sortable column spent 34px on arrow furniture and ellipsised its title to
+/// pay for it — "Declarations" came out as "Declaration…".
 class SortableHeader extends StatelessWidget {
   const SortableHeader(
     this.label, {
@@ -31,26 +34,14 @@ class SortableHeader extends StatelessWidget {
     return Tooltip(
       message: 'Sort by $label',
       waitDuration: const Duration(milliseconds: 600),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-            ),
-          ),
-          if (!_isActive) ...[
-            const SizedBox(width: 3),
-            Icon(
-              Icons.unfold_more,
-              size: 13,
-              color: AppColors.tableHeadingText.withValues(alpha: 0.45),
-            ),
-          ],
-        ],
+      // Ellipsis is a safety net only: the widths in each table are sized so
+      // every title fits. See the note on ReportTablePanel.sortArrowBuilder.
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
+        style: _isActive ? const TextStyle(color: AppColors.accent) : null,
       ),
     );
   }

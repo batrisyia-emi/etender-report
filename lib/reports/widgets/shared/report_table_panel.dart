@@ -121,8 +121,20 @@ class _ReportTablePanelState extends State<ReportTablePanel> {
         minWidth: widget.minWidth,
         sortColumnIndex: widget.sortColumnIndex,
         sortAscending: widget.sortAscending,
-        // Keeps the arrow beside the label instead of centring the header.
-        sortArrowIcon: Icons.arrow_drop_up,
+        // Every sortable heading cell reserves 16px for a sort arrow and
+        // keeps reserving it when the column is not the active one, because
+        // DataTable2 hides that arrow with Opacity rather than removing it.
+        // Filling the slot ourselves is what stops a sortable title having
+        // to share its width with two indicators — see SortableHeader.
+        sortArrowBuilder: (ascending, sorted) => Icon(
+          sorted
+              ? (ascending ? Icons.arrow_upward : Icons.arrow_downward)
+              : Icons.unfold_more,
+          size: 14,
+          color: sorted
+              ? AppColors.accent
+              : AppColors.tableHeadingText.withValues(alpha: 0.45),
+        ),
         headingRowHeight: ReportTablePanel.headingHeight,
         dataRowHeight: ReportTablePanel.rowHeight,
         // The wider right margin is the gutter the vertical thumb sits in,

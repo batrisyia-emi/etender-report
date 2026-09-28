@@ -20,6 +20,10 @@ class ChipPalette {
       (text: Colors.red.shade700, background: Colors.red.shade50);
   static ChipColors get indigo =>
       (text: Colors.indigo.shade600, background: Colors.indigo.shade50);
+  static ChipColors get amber =>
+      (text: Colors.amber.shade800, background: Colors.amber.shade50);
+  static ChipColors get teal =>
+      (text: Colors.teal.shade700, background: Colors.teal.shade50);
   static ChipColors get blueGrey =>
       (text: Colors.blueGrey.shade600, background: Colors.blueGrey.shade50);
 }

@@ -82,11 +82,16 @@ class FilterLayout {
 
 /// One selection reads in full; several read as "First +2" so the field still
 /// fits its cell.
-String describeFilterSelection(Set<String> selectedValues, String placeholder) {
+String describeFilterSelection(
+  Set<String> selectedValues,
+  String placeholder, {
+  Map<String, String>? labels,
+}) {
   if (selectedValues.isEmpty) return placeholder;
+  String show(String value) => labels?[value] ?? value;
   final values = selectedValues.toList();
-  if (values.length == 1) return values.first;
-  return '${values.first} +${values.length - 1}';
+  if (values.length == 1) return show(values.first);
+  return '${show(values.first)} +${values.length - 1}';
 }
 
 /// Returns the new selection, or null when the dialog was cancelled.
@@ -95,6 +100,7 @@ Future<Set<String>?> showFilterMultiSelectDialog({
   required String title,
   required List<String> options,
   required Set<String> selectedValues,
+  Map<String, String>? optionLabels,
 }) {
   final temporarySelection = Set<String>.from(selectedValues);
   return showDialog<Set<String>>(
@@ -113,7 +119,7 @@ Future<Set<String>?> showFilterMultiSelectDialog({
                 children: options.map((option) {
                   return CheckboxListTile(
                     value: temporarySelection.contains(option),
-                    title: Text(option),
+                    title: Text(optionLabels?[option] ?? option),
                     dense: true,
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (checked) {
@@ -153,6 +159,90 @@ Future<Set<String>?> showFilterMultiSelectDialog({
 /// [width] is null when a field sits inside an [Expanded].
 Widget _constrain({required double? width, required Widget child}) {
   return width == null ? child : SizedBox(width: width, child: child);
+}
+
+/// A yes/no filter, shaped and sized like the fields beside it.
+///
+/// This was a [FilterChip], which sat about ten pixels proud of its row: a
+/// chip is its avatar plus 12px of padding top and bottom, and it reserves
+/// [kMinInteractiveDimension] for the tap target on top of that. The fields
+/// next to it are dense [InputDecorator]s, which come out at the content
+/// padding plus the tallest of their parts.
+///
+/// So this is built from the same numbers the input theme uses — the same
+/// 7px vertical padding, the same 18px leading icon, the same 13px value
+/// text, fill, border and radius. It matches by construction rather than by
+/// a height someone measured once and has to keep in step.
+class FilterToggleField extends StatelessWidget {
+  const FilterToggleField({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+    this.width,
+  });
+
+  final IconData icon;
+
+  /// Reads as the thing being switched on, e.g. "Overdue only".
+  final String label;
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = value ? Colors.white : kFilterValueColor;
+
+    return _constrain(
+      width: width,
+      child: Material(
+        color: value ? kFilterAccentColor : kFilterFillColor,
+        borderRadius: BorderRadius.circular(4),
+        child: InkWell(
+          onTap: () => onChanged(!value),
+          borderRadius: BorderRadius.circular(4),
+          child: Container(
+            // The input theme's contentPadding, so both come out the same
+            // height: 7 + 7 either side of an 18px icon.
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: value ? kFilterAccentColor : kFilterBorderColor,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: value ? Colors.white : kFilterAccentColor,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: foreground,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// A tappable field styled like the text inputs: floating label on top, the
@@ -343,6 +433,7 @@ class FilterMultiSelectField extends StatelessWidget {
     required this.options,
     required this.selectedValues,
     required this.onChanged,
+    this.optionLabels,
     this.width,
   });
 
@@ -350,6 +441,12 @@ class FilterMultiSelectField extends StatelessWidget {
   final String label;
   final String placeholder;
   final List<String> options;
+
+  /// Shorter or friendlier text to show in place of the stored value, keyed
+  /// by value. Needed where the filter stores a code — `VERIFIED_BY_EXEC`
+  /// is what the server sends, not what anyone should have to read.
+  final Map<String, String>? optionLabels;
+
   final Set<String> selectedValues;
   final ValueChanged<Set<String>> onChanged;
   final double? width;
@@ -359,7 +456,11 @@ class FilterMultiSelectField extends StatelessWidget {
     return FilterSelectionField(
       icon: icon,
       label: label,
-      valueText: describeFilterSelection(selectedValues, placeholder),
+      valueText: describeFilterSelection(
+        selectedValues,
+        placeholder,
+        labels: optionLabels,
+      ),
       hasSelection: selectedValues.isNotEmpty,
       width: width,
       onTap: () async {
@@ -368,6 +469,7 @@ class FilterMultiSelectField extends StatelessWidget {
           title: label,
           options: options,
           selectedValues: selectedValues,
+          optionLabels: optionLabels,
         );
         if (result != null) onChanged(result);
       },

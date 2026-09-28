@@ -68,3 +68,35 @@ List<Map<String, dynamic>> sortRecords({
   });
   return sorted;
 }
+
+/// The same machinery for reports that hold typed records rather than maps.
+///
+/// [SortableColumn] reads out of a `Map`, which the TOC report has no use
+/// for: its rows are [TocOpeningRecord]s. Rather than give every report a
+/// type parameter it does not need, this takes the readers directly.
+///
+/// Null readings sort last in both directions, as above.
+List<T> sortRows<T>({
+  required List<T> rows,
+  required List<Comparable<Object>? Function(T row)?> columns,
+  int? columnIndex,
+  bool ascending = true,
+}) {
+  if (columnIndex == null || columnIndex < 0 || columnIndex >= columns.length) {
+    return rows;
+  }
+  final read = columns[columnIndex];
+  if (read == null) return rows;
+
+  final sorted = [...rows];
+  sorted.sort((a, b) {
+    final left = read(a);
+    final right = read(b);
+    if (left == null && right == null) return 0;
+    if (left == null) return 1;
+    if (right == null) return -1;
+    final result = Comparable.compare(left, right);
+    return ascending ? result : -result;
+  });
+  return sorted;
+}

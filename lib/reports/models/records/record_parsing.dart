@@ -43,3 +43,22 @@ DateTime? asDateOrNull(Object? value) {
   if (value is DateTime) return value;
   return DateTime.tryParse(value?.toString() ?? '');
 }
+
+/// A nested JSON array of objects, for records that carry sub-records.
+///
+/// Anything that is not a list of maps comes back empty rather than
+/// throwing, so a malformed response costs one field rather than the
+/// whole report.
+List<Map<String, dynamic>> asList(Object? value) {
+  if (value is! List) return const [];
+  return [
+    for (final item in value)
+      if (item is Map) Map<String, dynamic>.from(item),
+  ];
+}
+
+/// A nested JSON array of date strings.
+List<DateTime> asDateList(Object? value) {
+  if (value is! List) return const [];
+  return [for (final item in value) ?asDateOrNull(item)];
+}

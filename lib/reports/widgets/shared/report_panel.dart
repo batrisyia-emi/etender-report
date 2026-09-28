@@ -7,16 +7,21 @@ import 'package:flutter/material.dart';
 class ReportPanel extends StatelessWidget {
   const ReportPanel({
     super.key,
-    required this.title,
     required this.child,
+    this.title,
     this.trailing,
     this.fillHeight = false,
   });
 
-  final String title;
+  /// Null drops the header strip entirely, for a panel whose title is
+  /// already on a [CollapsibleSection] header above it. Rendering both
+  /// showed the same words twice, one line apart.
+  final String? title;
+
   final Widget child;
 
   /// Sits at the right end of the header, e.g. a record count pill.
+  /// Ignored when there is no header to put it in.
   final Widget? trailing;
 
   /// Pass through when [child] must fill the remaining height.
@@ -36,25 +41,26 @@ class ReportPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: fillHeight ? MainAxisSize.max : MainAxisSize.min,
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-            decoration: const BoxDecoration(color: AppColors.panelHeader),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppColors.heading,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
+          if (title case final String heading)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: const BoxDecoration(color: AppColors.panelHeader),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    heading,
+                    style: const TextStyle(
+                      color: AppColors.heading,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
                   ),
-                ),
-                ?trailing,
-              ],
+                  ?trailing,
+                ],
+              ),
             ),
-          ),
           if (fillHeight) Expanded(child: child) else child,
         ],
       ),
