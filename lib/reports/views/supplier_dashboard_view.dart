@@ -24,6 +24,7 @@ import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_tend
 import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_bids_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_documents_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/supplier/supplier_notifications_card.dart';
+import 'package:etender_reports/shared/utils/run_report_action.dart';
 
 class SupplierDashboardView extends StatefulWidget {
   const SupplierDashboardView({
@@ -87,8 +88,14 @@ class _SupplierDashboardViewState extends State<SupplierDashboardView> {
         tenders: tenders,
         categories: categories,
         now: now,
-        onBidNow: context.read<ReportActions>().openTenderForBidding,
-        onViewTender: context.read<ReportActions>().viewTender,
+        onBidNow: (tenderNo) => runReportAction(
+          context,
+          () => context.read<ReportActions>().openTenderForBidding(tenderNo),
+        ),
+        onViewTender: (tenderNo) => runReportAction(
+          context,
+          () => context.read<ReportActions>().viewTender(tenderNo),
+        ),
       ),
       2 => _BidsPanel(bids: bids),
       3 => _ProfilePanel(
@@ -113,8 +120,14 @@ class _SupplierDashboardViewState extends State<SupplierDashboardView> {
         categories: categories,
         now: now,
         onOpenTenders: () => _openTab(1),
-        onBidNow: context.read<ReportActions>().openTenderForBidding,
-        onViewTender: context.read<ReportActions>().viewTender,
+        onBidNow: (tenderNo) => runReportAction(
+          context,
+          () => context.read<ReportActions>().openTenderForBidding(tenderNo),
+        ),
+        onViewTender: (tenderNo) => runReportAction(
+          context,
+          () => context.read<ReportActions>().viewTender(tenderNo),
+        ),
         onOpenBids: () => _openTab(2),
         onOpenDocuments: () => _openTab(4),
         onMarkAllRead: () => setState(() {
@@ -396,9 +409,18 @@ class _DocumentsPanel extends StatelessWidget {
           wide: SupplierMandatoryDocumentsCard(
             documents: documents,
             now: now,
-            onUploadNew: context.read<ReportActions>().uploadNewDocument,
-            onUpload: context.read<ReportActions>().uploadRequiredDocument,
-            onRenew: context.read<ReportActions>().renewDocument,
+            onUploadNew: () => runReportAction(
+              context,
+              context.read<ReportActions>().uploadNewDocument,
+            ),
+            onUpload: (name) => runReportAction(
+              context,
+              () => context.read<ReportActions>().uploadRequiredDocument(name),
+            ),
+            onRenew: (name) => runReportAction(
+              context,
+              () => context.read<ReportActions>().renewDocument(name),
+            ),
           ),
           narrow: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
