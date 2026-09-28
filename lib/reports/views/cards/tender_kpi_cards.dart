@@ -96,7 +96,7 @@ List<Widget> buildTenderKpiCards({
       icon: Icons.task_alt,
       tint: kKpiBlueTint,
       color: kKpiBlueText,
-      note: 'Finished with',
+      note: 'Done and closed out',
     ),
   ];
 }
