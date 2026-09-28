@@ -9,9 +9,9 @@ class SidebarNav extends StatefulWidget {
   final ReportType selectedReport;
   final ValueChanged<ReportType> onReportSelected;
 
-  /// The entries that leave this module: RFC, Tender/Quotation, TOC Review
-  /// and Back To Menu. The reports module does not own those screens, so it
-  /// hands them off rather than routing itself.
+  /// The one entry that leaves this module: Back To Menu. The reports
+  /// module does not own the host application's menu, so it hands off
+  /// rather than routing itself.
   final ValueChanged<AppModule> onModuleSelected;
 
   const SidebarNav({
@@ -28,8 +28,7 @@ class SidebarNav extends StatefulWidget {
 }
 
 class _SidebarNavState extends State<SidebarNav> {
-  // All open on load, since a report inside them is what the screen shows.
-  bool _reportsExpanded = true;
+  // Both open on load, since a report inside them is what the screen shows.
   bool _supplierViewExpanded = true;
   bool _seViewExpanded = true;
 
@@ -47,6 +46,9 @@ class _SidebarNavState extends State<SidebarNav> {
     ReportType.tenderSummary,
     ReportType.vendorParticipation,
     ReportType.erfc,
+    ReportType.toc,
+    ReportType.tenderSecurity,
+    ReportType.vtmMonitoring,
   ];
 
   static const Color _activeBg = Color(0xFFE0F2FE);
@@ -54,10 +56,6 @@ class _SidebarNavState extends State<SidebarNav> {
   static const Color _activeText = Color(0xFF1E40AF);
 
   static const Icon _dashboardIcon = Icon(Icons.grid_view_rounded);
-  static const Icon _rfcIcon = Icon(Icons.assignment_outlined);
-  static const Icon _tenderIcon = Icon(Icons.article_outlined);
-  static const Icon _reportsIcon = Icon(Icons.analytics_outlined);
-  static const Icon _tocIcon = Icon(Icons.people_outline);
   static const Icon _backIcon = Icon(Icons.arrow_back);
   static const Icon _supplierViewIcon = Icon(
     Icons.store_mall_directory_outlined,
@@ -67,6 +65,9 @@ class _SidebarNavState extends State<SidebarNav> {
   static const Icon _vendorIcon = Icon(Icons.storefront_outlined);
   static const Icon _supplierIcon = Icon(Icons.local_shipping_outlined);
   static const Icon _erfcIcon = Icon(Icons.request_page_outlined);
+  static const Icon _tocReportIcon = Icon(Icons.how_to_vote_outlined);
+  static const Icon _tenderSecurityIcon = Icon(Icons.shield_outlined);
+  static const Icon _vtmMonitoringIcon = Icon(Icons.fact_check_outlined);
 
   /// The icon each report carries wherever it is listed.
   static Icon _iconFor(ReportType report) => switch (report) {
@@ -76,16 +77,15 @@ class _SidebarNavState extends State<SidebarNav> {
     ReportType.vendorParticipation => _vendorIcon,
     ReportType.supplier => _supplierIcon,
     ReportType.erfc => _erfcIcon,
+    ReportType.toc => _tocReportIcon,
+    ReportType.tenderSecurity => _tenderSecurityIcon,
+    ReportType.vtmMonitoring => _vtmMonitoringIcon,
   };
 
-  /// 0 = top level, 1 = under Reports, 2 = under Supplier View or SE View.
+  /// 0 = a dropdown or a module link, 1 = a report inside a dropdown.
   double _indentFor(int depth) {
     if (widget.isCompactLayout) return 8;
-    return switch (depth) {
-      0 => 8,
-      1 => 20,
-      _ => 32,
-    };
+    return depth == 0 ? 8 : 20;
   }
 
   Widget _buildItem({
@@ -96,10 +96,16 @@ class _SidebarNavState extends State<SidebarNav> {
     Widget? trailing,
     int depth = 0,
   }) {
+    // A row with a chevron has ~20px less for its label, which is what
+    // wrapped "Supplier View" onto two lines once the dropdowns came up to
+    // the top level. Those rows take the tighter icon and gap that the
+    // nested items already use.
+    final tight = depth > 0 || trailing != null;
+
     final themedIcon = IconTheme(
       data: IconThemeData(
         color: isActive ? _activeIcon : Colors.grey.shade600,
-        size: depth > 0 ? 18 : 21,
+        size: tight ? 18 : 21,
       ),
       child: icon,
     );
@@ -112,7 +118,7 @@ class _SidebarNavState extends State<SidebarNav> {
         ? SizedBox(height: 40, child: Center(child: themedIcon))
         : ListTile(
             dense: true,
-            horizontalTitleGap: depth > 0 ? 8 : null,
+            horizontalTitleGap: tight ? 8 : null,
             visualDensity: VisualDensity.compact,
             leading: themedIcon,
             title: Text(
@@ -210,6 +216,10 @@ class _SidebarNavState extends State<SidebarNav> {
   }
 
   /// One of the two perspective dropdowns: the reports told from that side.
+  ///
+  /// Top level. These used to sit inside a third dropdown called Reports,
+  /// which said nothing the two of them did not already say and cost every
+  /// report an extra indent.
   Widget _buildViewSection({
     required Icon icon,
     required String title,
@@ -220,38 +230,10 @@ class _SidebarNavState extends State<SidebarNav> {
     return _buildExpandableSection(
       icon: icon,
       title: title,
-      depth: 1,
       isExpanded: isExpanded,
       containsSelection: reports.contains(widget.selectedReport),
       onToggle: onToggle,
-      children: [for (final report in reports) _buildReportItem(report, 2)],
-    );
-  }
-
-  Widget _buildReportsSection() {
-    return _buildExpandableSection(
-      icon: _reportsIcon,
-      title: 'Reports',
-      isExpanded: _reportsExpanded,
-      containsSelection: true,
-      onToggle: () => setState(() => _reportsExpanded = !_reportsExpanded),
-      children: [
-        _buildViewSection(
-          icon: _supplierViewIcon,
-          title: 'Supplier View',
-          reports: _supplierViewReports,
-          isExpanded: _supplierViewExpanded,
-          onToggle: () =>
-              setState(() => _supplierViewExpanded = !_supplierViewExpanded),
-        ),
-        _buildViewSection(
-          icon: _seViewIcon,
-          title: 'SE View',
-          reports: _seViewReports,
-          isExpanded: _seViewExpanded,
-          onToggle: () => setState(() => _seViewExpanded = !_seViewExpanded),
-        ),
-      ],
+      children: [for (final report in reports) _buildReportItem(report, 1)],
     );
   }
 
@@ -284,24 +266,22 @@ class _SidebarNavState extends State<SidebarNav> {
                 ],
               ),
             ),
-            _buildItem(
-              icon: _rfcIcon,
-              title: 'RFC',
-              isActive: false,
-              onTap: () => widget.onModuleSelected(AppModule.rfc),
+            _buildViewSection(
+              icon: _supplierViewIcon,
+              title: 'Supplier View',
+              reports: _supplierViewReports,
+              isExpanded: _supplierViewExpanded,
+              onToggle: () => setState(
+                () => _supplierViewExpanded = !_supplierViewExpanded,
+              ),
             ),
-            _buildItem(
-              icon: _tenderIcon,
-              title: 'Tender/Quotation',
-              isActive: false,
-              onTap: () => widget.onModuleSelected(AppModule.tenderQuotation),
-            ),
-            _buildReportsSection(),
-            _buildItem(
-              icon: _tocIcon,
-              title: 'TOC Review',
-              isActive: false,
-              onTap: () => widget.onModuleSelected(AppModule.tocReview),
+            _buildViewSection(
+              icon: _seViewIcon,
+              title: 'SE View',
+              reports: _seViewReports,
+              isExpanded: _seViewExpanded,
+              onToggle: () =>
+                  setState(() => _seViewExpanded = !_seViewExpanded),
             ),
             const SizedBox(height: 12),
             _buildItem(

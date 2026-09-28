@@ -8,6 +8,10 @@ import 'package:etender_reports/reports/views/supplier_dashboard_view.dart';
 import 'package:etender_reports/reports/bloc/erfc/erfc_bloc.dart';
 import 'package:etender_reports/reports/bloc/supplier/supplier_bloc.dart';
 import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
+import 'package:etender_reports/reports/bloc/tender_security/tender_security_bloc.dart';
+import 'package:etender_reports/reports/bloc/toc/toc_bloc.dart';
+import 'package:etender_reports/reports/bloc/vtm_monitoring/vtm_monitoring_bloc.dart';
+import 'package:etender_reports/shared/utils/run_report_action.dart';
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
 import 'package:etender_reports/shared/widgets/sidebar_nav.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +23,9 @@ import 'package:etender_reports/reports/report_type.dart';
 import 'package:etender_reports/reports/views/erfc_report_view.dart';
 import 'package:etender_reports/reports/views/supplier_report_view.dart';
 import 'package:etender_reports/reports/views/tender_summary_view.dart';
+import 'package:etender_reports/reports/views/tender_security_view.dart';
+import 'package:etender_reports/reports/views/toc_report_view.dart';
+import 'package:etender_reports/reports/views/vtm_monitoring_view.dart';
 import 'package:etender_reports/reports/views/vendor_participation_view.dart';
 
 /// Provides the selection cubit and one bloc per report. Use this as the
@@ -63,6 +70,23 @@ class ReportsPage extends StatelessWidget {
         BlocProvider(
           create: (_) =>
               ErfcBloc(repository: repository)..add(const ErfcDataRequested()),
+        ),
+
+        BlocProvider(
+          create: (_) =>
+              TocBloc(repository: repository)..add(const TocDataRequested()),
+        ),
+
+        BlocProvider(
+          create: (_) =>
+              TenderSecurityBloc(repository: repository)
+                ..add(const TenderSecurityDataRequested()),
+        ),
+
+        BlocProvider(
+          create: (_) =>
+              VtmMonitoringBloc(repository: repository)
+                ..add(const VtmMonitoringDataRequested()),
         ),
       ],
       // Read with context.read<ReportActions>() wherever a button needs
@@ -113,6 +137,18 @@ class ReportsShell extends StatelessWidget {
         fillHeight: fillHeight,
       ),
       ReportType.erfc => ErfcReportView(
+        sectionSpacing: spacing,
+        fillHeight: fillHeight,
+      ),
+      ReportType.toc => TocReportView(
+        sectionSpacing: spacing,
+        fillHeight: fillHeight,
+      ),
+      ReportType.tenderSecurity => TenderSecurityReportView(
+        sectionSpacing: spacing,
+        fillHeight: fillHeight,
+      ),
+      ReportType.vtmMonitoring => VtmMonitoringView(
         sectionSpacing: spacing,
         fillHeight: fillHeight,
       ),
@@ -171,7 +207,10 @@ class ReportsShell extends StatelessWidget {
               selectedReport: selectedReport,
               onReportSelected: (report) =>
                   context.read<ReportSelectionCubit>().select(report),
-              onModuleSelected: context.read<ReportActions>().openModule,
+              onModuleSelected: (module) => runReportAction(
+                context,
+                () => context.read<ReportActions>().openModule(module),
+              ),
             ),
             Expanded(
               child: Padding(

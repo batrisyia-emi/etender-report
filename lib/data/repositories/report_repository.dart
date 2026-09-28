@@ -12,6 +12,9 @@
 import 'package:etender_reports/reports/models/records/erfc_record.dart';
 import 'package:etender_reports/reports/models/records/supplier_record.dart';
 import 'package:etender_reports/reports/models/records/tender_record.dart';
+import 'package:etender_reports/reports/models/records/tender_security_record.dart';
+import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
+import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/records/vendor_participation_record.dart';
 
 /// What the reports need, one method per dataset.
@@ -32,6 +35,26 @@ abstract class ReportRepository {
 
   /// GET /reports/erfc — see [ErfcRecord.fromJson].
   Future<List<ErfcRecord>> fetchErfcRecords();
+
+  /// GET /reports/toc-openings — see [TocOpeningRecord.fromJson].
+  ///
+  /// Must never carry bid data: this report is read by VTM staff before
+  /// evaluation, so Appendix G contents, Harga Tawaran and OTP values stay
+  /// out of the response entirely.
+  Future<List<TocOpeningRecord>> fetchTocRecords();
+
+  /// GET /api/vtm/tender-security — see [TenderSecurityRecord.fromJson].
+  ///
+  /// One row per tenderer per tender. The four VTM fields on each row are
+  /// editable; writing them back is [ReportActions.updateTenderSecurity],
+  /// not a method here.
+  Future<List<TenderSecurityRecord>> fetchTenderSecurityRecords();
+
+  /// GET /reports/vtm-monitoring — see [VtmMonitoringRecord.fromJson].
+  ///
+  /// One row per eRFC, not per tender: the tender number is not assigned
+  /// until the Appendix F is approved, so rows in flight carry none.
+  Future<List<VtmMonitoringRecord>> fetchVtmMonitoringRecords();
 
   /// GET /reports/supplier-participation — see [SupplierRecord.fromJson].
   ///

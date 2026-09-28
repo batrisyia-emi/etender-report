@@ -21,7 +21,19 @@ enum ReportType {
   /// Named from the supplier's side rather than the registry's: a supplier
   /// only ever sees its own rows here, never another supplier's.
   supplier(navLabel: 'My Participation', pageTitle: 'My Participation Report'),
-  erfc(navLabel: 'eRFC Reports', pageTitle: 'eRFC Reports');
+  erfc(navLabel: 'eRFC Reports', pageTitle: 'eRFC Reports'),
+  toc(
+    navLabel: 'TOC & Opening',
+    pageTitle: 'TOC Appointment & Tender Opening Status',
+  ),
+  tenderSecurity(
+    navLabel: 'Tender Security',
+    pageTitle: 'Tender Security Report',
+  ),
+  vtmMonitoring(
+    navLabel: 'VTM Monitoring',
+    pageTitle: 'VTM Tender/Quotation Monitoring Report',
+  );
 
   const ReportType({required this.navLabel, required this.pageTitle});
 

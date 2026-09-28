@@ -16,6 +16,9 @@ import 'package:etender_reports/data/repositories/report_repository.dart';
 import 'package:etender_reports/reports/models/records/erfc_record.dart';
 import 'package:etender_reports/reports/models/records/supplier_record.dart';
 import 'package:etender_reports/reports/models/records/tender_record.dart';
+import 'package:etender_reports/reports/models/records/tender_security_record.dart';
+import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
+import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/records/vendor_participation_record.dart';
 
 class ApiReportRepository extends ReportRepository {
@@ -56,6 +59,18 @@ class ApiReportRepository extends ReportRepository {
   @override
   Future<List<ErfcRecord>> fetchErfcRecords() =>
       _getList('/reports/erfc', ErfcRecord.fromJson);
+
+  @override
+  Future<List<TocOpeningRecord>> fetchTocRecords() =>
+      _getList('/reports/toc-openings', TocOpeningRecord.fromJson);
+
+  @override
+  Future<List<TenderSecurityRecord>> fetchTenderSecurityRecords() =>
+      _getList('/api/vtm/tender-security', TenderSecurityRecord.fromJson);
+
+  @override
+  Future<List<VtmMonitoringRecord>> fetchVtmMonitoringRecords() =>
+      _getList('/reports/vtm-monitoring', VtmMonitoringRecord.fromJson);
 
   /// Must be scoped to the signed-in supplier server-side. The app does not
   /// filter by supplier and deliberately shows no supplier column, so

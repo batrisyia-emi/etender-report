@@ -11,6 +11,9 @@ import 'package:etender_reports/data/repositories/report_repository.dart';
 import 'package:etender_reports/reports/models/records/erfc_record.dart';
 import 'package:etender_reports/reports/models/records/supplier_record.dart';
 import 'package:etender_reports/reports/models/records/tender_record.dart';
+import 'package:etender_reports/reports/models/records/tender_security_record.dart';
+import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
+import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/records/vendor_participation_record.dart';
 
 class MockReportRepository extends ReportRepository {
@@ -32,6 +35,24 @@ class MockReportRepository extends ReportRepository {
   @override
   Future<List<ErfcRecord>> fetchErfcRecords() async => [
     for (final json in ReportMockData.erfcRecords) ErfcRecord.fromJson(json),
+  ];
+
+  @override
+  Future<List<TocOpeningRecord>> fetchTocRecords() async => [
+    for (final json in ReportMockData.tocRecords)
+      TocOpeningRecord.fromJson(json),
+  ];
+
+  @override
+  Future<List<TenderSecurityRecord>> fetchTenderSecurityRecords() async => [
+    for (final json in ReportMockData.tenderSecurityRecords)
+      TenderSecurityRecord.fromJson(json),
+  ];
+
+  @override
+  Future<List<VtmMonitoringRecord>> fetchVtmMonitoringRecords() async => [
+    for (final json in ReportMockData.vtmMonitoringRecords)
+      VtmMonitoringRecord.fromJson(json),
   ];
 
   @override

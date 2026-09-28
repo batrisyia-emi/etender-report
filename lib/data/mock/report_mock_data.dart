@@ -7,6 +7,9 @@ import 'package:etender_reports/data/mock/tender_records.dart';
 import 'package:etender_reports/data/mock/vendor_participation_records.dart';
 import 'package:etender_reports/data/mock/erfc_records.dart';
 import 'package:etender_reports/data/mock/supplier_records.dart';
+import 'package:etender_reports/data/mock/tender_security_records.dart';
+import 'package:etender_reports/data/mock/toc_records.dart';
+import 'package:etender_reports/data/mock/vtm_monitoring_records.dart';
 import 'package:etender_reports/data/mock/supplier_portal.dart';
 
 class ReportMockData {
@@ -19,6 +22,20 @@ class ReportMockData {
       kVendorParticipationRecords;
   static const List<Map<String, dynamic>> erfcRecords = kErfcRecords;
   static const List<Map<String, dynamic>> supplierRecords = kSupplierRecords;
+
+  /// Built on each read, not a const: the dates are relative to today so
+  /// the time-based exception flags keep firing. See [buildTocRecords].
+  static List<Map<String, dynamic>> get tocRecords => buildTocRecords();
+
+  /// Relative dates too, so "expiring in 14 days" and "expired" keep
+  /// meaning something. See [buildTenderSecurityRecords].
+  static List<Map<String, dynamic>> get tenderSecurityRecords =>
+      buildTenderSecurityRecords();
+
+  /// Relative dates again: aging counts to today for anything in flight.
+  /// See [buildVtmMonitoringRecords].
+  static List<Map<String, dynamic>> get vtmMonitoringRecords =>
+      buildVtmMonitoringRecords();
 
   static const Map<String, dynamic> supplierProfile = kSupplierProfile;
   static const List<Map<String, dynamic>> supplierDocuments =
