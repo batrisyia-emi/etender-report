@@ -229,13 +229,13 @@ dates pass. Converting them is the same change as this one.
 
 | Thing | File |
 |---|---|
-| Status, role and document type enums | `lib/reports/models/toc_status.dart` |
+| Status, role and document type enums | `lib/reports/models/status/toc_status.dart` |
 | Record classes and the JSON contract | `lib/reports/models/records/toc_opening_record.dart` |
-| Status derivation, aging, flags, workload | `lib/reports/models/toc_metrics.dart` |
-| Filters | `lib/reports/models/toc_filters.dart` |
+| Aging, flags, workload | `lib/reports/models/metrics/toc_metrics.dart` |
+| Filters | `lib/reports/models/filters/toc_filters.dart` |
 | Bloc, event, state | `lib/reports/bloc/toc/` |
 | Page | `lib/reports/views/toc_report_view.dart` |
-| Summary cards | `lib/reports/views/cards/toc_kpi_cards.dart` |
+| Summary cards | `lib/reports/widgets/cards/toc_kpi_cards.dart` |
 | Filter panel, table, flag and workload panels | `lib/reports/widgets/toc/` |
 | Sample data | `lib/data/mock/toc_records.dart` |
 | Endpoint contract | `docs/api-contract.md`, section 4 |

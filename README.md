@@ -31,8 +31,14 @@ and no credentials.
 flutter test
 ```
 
-318 tests, all passing. CI runs the same suite on Linux — see
+368 tests, all passing. CI runs the same suite on Linux — see
 `.github/workflows/ci.yml`.
+
+`test/bloc/report_bloc_test.dart` is the one to look at before wiring a
+backend. All seven report blocs are built the same way, so one suite runs
+against each in turn and checks that a failed read surfaces as a failure
+rather than an empty report — the case `MockReportRepository` can never
+produce, and the one a real API will.
 
 If `flutter test` fails on Windows with _"An Application Control policy has
 blocked this file"_, that is Smart App Control refusing Flutter's unsigned
@@ -153,15 +159,31 @@ lib/
     reports_shell.dart        sidebar + page routing
     report_type.dart          every page the sidebar can open
     bloc/                     one bloc + event + state per report
-    models/                   records, metrics, status enums, filters, sorting
+    models/
+      records/                the JSON contract — one class per endpoint
+      status/                 the status vocabularies, as enums
+      metrics/                the figures the cards and panels count
+      filters/                what each filter panel binds to
+      attributes/             fixed vocabularies: modes, categories, open-to
+      sorting/                table sort helpers
+      export/                 CSV / Excel column definitions
     views/                    one file per report and per dashboard
-    widgets/                  tables, filter panels, cards; `shared/` is cross-report
+    widgets/                  tables and filter panels by report;
+                              cards/ is the KPI rows, shared/ is cross-report
   shared/                     colours, formatters, sidebar, export menu
-test/                         mirrors lib/
+test/
+  bloc/                       all seven report blocs, one shared suite
+  helpers/                    the failing and counting repositories
+  models/ filters/ sorting/   mirroring the buckets above
+  export/ shared/ widgets/
 docs/                         the API contract, per-report notes, and the HTML the Supplier View follows
 ```
 
-Two conventions worth knowing before editing:
+`models/` is grouped by what a file *is*, so the seven buckets answer most
+"where does this go" questions on their own. `records/` is the one to read
+first: those classes are the API contract.
+
+Three conventions worth knowing before editing:
 
 - **Status vocabularies are enums, not strings.** `ErfcStatus`,
   `SupplierStatus`, `TenderStatus`, `TocStatus`. Every comparison goes
@@ -170,8 +192,13 @@ Two conventions worth knowing before editing:
   declaration order is the process order, which `isUnderWay` and the status
   sort both read as an index, and each value declares whether it applies to
   one-envelope tenders, two-envelope tenders or both.
+- **A model goes in the bucket matching what it is**, not which report
+  uses it. A status enum belongs in `models/status/` even if only one
+  report reads it, because the next report usually reads it too.
 - **Imports are always `package:`.** Enforced by
-  `always_use_package_imports` in `analysis_options.yaml`.
+  `always_use_package_imports` in `analysis_options.yaml`, alongside rules
+  for const-correctness, import ordering and unawaited futures. `dart fix
+  --apply` handles almost everything they flag.
 
 ---
 
@@ -216,3 +243,11 @@ Honest list of what is unfinished, for whoever picks this up.
    frontend added, listed in
    [docs/toc-report.md](docs/toc-report.md). Each is implemented on a stated
    assumption. Put them to the BA before the report is relied on.
+8. **Each table matches its sort keys to its columns by position.** Every
+   `*_table.dart` holds a `_sortKeys` list whose order has to line up with
+   its `_columns` list, and a `minTableWidth` constant that has to equal
+   the column widths plus the gaps. Add a column to one list and not the
+   other and the table sorts by the wrong field silently — nothing fails.
+   Worth folding into a single column descriptor before the tables are
+   extended; left alone here because it would move column widths, and the
+   layout is signed off as it stands.

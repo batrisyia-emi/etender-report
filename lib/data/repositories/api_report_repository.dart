@@ -10,16 +10,17 @@
 //      MockReportRepository (see lib/main.dart),
 //   3. the rest of the app needs no change.
 //
-// Nothing here depends on a particular HTTP client. Add `http` or `dio` to
-// pubspec.yaml and fill in `_getList`.
+// Nothing here depends on a particular HTTP client. `http` is already in
+// pubspec.yaml; swap it for `dio` if you prefer. Either way the only
+// method that needs writing is `_getList`.
 import 'package:etender_reports/data/repositories/report_repository.dart';
 import 'package:etender_reports/reports/models/records/erfc_record.dart';
 import 'package:etender_reports/reports/models/records/supplier_record.dart';
 import 'package:etender_reports/reports/models/records/tender_record.dart';
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
 import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
-import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/records/vendor_participation_record.dart';
+import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 
 class ApiReportRepository extends ReportRepository {
   const ApiReportRepository({required this.baseUrl});

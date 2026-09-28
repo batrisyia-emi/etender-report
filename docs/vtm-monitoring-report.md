@@ -115,13 +115,13 @@ sample reads and which suits a report about who owes the next step.
 
 | Thing | File |
 |---|---|
-| Status graph, procurement modes, tender type | `lib/reports/models/vtm_monitoring_status.dart` |
+| Status graph, procurement modes, tender type | `lib/reports/models/status/vtm_monitoring_status.dart` |
 | Record and the JSON contract | `lib/reports/models/records/vtm_monitoring_record.dart` |
-| Aging, summary figures, findings | `lib/reports/models/vtm_monitoring_metrics.dart` |
-| Filters | `lib/reports/models/vtm_monitoring_filters.dart` |
+| Aging, summary figures, findings | `lib/reports/models/metrics/vtm_monitoring_metrics.dart` |
+| Filters | `lib/reports/models/filters/vtm_monitoring_filters.dart` |
 | Bloc, event, state | `lib/reports/bloc/vtm_monitoring/` |
 | Page | `lib/reports/views/vtm_monitoring_view.dart` |
-| Summary cards | `lib/reports/views/cards/vtm_monitoring_kpi_cards.dart` |
+| Summary cards | `lib/reports/widgets/cards/vtm_monitoring_kpi_cards.dart` |
 | Filter panel, table, findings panel | `lib/reports/widgets/vtm_monitoring/` |
 | Sample data | `lib/data/mock/vtm_monitoring_records.dart` |
 | Endpoint contract | `docs/api-contract.md`, section 7 |

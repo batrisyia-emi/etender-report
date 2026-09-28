@@ -358,7 +358,7 @@ once it is done.
 `DRAFT` · `SUBMITTED` · `VERIFIED_BY_EXEC` · `REJECTED_BY_EXEC` ·
 `APPROVED_BY_MANAGER` · `REJECTED_BY_MANAGER` · `PUBLISHED`
 
-Codes, not the words on screen. `lib/reports/models/vtm_monitoring_status.dart`
+Codes, not the words on screen. `lib/reports/models/status/vtm_monitoring_status.dart`
 carries the labels, the owning role, the description and what each status can
 move to. Both rejections return to `SUBMITTED`, not to `DRAFT`: the document
 goes back to its preparer for correction, it is not started again.
@@ -499,7 +499,7 @@ not chosen by the supplier.
 `CASHIERS_ORDER` · `BANK_DRAFT` · `BANK_GUARANTEE`
 
 The one vocabulary in this app sent as a **code rather than as the words on
-screen**. `lib/reports/models/tender_security_attributes.dart` maps each to
+screen**. `lib/reports/models/attributes/tender_security_attributes.dart` maps each to
 its label; an unrecognised code renders as itself rather than as a blank
 cell, so a vocabulary change shows up instead of disappearing.
 
@@ -532,7 +532,7 @@ contradiction rather than correcting it**: a `Commercial Sealed` on a
 disagreement is the finding. An unrecognised status renders as itself in a
 grey chip rather than as a blank.
 
-`lib/reports/models/toc_status.dart`.
+`lib/reports/models/status/toc_status.dart`.
 
 ### TOC roles — 3
 
@@ -545,18 +545,18 @@ grey chip rather than as a blank.
 `Direct Negotiation - Emergency` · `Tender Through Pre-Qualification` ·
 `Schedule Rate/JHT` · `Direct Purchase using Published Rate` · …
 
-Full list: `lib/reports/models/procurement_modes.dart`.
+Full list: `lib/reports/models/attributes/procurement_modes.dart`.
 
 ### Open to — 15
 
 Appendix A 8.1 eligibility, e.g. `Bumiputera Only`,
 `Bumiputera (≤ RM250K)`, `Registered Suppliers`, `Open to Public`.
-Full list: `lib/reports/models/open_to.dart`.
+Full list: `lib/reports/models/attributes/open_to.dart`.
 
 ### Certification types — 7
 
 `CIDB-…` · `KKM-…` · `PUKONSA-…`.
-Full list: `lib/reports/models/certification_types.dart`.
+Full list: `lib/reports/models/attributes/certification_types.dart`.
 
 ---
 

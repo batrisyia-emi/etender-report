@@ -141,13 +141,13 @@ Federal Territory of Labuan alongside the mainland ones.
 
 | Thing | File |
 |---|---|
-| Payment type, outcome, section 8.6 validity periods | `lib/reports/models/tender_security_attributes.dart` |
+| Payment type, outcome, section 8.6 validity periods | `lib/reports/models/attributes/tender_security_attributes.dart` |
 | Record and the JSON contract | `lib/reports/models/records/tender_security_record.dart` |
-| Expiry, refund state, summary figures | `lib/reports/models/tender_security_metrics.dart` |
-| Filters and the seven named views | `lib/reports/models/tender_security_filters.dart` |
+| Expiry, refund state, summary figures | `lib/reports/models/metrics/tender_security_metrics.dart` |
+| Filters and the seven named views | `lib/reports/models/filters/tender_security_filters.dart` |
 | Bloc, event, state | `lib/reports/bloc/tender_security/` |
 | Page | `lib/reports/views/tender_security_view.dart` |
-| Summary cards | `lib/reports/views/cards/tender_security_kpi_cards.dart` |
+| Summary cards | `lib/reports/widgets/cards/tender_security_kpi_cards.dart` |
 | Filter panel and the editable table | `lib/reports/widgets/tender_security/` |
 | Sample data | `lib/data/mock/tender_security_records.dart` |
 | Endpoint contract | `docs/api-contract.md`, sections 5 and 6 |
