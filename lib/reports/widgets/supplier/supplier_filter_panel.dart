@@ -82,13 +82,17 @@ class SupplierFilterPanel extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Find it: free text over the tenders this supplier took part in.
+            // Two rows, four equal cells each, so every edge falls at 25%,
+            // 50% and 75%.
+            //
+            // Row one is the tender: find it, how far it got, what it was
+            // for and whose it was. Search takes one cell rather than the
+            // two it gets elsewhere - "Search tender" is a short label, and
+            // one cell is what lets these eight controls close up into two
+            // rows instead of three.
             FilterFieldRow(
               useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
-              // The only field in its row, so it takes all four cells.
-              flexes: const [4],
-              gridSpans: const [4],
               fieldBuilders: [
                 (width) => FilterSearchField(
                   controller: searchController,
@@ -96,15 +100,6 @@ class SupplierFilterPanel extends StatelessWidget {
                   label: 'Search tender',
                   width: width,
                 ),
-              ],
-            ),
-            const SizedBox(height: kFilterRowSpacing),
-
-            // How far it got, and what kind of tender it is against.
-            FilterFieldRow(
-              useRow: layout.availableWidth >= _rowBreakpoint,
-              layout: layout,
-              fieldBuilders: [
                 (width) => FilterMultiSelectField(
                   icon: _statusIcon,
                   label: 'Current Status',
@@ -132,6 +127,17 @@ class SupplierFilterPanel extends StatelessWidget {
                   onChanged: onDivisionsChanged,
                   width: width,
                 ),
+              ],
+            ),
+            const SizedBox(height: kFilterRowSpacing),
+
+            // Row two is this supplier's own dealings with it: whether they
+            // were eligible, when they asked and when it closed, and what
+            // is still owed.
+            FilterFieldRow(
+              useRow: layout.availableWidth >= _rowBreakpoint,
+              layout: layout,
+              fieldBuilders: [
                 (width) => FilterDropdownField(
                   icon: _openToIcon,
                   label: 'Open To',
@@ -145,65 +151,27 @@ class SupplierFilterPanel extends StatelessWidget {
                   onChanged: onOpenToChanged,
                   width: width,
                 ),
-              ],
-            ),
-            const SizedBox(height: kFilterRowSpacing),
-
-            // When it was asked for, when it closes, and the one shortcut
-            // that matters day to day.
-            Row(
-              children: [
-                SizedBox(
-                  width: layout.span(1),
-                  child: FilterDateField(
-                    icon: _requestDateIcon,
-                    label: 'Request Date',
-                    selectedRange: requestDateFilter,
-                    onChanged: onRequestDateChanged,
-                  ),
+                (width) => FilterDateField(
+                  icon: _requestDateIcon,
+                  label: 'Request Date',
+                  selectedRange: requestDateFilter,
+                  onChanged: onRequestDateChanged,
+                  width: width,
                 ),
-                const SizedBox(width: kFilterFieldSpacing),
-                SizedBox(
-                  width: layout.span(1),
-                  child: FilterDateField(
-                    icon: _closingDateIcon,
-                    label: 'Tender Closing Date',
-                    selectedRange: closingDateFilter,
-                    onChanged: onClosingDateChanged,
-                  ),
+                (width) => FilterDateField(
+                  icon: _closingDateIcon,
+                  label: 'Tender Closing Date',
+                  selectedRange: closingDateFilter,
+                  onChanged: onClosingDateChanged,
+                  width: width,
                 ),
-                const SizedBox(width: kFilterFieldSpacing),
                 // The fee shortcut: rows that owe money right now.
-                Flexible(
-                  child: FilterChip(
-                    avatar: Icon(
-                      Icons.payments_outlined,
-                      size: 18,
-                      color: pendingPaymentOnly
-                          ? Colors.white
-                          : kFilterAccentColor,
-                    ),
-                    label: const Text('Pending payment only'),
-                    selected: pendingPaymentOnly,
-                    showCheckmark: false,
-                    onSelected: onPendingPaymentOnlyChanged,
-                    backgroundColor: kFilterFillColor,
-                    selectedColor: kFilterAccentColor,
-                    labelStyle: TextStyle(
-                      color: pendingPaymentOnly
-                          ? Colors.white
-                          : kFilterValueColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    side: const BorderSide(color: kFilterBorderColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 12,
-                    ),
-                  ),
+                (width) => FilterToggleField(
+                  icon: Icons.payments_outlined,
+                  label: 'Pending payment only',
+                  value: pendingPaymentOnly,
+                  onChanged: onPendingPaymentOnlyChanged,
+                  width: width,
                 ),
               ],
             ),

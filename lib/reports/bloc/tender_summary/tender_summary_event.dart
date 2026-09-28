@@ -63,6 +63,17 @@ final class TenderProcurementModesChanged extends TenderSummaryEvent {
   List<Object?> get props => [modes];
 }
 
+/// Tender / Quotation. Null clears the filter, which also brings back the
+/// documents that are neither.
+final class TenderDocumentTypeChanged extends TenderSummaryEvent {
+  const TenderDocumentTypeChanged(this.documentType);
+
+  final String? documentType;
+
+  @override
+  List<Object?> get props => [documentType];
+}
+
 /// 1 Envelope / 2 Envelope. Null clears the filter.
 final class TenderEnvelopeTypeChanged extends TenderSummaryEvent {
   const TenderEnvelopeTypeChanged(this.envelopeType);

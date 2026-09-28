@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 import 'package:etender_reports/reports/models/certification_types.dart';
 import 'package:etender_reports/reports/models/open_to.dart';
-import 'package:etender_reports/reports/models/record_matching.dart';
 import 'package:etender_reports/reports/models/report_filters.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
 
@@ -45,7 +44,6 @@ class VendorParticipationState extends Equatable {
   List<String> get openToOptions => OpenTo.wireValues;
 
   /// Derived, because tender numbers grow with the data.
-  List<String> get tenderIdOptions => distinctValues(records, 'tenderNo');
 
   List<Map<String, dynamic>> get filteredRecords =>
       records.where(filters.matches).toList();

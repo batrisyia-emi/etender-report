@@ -16,6 +16,7 @@ enum TenderDateField { endorsed, closing }
 class TenderFilters extends Equatable {
   const TenderFilters({
     this.searchQuery = '',
+    this.documentType,
     this.statuses = const {},
     this.categories = const {},
     this.procurementModes = const {},
@@ -31,6 +32,11 @@ class TenderFilters extends Equatable {
   });
 
   final String searchQuery;
+
+  /// Tender / Quotation. Null means both, and also keeps the documents that
+  /// are neither — see [kDocumentTypes].
+  final String? documentType;
+
   final Set<String> statuses;
   final Set<String> categories;
 
@@ -64,6 +70,7 @@ class TenderFilters extends Equatable {
 
     return matchesQuery(record, searchKeys, searchQuery) &&
         matchesAnyOf(statuses, record['status']) &&
+        matchesOptional(documentType, record['documentType']) &&
         matchesAnyOf(categories, record['tenderCategory']) &&
         matchesAnyOf(procurementModes, record['modeOfProcurement']) &&
         matchesOptional(envelopeType, record['envelopeType']) &&
@@ -103,6 +110,7 @@ class TenderFilters extends Equatable {
 
   TenderFilters copyWith({
     String? searchQuery,
+    Object? documentType = _unset,
     Set<String>? statuses,
     Set<String>? categories,
     Set<String>? procurementModes,
@@ -118,6 +126,9 @@ class TenderFilters extends Equatable {
   }) {
     return TenderFilters(
       searchQuery: searchQuery ?? this.searchQuery,
+      documentType: identical(documentType, _unset)
+          ? this.documentType
+          : documentType as String?,
       statuses: statuses ?? this.statuses,
       categories: categories ?? this.categories,
       procurementModes: procurementModes ?? this.procurementModes,
@@ -148,6 +159,7 @@ class TenderFilters extends Equatable {
   @override
   List<Object?> get props => [
     searchQuery,
+    documentType,
     statuses,
     categories,
     procurementModes,
@@ -168,7 +180,6 @@ class TenderFilters extends Equatable {
 class VendorFilters extends Equatable {
   const VendorFilters({
     this.searchQuery = '',
-    this.tenderIds = const {},
     this.openTo,
     this.certificationTypes = const {},
     this.invitationStatus,
@@ -181,7 +192,6 @@ class VendorFilters extends Equatable {
   final String searchQuery;
 
   /// Empty means every tender, the convention the other multi-selects use.
-  final Set<String> tenderIds;
   final String? openTo;
   final Set<String> certificationTypes;
 
@@ -208,7 +218,6 @@ class VendorFilters extends Equatable {
     final purchaseLabel = record['documentPurchased'] == true ? 'Yes' : 'No';
 
     return matchesQuery(record, searchKeys, searchQuery) &&
-        matchesAnyOf(tenderIds, record['tenderNo']) &&
         matchesOptional(openTo, record['openTo']) &&
         matchesAnyOf(certificationTypes, record['certificationType']) &&
         matchesOptional(invitationStatus, record['invitationStatus']) &&
@@ -246,7 +255,6 @@ class VendorFilters extends Equatable {
 
   VendorFilters copyWith({
     String? searchQuery,
-    Set<String>? tenderIds,
     Object? openTo = _unset,
     Set<String>? certificationTypes,
     Object? invitationStatus = _unset,
@@ -257,7 +265,6 @@ class VendorFilters extends Equatable {
   }) {
     return VendorFilters(
       searchQuery: searchQuery ?? this.searchQuery,
-      tenderIds: tenderIds ?? this.tenderIds,
       openTo: identical(openTo, _unset) ? this.openTo : openTo as String?,
       certificationTypes: certificationTypes ?? this.certificationTypes,
       invitationStatus: identical(invitationStatus, _unset)
@@ -279,7 +286,6 @@ class VendorFilters extends Equatable {
   @override
   List<Object?> get props => [
     searchQuery,
-    tenderIds,
     openTo,
     certificationTypes,
     invitationStatus,

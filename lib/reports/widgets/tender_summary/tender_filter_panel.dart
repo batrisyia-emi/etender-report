@@ -23,6 +23,9 @@ class TenderFilterPanel extends StatelessWidget {
     required this.procurementModes,
     required this.selectedProcurementModes,
     required this.onProcurementModesChanged,
+    required this.documentTypes,
+    required this.selectedDocumentType,
+    required this.onDocumentTypeChanged,
     required this.envelopeTypes,
     required this.selectedEnvelopeType,
     required this.onEnvelopeTypeChanged,
@@ -64,6 +67,10 @@ class TenderFilterPanel extends StatelessWidget {
   final Set<String> selectedProcurementModes;
   final ValueChanged<Set<String>> onProcurementModesChanged;
 
+  final List<String> documentTypes;
+  final String? selectedDocumentType;
+  final ValueChanged<String?> onDocumentTypeChanged;
+
   final List<String> envelopeTypes;
   final String? selectedEnvelopeType;
   final ValueChanged<String?> onEnvelopeTypeChanged;
@@ -91,17 +98,29 @@ class TenderFilterPanel extends StatelessWidget {
 
   final VoidCallback onFiltersReset;
 
-  /// Widths at which each group of fields fits on a single row. The rows
-  /// read in one order across every report: find it, then where it sits,
-  /// then how it is run, then when and how much.
-  static const double _findRowBreakpoint = 900;
-  static const double _orgRowBreakpoint = 780;
-  static const double _procurementRowBreakpoint = 780;
-  static const double _valueRowBreakpoint = 880;
+  /// Width at which a group of fields fits on a single row.
+  ///
+  /// One number per panel, not one per row. With separate breakpoints the
+  /// rows flipped to the reflowing grid at different widths, so a window
+  /// between them showed some rows as rows and others as a grid — which is
+  /// most of what made the panels look untidy.
+  ///
+  /// 960, like the other four panels.
+  ///
+  /// It was briefly 1080, on the reasoning that a fifth of 960 is a narrow
+  /// 185px. That was the wrong trade: above the breakpoint the three rows
+  /// render as three rows, and below it the grid caps at four columns, so
+  /// each five-cell row wraps as four plus one and the panel becomes six
+  /// lines instead of three. A snug field beats a split row.
+  static const double _rowBreakpoint = 960;
 
   static const Icon _statusIcon = Icon(Icons.flag_outlined, size: 18);
   static const Icon _categoryIcon = Icon(Icons.category_outlined, size: 18);
   static const Icon _modeIcon = Icon(Icons.gavel_outlined, size: 18);
+  static const Icon _documentTypeIcon = Icon(
+    Icons.description_outlined,
+    size: 18,
+  );
   static const Icon _envelopeIcon = Icon(Icons.mail_outline, size: 18);
   static const Icon _itemTypeIcon = Icon(Icons.inventory_2_outlined, size: 18);
   static const Icon _divisionIcon = Icon(Icons.account_tree_outlined, size: 18);
@@ -120,14 +139,23 @@ class TenderFilterPanel extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Find it: free text, where it has reached, what kind it is.
+            // Three rows of five cells. Fourteen filters will not fit three
+            // rows of four, so this panel alone runs on a five-cell rhythm:
+            // search spans two, everything else takes one, and each row
+            // comes to five. Every edge lands on a fifth, and row one's
+            // edges are a subset of the other two's.
+            //
+            // The groups are kept whole - division/department/unit, the two
+            // value bounds, the two dates - so no pair is split across a
+            // row break.
+            //
+            // Find it: free text, where it has reached, what kind of
+            // document, and what is being bought.
             FilterFieldRow(
-              useRow: layout.availableWidth >= _findRowBreakpoint,
+              useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
-              // Search spans two cells, so this row fills exactly four:
-              // nothing is left to orphan onto the next line.
-              flexes: const [2, 1, 1],
-              gridSpans: const [2, 1, 1],
+              flexes: const [2, 1, 1, 1],
+              gridSpans: const [2, 1, 1, 1],
               fieldBuilders: [
                 (width) => FilterSearchField(
                   controller: searchController,
@@ -143,6 +171,15 @@ class TenderFilterPanel extends StatelessWidget {
                   onChanged: onStatusesChanged,
                   width: width,
                 ),
+                (width) => FilterDropdownField(
+                  icon: _documentTypeIcon,
+                  label: 'Document Type',
+                  placeholder: 'Tenders and quotations',
+                  options: documentTypes,
+                  value: selectedDocumentType,
+                  onChanged: onDocumentTypeChanged,
+                  width: width,
+                ),
                 (width) => FilterMultiSelectField(
                   icon: _categoryIcon,
                   label: 'Tender Category',
@@ -156,10 +193,12 @@ class TenderFilterPanel extends StatelessWidget {
             ),
             const SizedBox(height: kFilterRowSpacing),
 
-            // Where it sits in the organisation.
+            // Where it sits in the organisation, and what it is worth.
             FilterFieldRow(
-              useRow: layout.availableWidth >= _orgRowBreakpoint,
+              useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
+              flexes: const [1, 1, 1, 1, 1],
+              gridSpans: const [1, 1, 1, 1, 1],
               fieldBuilders: [
                 (width) => FilterMultiSelectField(
                   icon: _divisionIcon,
@@ -188,15 +227,32 @@ class TenderFilterPanel extends StatelessWidget {
                   onChanged: onUnitsChanged,
                   width: width,
                 ),
+                (width) => FilterNumberField(
+                  controller: minimumValueController,
+                  icon: _minValueIcon,
+                  label: 'From Estimated Value',
+                  placeholder: 'No minimum',
+                  onChanged: onMinValueChanged,
+                  width: width,
+                ),
+                (width) => FilterNumberField(
+                  controller: maximumValueController,
+                  icon: _maxValueIcon,
+                  label: 'To Estimated Value (RM)',
+                  placeholder: 'No maximum',
+                  onChanged: onMaxValueChanged,
+                  width: width,
+                ),
               ],
             ),
             const SizedBox(height: kFilterRowSpacing),
 
-            // How it is run. The three are independent of each other: any
-            // mode can be one envelope or two, stock or non-stock.
+            // How it is run, and when it happened.
             FilterFieldRow(
-              useRow: layout.availableWidth >= _procurementRowBreakpoint,
+              useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
+              flexes: const [1, 1, 1, 1, 1],
+              gridSpans: const [1, 1, 1, 1, 1],
               fieldBuilders: [
                 (width) => FilterMultiSelectField(
                   icon: _modeIcon,
@@ -223,34 +279,6 @@ class TenderFilterPanel extends StatelessWidget {
                   options: itemTypes,
                   value: selectedItemType,
                   onChanged: onItemTypeChanged,
-                  width: width,
-                ),
-              ],
-            ),
-            const SizedBox(height: kFilterRowSpacing),
-
-            // When and how much. The dates still read widest, but the value
-            // fields name the figure they bound, so they no longer get the
-            // smallest share.
-            FilterFieldRow(
-              useRow: layout.availableWidth >= _valueRowBreakpoint,
-              layout: layout,
-              flexes: const [2, 2, 3, 3],
-              fieldBuilders: [
-                (width) => FilterNumberField(
-                  controller: minimumValueController,
-                  icon: _minValueIcon,
-                  label: 'From Estimated Value',
-                  placeholder: 'No minimum',
-                  onChanged: onMinValueChanged,
-                  width: width,
-                ),
-                (width) => FilterNumberField(
-                  controller: maximumValueController,
-                  icon: _maxValueIcon,
-                  label: 'To Estimated Value (RM)',
-                  placeholder: 'No maximum',
-                  onChanged: onMaxValueChanged,
                   width: width,
                 ),
                 (width) => FilterDateField(

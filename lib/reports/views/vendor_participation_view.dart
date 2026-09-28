@@ -108,10 +108,6 @@ class _VendorParticipationViewState extends State<VendorParticipationView> {
             VendorFilterPanel(
               searchController: _searchController,
               onSearchChanged: (value) => bloc.add(VendorSearchChanged(value)),
-              tenderIds: state.tenderIdOptions,
-              selectedTenderIds: filters.tenderIds,
-              onTenderIdsChanged: (values) =>
-                  bloc.add(VendorTenderIdsChanged(values)),
               // Appendix A 8.1, the tender's eligibility rule. Distinct
               // from participationStatus below, which is whether the vendor
               // took the invitation up.

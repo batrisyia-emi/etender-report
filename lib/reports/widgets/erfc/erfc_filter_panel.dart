@@ -55,7 +55,8 @@ class ErfcFilterPanel extends StatelessWidget {
 
   final VoidCallback onFiltersReset;
 
-  /// Width at which search plus three fields fit on one row.
+  /// Width at which a group of fields fits on a single row. 960 across
+  /// every report's filter panel, so they all reflow together.
   static const double _rowBreakpoint = 960;
 
   static const Icon _divisionIcon = Icon(Icons.account_tree_outlined, size: 18);
@@ -109,71 +110,48 @@ class ErfcFilterPanel extends StatelessWidget {
             ),
             const SizedBox(height: kFilterRowSpacing),
 
-            // Where it sits, then when it landed. Divisions and Units belong
-            // together; splitting them across rows was the odd one out.
-            Row(
-              children: [
-                SizedBox(
-                  width: layout.span(1),
-                  child: FilterMultiSelectField(
-                    icon: _divisionIcon,
-                    label: 'Divisions',
-                    placeholder: 'All divisions',
-                    options: divisions,
-                    selectedValues: selectedDivisions,
-                    onChanged: onDivisionsChanged,
-                  ),
+            // Where it sits, when it landed, and the aging shortcut. Four
+            // equal cells, so this row's edges fall at 25%, 50% and 75%.
+            //
+            // A FilterFieldRow rather than a hand-built Row: the old one
+            // pinned each field to layout.span(1) whatever the width, so it
+            // never reflowed with the rest of the panel.
+            FilterFieldRow(
+              useRow: layout.availableWidth >= _rowBreakpoint,
+              layout: layout,
+              fieldBuilders: [
+                (width) => FilterMultiSelectField(
+                  icon: _divisionIcon,
+                  label: 'Divisions',
+                  placeholder: 'All divisions',
+                  options: divisions,
+                  selectedValues: selectedDivisions,
+                  onChanged: onDivisionsChanged,
+                  width: width,
                 ),
-                const SizedBox(width: kFilterFieldSpacing),
-                SizedBox(
-                  width: layout.span(1),
-                  child: FilterMultiSelectField(
-                    icon: _unitIcon,
-                    label: 'Units',
-                    placeholder: 'All units',
-                    options: units,
-                    selectedValues: selectedUnits,
-                    onChanged: onUnitsChanged,
-                  ),
+                (width) => FilterMultiSelectField(
+                  icon: _unitIcon,
+                  label: 'Units',
+                  placeholder: 'All units',
+                  options: units,
+                  selectedValues: selectedUnits,
+                  onChanged: onUnitsChanged,
+                  width: width,
                 ),
-                const SizedBox(width: kFilterFieldSpacing),
-                SizedBox(
-                  width: layout.span(1),
-                  child: FilterDateField(
-                    icon: _submissionDateIcon,
-                    label: 'Submission Date',
-                    selectedRange: submissionDateFilter,
-                    onChanged: onSubmissionDateChanged,
-                  ),
+                (width) => FilterDateField(
+                  icon: _submissionDateIcon,
+                  label: 'Submission Date',
+                  selectedRange: submissionDateFilter,
+                  onChanged: onSubmissionDateChanged,
+                  width: width,
                 ),
-                const SizedBox(width: kFilterFieldSpacing),
                 // Aging shortcut: in-flight RFCs past the overdue threshold.
-                Flexible(
-                  child: FilterChip(
-                    avatar: Icon(
-                      Icons.warning_amber_rounded,
-                      size: 18,
-                      color: overdueOnly ? Colors.white : kFilterAccentColor,
-                    ),
-                    label: const Text('Overdue only'),
-                    selected: overdueOnly,
-                    showCheckmark: false,
-                    onSelected: onOverdueOnlyChanged,
-                    backgroundColor: kFilterFillColor,
-                    selectedColor: kFilterAccentColor,
-                    labelStyle: TextStyle(
-                      color: overdueOnly ? Colors.white : kFilterValueColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    side: const BorderSide(color: kFilterBorderColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 12,
-                    ),
-                  ),
+                (width) => FilterToggleField(
+                  icon: Icons.warning_amber_rounded,
+                  label: 'Overdue only',
+                  value: overdueOnly,
+                  onChanged: onOverdueOnlyChanged,
+                  width: width,
                 ),
               ],
             ),

@@ -33,6 +33,7 @@ class TenderSummaryState extends Equatable {
 
   /// Independent of the mode: every tender is one or the other, in any
   /// combination with its procurement route.
+  List<String> get documentTypeOptions => kDocumentTypes;
   List<String> get envelopeTypeOptions => kEnvelopeTypes;
   List<String> get itemTypeOptions => kItemTypes;
 

@@ -121,6 +121,10 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
               selectedProcurementModes: filters.procurementModes,
               onProcurementModesChanged: (values) =>
                   bloc.add(TenderProcurementModesChanged(values)),
+              documentTypes: state.documentTypeOptions,
+              selectedDocumentType: filters.documentType,
+              onDocumentTypeChanged: (value) =>
+                  bloc.add(TenderDocumentTypeChanged(value)),
               envelopeTypes: state.envelopeTypeOptions,
               selectedEnvelopeType: filters.envelopeType,
               onEnvelopeTypeChanged: (value) =>

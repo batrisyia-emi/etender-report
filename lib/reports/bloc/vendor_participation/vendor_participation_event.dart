@@ -22,15 +22,6 @@ final class VendorSearchChanged extends VendorParticipationEvent {
   List<Object?> get props => [query];
 }
 
-final class VendorTenderIdsChanged extends VendorParticipationEvent {
-  const VendorTenderIdsChanged(this.tenderIds);
-
-  final Set<String> tenderIds;
-
-  @override
-  List<Object?> get props => [tenderIds];
-}
-
 final class VendorParticipationTypeChanged extends VendorParticipationEvent {
   const VendorParticipationTypeChanged(this.participationType);
 

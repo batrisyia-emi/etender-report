@@ -21,10 +21,6 @@ class VendorParticipationBloc
     on<VendorSearchChanged>(
       (event, emit) => _emit(emit, (f) => f.copyWith(searchQuery: event.query)),
     );
-    on<VendorTenderIdsChanged>(
-      (event, emit) =>
-          _emit(emit, (f) => f.copyWith(tenderIds: event.tenderIds)),
-    );
     on<VendorParticipationTypeChanged>(
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(openTo: event.participationType)),

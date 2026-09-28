@@ -11,9 +11,6 @@ class VendorFilterPanel extends StatelessWidget {
     super.key,
     required this.searchController,
     required this.onSearchChanged,
-    required this.tenderIds,
-    required this.selectedTenderIds,
-    required this.onTenderIdsChanged,
     required this.openToOptions,
     required this.selectedOpenTo,
     required this.onOpenToChanged,
@@ -39,10 +36,6 @@ class VendorFilterPanel extends StatelessWidget {
 
   final TextEditingController searchController;
   final ValueChanged<String> onSearchChanged;
-
-  final List<String> tenderIds;
-  final Set<String> selectedTenderIds;
-  final ValueChanged<Set<String>> onTenderIdsChanged;
 
   final List<String> openToOptions;
   final String? selectedOpenTo;
@@ -73,13 +66,13 @@ class VendorFilterPanel extends StatelessWidget {
 
   final VoidCallback onFiltersReset;
 
-  /// Widths at which each row's fields fit side by side. The rows follow
-  /// the vendor's journey: find them, then whether they were invited and
-  /// took it up, then whether a bid actually arrived.
-  static const double _searchRowBreakpoint = 960;
-  static const double _invitationRowBreakpoint = 780;
-  static const double _submissionRowBreakpoint = 880;
-  static const Icon _tenderIcon = Icon(Icons.article_outlined, size: 18);
+  /// Width at which a group of fields fits on a single row. 960 across
+  /// every report's filter panel, so they all reflow together.
+  ///
+  /// The rows follow the vendor's journey: find them, then whether they
+  /// were invited and took it up, then whether a bid actually arrived.
+  static const double _rowBreakpoint = 960;
+
   static const Icon _openToIcon = Icon(Icons.diversity_3_outlined, size: 18);
   static const Icon _certificationIcon = Icon(
     Icons.verified_outlined,
@@ -109,26 +102,26 @@ class VendorFilterPanel extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Find them: free text, which tender, what they are certified for.
+            // Two rows of four equal cells, so every edge falls at 25%, 50%
+            // and 75%. Search takes one cell rather than the two it gets on
+            // the wider panels - that is what lets these eight controls
+            // close up into two rows instead of three.
+            //
+            // Row one is the vendor and the invitation: who they are, what
+            // they are certified for, what they were eligible for, and
+            // whether they were asked.
+            //
+            // There is no tender-number field: the search box already
+            // matches a tender number, and a dropdown listing every number
+            // in the data did the same job twice.
             FilterFieldRow(
-              useRow: layout.availableWidth >= _searchRowBreakpoint,
+              useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
-              flexes: const [2, 1, 1],
-              gridSpans: const [2, 1, 1],
               fieldBuilders: [
                 (width) => FilterSearchField(
                   controller: searchController,
                   onChanged: onSearchChanged,
                   label: 'Search vendor or tender',
-                  width: width,
-                ),
-                (width) => FilterMultiSelectField(
-                  icon: _tenderIcon,
-                  label: 'Tender/Quotation Number',
-                  placeholder: 'All tenders',
-                  options: tenderIds,
-                  selectedValues: selectedTenderIds,
-                  onChanged: onTenderIdsChanged,
                   width: width,
                 ),
                 (width) => FilterMultiSelectField(
@@ -140,15 +133,6 @@ class VendorFilterPanel extends StatelessWidget {
                   onChanged: onCertificationTypesChanged,
                   width: width,
                 ),
-              ],
-            ),
-            const SizedBox(height: kFilterRowSpacing),
-
-            // Who could bid, and whether they took it up.
-            FilterFieldRow(
-              useRow: layout.availableWidth >= _invitationRowBreakpoint,
-              layout: layout,
-              fieldBuilders: [
                 (width) => FilterDropdownField(
                   icon: _openToIcon,
                   label: 'Open To',
@@ -171,6 +155,16 @@ class VendorFilterPanel extends StatelessWidget {
                   onChanged: onInvitationStatusChanged,
                   width: width,
                 ),
+              ],
+            ),
+            const SizedBox(height: kFilterRowSpacing),
+
+            // Row two is what they did with it: whether they took it up,
+            // bought the documents, bid, and when.
+            FilterFieldRow(
+              useRow: layout.availableWidth >= _rowBreakpoint,
+              layout: layout,
+              fieldBuilders: [
                 (width) => FilterDropdownField(
                   icon: _participationIcon,
                   label: 'Participation',
@@ -180,16 +174,6 @@ class VendorFilterPanel extends StatelessWidget {
                   onChanged: onParticipationStatusChanged,
                   width: width,
                 ),
-              ],
-            ),
-            const SizedBox(height: kFilterRowSpacing),
-
-            // Whether a bid arrived, and when.
-            FilterFieldRow(
-              useRow: layout.availableWidth >= _submissionRowBreakpoint,
-              layout: layout,
-              flexes: const [1, 1, 2],
-              fieldBuilders: [
                 (width) => FilterDropdownField(
                   icon: _purchaseIcon,
                   label: 'Document Purchased',

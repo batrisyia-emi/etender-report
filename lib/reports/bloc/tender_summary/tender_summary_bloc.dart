@@ -34,6 +34,10 @@ class TenderSummaryBloc extends Bloc<TenderSummaryEvent, TenderSummaryState> {
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(procurementModes: event.modes)),
     );
+    on<TenderDocumentTypeChanged>(
+      (event, emit) =>
+          _emit(emit, (f) => f.copyWith(documentType: event.documentType)),
+    );
     on<TenderEnvelopeTypeChanged>(
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(envelopeType: event.envelopeType)),
