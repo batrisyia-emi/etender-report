@@ -1,8 +1,8 @@
 name: CI
 
-# Runs on Linux, where the Windows Smart App Control policy that blocks
-# flutter_tester.exe locally does not apply. This is currently the only
-# place the test suite can execute.
+# Runs on Linux, which sidesteps the Windows Smart App Control policy that
+# can block Flutter's unsigned dartvm.exe on a developer machine — see the
+# note in README.md if `flutter test` refuses to start locally.
 on:
   push:
     branches: ['**']
