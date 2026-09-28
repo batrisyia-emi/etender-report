@@ -1,0 +1,558 @@
+// lib/data/mock/toc_records.dart
+//
+// Tender Opening Committee appointments and openings.
+//
+// The first three records are the blueprint's own worked examples; the rest
+// extend them so all three derived statuses and every exception flag appear
+// at least once, and so every stage of the opening day is represented in
+// the Opened / Appendix G / Appendix P columns. Member names and email
+// addresses are fictional, following the same convention as the other mock
+// files in this folder.
+//
+// Every date is an offset from the day the report is opened rather than a
+// literal, so the sample set tells the same story whenever it is shown.
+// See buildTocRecords below.
+
+/// A time on the day [offset] days from [base], in the ISO form the
+/// records carry. `DateTime` normalises an out-of-range day, so a negative
+/// or large offset rolls into the neighbouring month correctly.
+String _at(DateTime base, int offset, int hour, int minute) => DateTime(
+  base.year,
+  base.month,
+  base.day + offset,
+  hour,
+  minute,
+).toIso8601String();
+
+/// The sample openings, dated relative to [asOf] — today, unless a test
+/// pins it.
+///
+/// These were fixed dates until they stopped working. Two of the four
+/// exception flags are about *when*: "no committee, closing soon" needs a
+/// tender closing within the next few days, and "declarations pending on
+/// opening day" needs an opening dated today. With literal dates both fired
+/// for about a week after they were written and then went quiet, so the
+/// panel looked broken rather than genuinely clear.
+///
+/// Every date is an offset from the day the report is opened, which is what
+/// keeps the sample set telling the same story whenever it is shown.
+List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
+  final base = asOf ?? DateTime.now();
+  return [
+    // Pending Declaration — appointed and the memo is out, but one member
+    // still owes Appendix J. Opens today, so this is the record that trips
+    // the "declarations pending on opening day" flag.
+    {
+      'tenderNo': 'T.10001',
+      'documentType': 'Tender',
+      'projectTitle': 'Supply and Delivery of 11kV XLPE ABC Cable',
+      'erfcNo': 'ERFC/2026/00000012',
+      'envelopeType': '2 Envelope',
+      'status': 'Opening in Progress',
+      'closingDateTime': _at(base, 0, 12, 0),
+      'openingDateTime': _at(base, 0, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE10231',
+          'name': 'Officer Alpha',
+          'designation': 'Senior Manager',
+          'department': 'Procurement',
+          'division': 'Procurement Division',
+          'email': 'alpha@example.invalid',
+          'appendixIAckAt': _at(base, -1, 9, 10),
+          'appendixJAckAt': _at(base, -1, 9, 12),
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE11877',
+          'name': 'Officer Bravo',
+          'designation': 'Executive',
+          'department': 'Finance',
+          'division': 'Finance Division',
+          'email': 'bravo@example.invalid',
+          'appendixIAckAt': _at(base, -1, 10, 2),
+          'appendixJAckAt': null,
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE12045',
+          'name': 'Officer Charlie',
+          'designation': 'Engineer',
+          'department': 'Distribution',
+          'division': 'Distribution Division',
+          'email': 'charlie@example.invalid',
+          'appendixIAckAt': null,
+          'appendixJAckAt': null,
+          'appendixGAckAt': null,
+        },
+      ],
+      'appointedAt': _at(base, -2, 15, 30),
+      'replacements': [],
+      'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0041',
+      'memoSentAt': _at(base, -2, 15, 45),
+      'otpIssuedDates': [],
+      'openedAt': null,
+      'suppliersSubmittedCount': 0,
+      'appendixGSubmittedBy': null,
+      'appendixGSubmittedAt': null,
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // Ready for Opening, and long since opened: the full cycle, including a
+    // member replacement. Closed on a Friday with Appendix P filed the
+    // following Monday, so this is the record the average close-out figure is
+    // drawn from. The status stays Ready for Opening because it only tracks
+    // the committee — the Appendix P column is what says this one is done.
+    {
+      'tenderNo': 'Q.20417',
+      'documentType': 'Quotation',
+      'projectTitle': 'Maintenance of Air Conditioning Units at Wisma SESB',
+      'erfcNo': 'ERFC/2026/00000009',
+      'envelopeType': '1 Envelope',
+      'status': 'Opening Completed',
+      'closingDateTime': _at(base, -6, 12, 0),
+      'openingDateTime': _at(base, -6, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE10555',
+          'name': 'Officer Delta',
+          'designation': 'Manager',
+          'department': 'Facilities',
+          'division': 'Corporate Services',
+          'email': 'delta@example.invalid',
+          'appendixIAckAt': _at(base, -7, 8, 30),
+          'appendixJAckAt': _at(base, -7, 8, 31),
+          'appendixGAckAt': _at(base, -6, 14, 5),
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE11302',
+          'name': 'Officer Echo',
+          'designation': 'Senior Executive',
+          'department': 'Procurement',
+          'division': 'Procurement Division',
+          'email': 'echo@example.invalid',
+          'appendixIAckAt': _at(base, -7, 9, 0),
+          'appendixJAckAt': _at(base, -7, 9, 1),
+          'appendixGAckAt': _at(base, -6, 14, 5),
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE12450',
+          'name': 'Officer Foxtrot',
+          'designation': 'Executive',
+          'department': 'IT',
+          'division': 'ICT Division',
+          'email': 'foxtrot@example.invalid',
+          'appendixIAckAt': _at(base, -7, 11, 20),
+          'appendixJAckAt': _at(base, -7, 11, 21),
+          'appendixGAckAt': _at(base, -6, 14, 5),
+        },
+      ],
+      'appointedAt': _at(base, -9, 10, 0),
+      'replacements': [
+        {
+          'role': 'Member 2',
+          'replacedName': 'Officer Golf',
+          'newName': 'Officer Foxtrot',
+          'remarks': 'Original member on annual leave',
+          'replacedAt': _at(base, -8, 16, 0),
+          'replacedBy': 'SE Clerk',
+        },
+      ],
+      'memoRefNo': 'SE/P/UVTM/QTN/FY26/TOC0038',
+      'memoSentAt': _at(base, -8, 16, 10),
+      'otpIssuedDates': [_at(base, -6, 11, 55)],
+      'openedAt': _at(base, -6, 12, 10),
+      'suppliersSubmittedCount': 5,
+      'appendixGSubmittedBy': 'Officer Echo',
+      'appendixGSubmittedAt': _at(base, -6, 13, 50),
+      'appendixPSubmittedBy': 'Executive Quotation',
+      'appendixPSubmittedAt': _at(base, -3, 9, 20),
+    },
+
+    // Not Appointed — extended after appointment, so the committee was
+    // cleared. Closes inside the warning window, so it trips two flags.
+    {
+      'tenderNo': 'T.10002(2S)',
+      'documentType': 'Tender',
+      'projectTitle': 'Upgrading of 33kV Substation at Tawau',
+      'erfcNo': 'ERFC/2026/00000015',
+      'envelopeType': '2 Envelope',
+      'status': 'Open',
+      'closingDateTime': _at(base, 2, 12, 0),
+      'openingDateTime': null,
+      'isExtended': true,
+      'committee': [],
+      'appointedAt': null,
+      'replacements': [],
+      'memoRefNo': null,
+      'memoSentAt': null,
+      'otpIssuedDates': [],
+      'openedAt': null,
+      'suppliersSubmittedCount': 0,
+      'appendixGSubmittedBy': null,
+      'appendixGSubmittedAt': null,
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // Pending Declaration — committee assigned, memo not yet out, nobody has
+    // signed. The other Pending Declaration record has one signature, so the
+    // two together show both ends of that status.
+    {
+      'tenderNo': 'Q.20423',
+      'documentType': 'Quotation',
+      'projectTitle': 'Supply of Office Stationery for Regional Offices',
+      'erfcNo': 'ERFC/2026/00000021',
+      'envelopeType': '1 Envelope',
+      'status': 'Committee Appointed',
+      'closingDateTime': _at(base, 0, 12, 0),
+      'openingDateTime': _at(base, 0, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE10231',
+          'name': 'Officer Alpha',
+          'designation': 'Senior Manager',
+          'department': 'Procurement',
+          'division': 'Procurement Division',
+          'email': 'alpha@example.invalid',
+          'appendixIAckAt': null,
+          'appendixJAckAt': null,
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE12450',
+          'name': 'Officer Foxtrot',
+          'designation': 'Executive',
+          'department': 'IT',
+          'division': 'ICT Division',
+          'email': 'foxtrot@example.invalid',
+          'appendixIAckAt': null,
+          'appendixJAckAt': null,
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE11955',
+          'name': 'Officer Hotel',
+          'designation': 'Executive',
+          'department': 'Finance',
+          'division': 'Finance Division',
+          'email': 'hotel@example.invalid',
+          'appendixIAckAt': null,
+          'appendixJAckAt': null,
+          'appendixGAckAt': null,
+        },
+      ],
+      'appointedAt': _at(base, -1, 14, 10),
+      'replacements': [],
+      'memoRefNo': null,
+      'memoSentAt': null,
+      'otpIssuedDates': [],
+      'openedAt': null,
+      'suppliersSubmittedCount': 0,
+      'appendixGSubmittedBy': null,
+      'appendixGSubmittedAt': null,
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // Ready for Opening — everyone has signed and the opening is today.
+    {
+      'tenderNo': 'T.10003',
+      'documentType': 'Tender',
+      'projectTitle': 'Construction of Feeder Pillar Foundations (Papar)',
+      'erfcNo': 'ERFC/2026/00000018',
+      'envelopeType': '2 Envelope',
+      'status': 'Technical Opened',
+      'closingDateTime': _at(base, 0, 12, 0),
+      'openingDateTime': _at(base, 0, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE10555',
+          'name': 'Officer Delta',
+          'designation': 'Manager',
+          'department': 'Facilities',
+          'division': 'Corporate Services',
+          'email': 'delta@example.invalid',
+          'appendixIAckAt': _at(base, -1, 9, 0),
+          'appendixJAckAt': _at(base, -1, 9, 2),
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE12045',
+          'name': 'Officer Charlie',
+          'designation': 'Engineer',
+          'department': 'Distribution',
+          'division': 'Distribution Division',
+          'email': 'charlie@example.invalid',
+          'appendixIAckAt': _at(base, -1, 10, 15),
+          'appendixJAckAt': _at(base, -1, 10, 16),
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE11302',
+          'name': 'Officer Echo',
+          'designation': 'Senior Executive',
+          'department': 'Procurement',
+          'division': 'Procurement Division',
+          'email': 'echo@example.invalid',
+          'appendixIAckAt': _at(base, -1, 11, 40),
+          'appendixJAckAt': _at(base, -1, 11, 41),
+          'appendixGAckAt': null,
+        },
+      ],
+      'appointedAt': _at(base, -5, 9, 30),
+      'replacements': [],
+      'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0042',
+      'memoSentAt': _at(base, -5, 9, 45),
+      'otpIssuedDates': [],
+      'openedAt': null,
+      'suppliersSubmittedCount': 0,
+      'appendixGSubmittedBy': null,
+      'appendixGSubmittedAt': null,
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // Ready for Opening, already opened — and the opening ran over, so a
+    // second OTP was issued the next day.
+    {
+      'tenderNo': 'T.10004',
+      'documentType': 'Tender',
+      'projectTitle': 'Supply of Distribution Transformers 1000kVA',
+      'erfcNo': 'ERFC/2026/00000019',
+      'envelopeType': '1 Envelope',
+      'status': 'Tender Opened',
+      'closingDateTime': _at(base, -3, 12, 0),
+      'openingDateTime': _at(base, -3, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE11877',
+          'name': 'Officer Bravo',
+          'designation': 'Executive',
+          'department': 'Finance',
+          'division': 'Finance Division',
+          'email': 'bravo@example.invalid',
+          'appendixIAckAt': _at(base, -4, 8, 10),
+          'appendixJAckAt': _at(base, -4, 8, 11),
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE11955',
+          'name': 'Officer Hotel',
+          'designation': 'Executive',
+          'department': 'Finance',
+          'division': 'Finance Division',
+          'email': 'hotel@example.invalid',
+          'appendixIAckAt': _at(base, -4, 8, 40),
+          'appendixJAckAt': _at(base, -4, 8, 41),
+          'appendixGAckAt': null,
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE12045',
+          'name': 'Officer Charlie',
+          'designation': 'Engineer',
+          'department': 'Distribution',
+          'division': 'Distribution Division',
+          'email': 'charlie@example.invalid',
+          'appendixIAckAt': _at(base, -4, 9, 5),
+          'appendixJAckAt': _at(base, -4, 9, 6),
+          'appendixGAckAt': null,
+        },
+      ],
+      'appointedAt': _at(base, -8, 11, 0),
+      'replacements': [],
+      'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0039',
+      'memoSentAt': _at(base, -8, 11, 20),
+      'otpIssuedDates': [_at(base, -3, 11, 50), _at(base, -2, 9, 0)],
+      'openedAt': _at(base, -3, 12, 5),
+      'suppliersSubmittedCount': 11,
+      'appendixGSubmittedBy': null,
+      'appendixGSubmittedAt': null,
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // Ready for Opening, opened, Appendix G in — but Appendix P is still
+    // outstanding days later, so this one trips the overdue flag.
+    {
+      'tenderNo': 'Q.20419',
+      'documentType': 'Quotation',
+      'projectTitle': 'Servicing of Fire Extinguishers (Sandakan Region)',
+      'erfcNo': 'ERFC/2026/00000016',
+      'envelopeType': '2 Envelope',
+      'status': 'Commercial Opened',
+      'closingDateTime': _at(base, -5, 12, 0),
+      'openingDateTime': _at(base, -5, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE10231',
+          'name': 'Officer Alpha',
+          'designation': 'Senior Manager',
+          'department': 'Procurement',
+          'division': 'Procurement Division',
+          'email': 'alpha@example.invalid',
+          'appendixIAckAt': _at(base, -6, 13, 0),
+          'appendixJAckAt': _at(base, -6, 13, 1),
+          'appendixGAckAt': _at(base, -5, 15, 20),
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE12450',
+          'name': 'Officer Foxtrot',
+          'designation': 'Executive',
+          'department': 'IT',
+          'division': 'ICT Division',
+          'email': 'foxtrot@example.invalid',
+          'appendixIAckAt': _at(base, -6, 14, 30),
+          'appendixJAckAt': _at(base, -6, 14, 31),
+          'appendixGAckAt': _at(base, -5, 15, 20),
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE10555',
+          'name': 'Officer Delta',
+          'designation': 'Manager',
+          'department': 'Facilities',
+          'division': 'Corporate Services',
+          'email': 'delta@example.invalid',
+          'appendixIAckAt': _at(base, -6, 15, 5),
+          'appendixJAckAt': _at(base, -6, 15, 6),
+          'appendixGAckAt': _at(base, -5, 15, 20),
+        },
+      ],
+      'appointedAt': _at(base, -10, 10, 20),
+      'replacements': [
+        {
+          'role': 'Member 1',
+          'replacedName': 'Officer Kilo',
+          'newName': 'Officer Foxtrot',
+          'remarks': 'Original member not available on the opening day',
+          'replacedAt': _at(base, -9, 9, 30),
+          'replacedBy': 'Executive Quotation',
+        },
+      ],
+      'memoRefNo': 'SE/P/UVTM/QTN/FY26/TOC0040',
+      'memoSentAt': _at(base, -9, 9, 45),
+      'otpIssuedDates': [_at(base, -5, 11, 58)],
+      'openedAt': _at(base, -5, 12, 15),
+      'suppliersSubmittedCount': 7,
+      'appendixGSubmittedBy': 'Officer Alpha',
+      'appendixGSubmittedAt': _at(base, -5, 15, 10),
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // Not Appointed — nothing has been done yet, and closing is still far
+    // Commercial Sealed — the technical envelope has been opened and the
+    // commercial one is held sealed while the technical evaluation runs.
+    // The stage only a two-envelope tender reaches.
+    {
+      'tenderNo': 'T.10005',
+      'documentType': 'Tender',
+      'projectTitle': 'Supply and Installation of SCADA RTU Panels',
+      'erfcNo': 'ERFC/2026/00000027',
+      'envelopeType': '2 Envelope',
+      'status': 'Commercial Sealed',
+      'closingDateTime': _at(base, -7, 12, 0),
+      'openingDateTime': _at(base, -7, 12, 0),
+      'isExtended': false,
+      'committee': [
+        {
+          'role': 'Chairman',
+          'staffId': 'SE10874',
+          'name': 'Officer Golf',
+          'designation': 'Senior Manager',
+          'department': 'Procurement',
+          'division': 'Procurement Division',
+          'email': 'golf@example.invalid',
+          'appendixIAckAt': _at(base, -9, 9, 0),
+          'appendixJAckAt': _at(base, -9, 9, 2),
+          'appendixGAckAt': _at(base, -7, 15, 40),
+        },
+        {
+          'role': 'Member 1',
+          'staffId': 'SE12719',
+          'name': 'Officer India',
+          'designation': 'Executive',
+          'department': 'Finance',
+          'division': 'Finance Division',
+          'email': 'india@example.invalid',
+          'appendixIAckAt': _at(base, -9, 10, 0),
+          'appendixJAckAt': _at(base, -9, 10, 2),
+          'appendixGAckAt': _at(base, -7, 15, 40),
+        },
+        {
+          'role': 'Member 2',
+          'staffId': 'SE13066',
+          'name': 'Officer Juliet',
+          'designation': 'Engineer',
+          'department': 'Transmission',
+          'division': 'Transmission Division',
+          'email': 'juliet@example.invalid',
+          'appendixIAckAt': _at(base, -9, 11, 0),
+          'appendixJAckAt': _at(base, -9, 11, 2),
+          'appendixGAckAt': _at(base, -7, 15, 40),
+        },
+      ],
+      'appointedAt': _at(base, -12, 10, 30),
+      'replacements': [],
+      'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0044',
+      'memoSentAt': _at(base, -12, 10, 50),
+      'otpIssuedDates': [_at(base, -7, 11, 50)],
+      'openedAt': _at(base, -7, 12, 8),
+      'suppliersSubmittedCount': 4,
+      'appendixGSubmittedBy': 'Officer Golf',
+      'appendixGSubmittedAt': _at(base, -7, 15, 30),
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+
+    // enough out that no flag fires.
+    {
+      'tenderNo': 'Z.30008',
+      'documentType': 'Quotation',
+      'projectTitle': 'Rental of Scaffolding for Substation Maintenance',
+      'erfcNo': 'ERFC/2026/00000024',
+      'envelopeType': '1 Envelope',
+      'status': 'Open',
+      'closingDateTime': _at(base, 15, 12, 0),
+      'openingDateTime': null,
+      'isExtended': false,
+      'committee': [],
+      'appointedAt': null,
+      'replacements': [],
+      'memoRefNo': null,
+      'memoSentAt': null,
+      'otpIssuedDates': [],
+      'openedAt': null,
+      'suppliersSubmittedCount': 0,
+      'appendixGSubmittedBy': null,
+      'appendixGSubmittedAt': null,
+      'appendixPSubmittedBy': null,
+      'appendixPSubmittedAt': null,
+    },
+  ];
+}
