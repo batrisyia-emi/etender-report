@@ -183,6 +183,16 @@ class _TendersPanel extends StatelessWidget {
               label: 'Closed',
               note: 'Bidding ended',
             ),
+            DashKpiCard(
+              icon: Icons.task_alt,
+              accent: DashTheme.info,
+              value: formatNumber(
+                countOf(const {TenderStatus.completed}),
+                decimals: 0,
+              ),
+              label: 'Completed',
+              note: 'Process concluded',
+            ),
           ],
         ),
         const SizedBox(height: DashTheme.gap),

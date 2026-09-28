@@ -6,12 +6,14 @@ final DateTime asOf = DateTime(2026, 9, 8);
 
 TenderRecord build({
   String status = 'Published',
+  String documentType = 'Tender',
   String? requested = '2026-08-01T09:00:00',
   String? floating = '2026-08-12T08:00:00',
   String? closing = '2026-09-12T17:00:00',
 }) => TenderRecord.fromJson({
   'referenceNo': 'REF-2026-089',
   'tenderNo': 'SESB/T/2026/012',
+  'documentType': documentType,
   'title': 'Substation Maintenance Sabah West',
   'tenderCategory': 'Works',
   'division': 'Distribution',
@@ -100,5 +102,22 @@ void main() {
       [false, false, false],
     );
     expect(unknown.isOpenForBidding, isFalse);
+  });
+  group('document type', () {
+    test('reads Tender and Quotation', () {
+      expect(build().documentType, 'Tender');
+      expect(build(documentType: 'Quotation').documentType, 'Quotation');
+    });
+
+    test('a document that is neither reads as empty, not as a guess', () {
+      // A fuel order is not a tender and not a quotation. The Document Type
+      // filter excludes it rather than mislabelling it.
+      expect(build(documentType: '').documentType, isEmpty);
+    });
+
+    test('an absent documentType is empty rather than a crash', () {
+      final record = TenderRecord.fromJson({'tenderNo': 'SESB/D/2026/007'});
+      expect(record.documentType, isEmpty);
+    });
   });
 }

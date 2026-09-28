@@ -131,7 +131,7 @@ class SupplierRecord extends Equatable {
   /// Set by the system when the tender closed without a bid from this
   /// supplier.
   bool get missedParticipation =>
-      lifecycleStatus == SupplierStatus.noParticipate;
+      lifecycleStatus == SupplierStatus.notParticipate;
 
   /// Nothing more will happen on this tender.
   bool get isTerminal => SupplierStatus.terminal.contains(lifecycleStatus);

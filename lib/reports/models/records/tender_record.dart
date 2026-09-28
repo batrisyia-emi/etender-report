@@ -12,6 +12,7 @@ class TenderRecord extends Equatable {
   const TenderRecord({
     required this.referenceNo,
     required this.tenderNo,
+    required this.documentType,
     required this.title,
     required this.tenderCategory,
     required this.division,
@@ -35,6 +36,7 @@ class TenderRecord extends Equatable {
   factory TenderRecord.fromJson(Map<String, dynamic> json) => TenderRecord(
     referenceNo: asString(json['referenceNo']),
     tenderNo: asString(json['tenderNo']),
+    documentType: asString(json['documentType']),
     title: asString(json['title']),
     tenderCategory: asString(json['tenderCategory']),
     division: asString(json['division']),
@@ -57,6 +59,10 @@ class TenderRecord extends Equatable {
 
   final String referenceNo;
   final String tenderNo;
+
+  /// 'Tender' or 'Quotation'; see [kDocumentTypes]. Empty for a document
+  /// that is neither, which the Document Type filter then excludes.
+  final String documentType;
   final String title;
   final String tenderCategory;
   final String division;
@@ -90,6 +96,7 @@ class TenderRecord extends Equatable {
   Map<String, dynamic> toJson() => {
     'referenceNo': referenceNo,
     'tenderNo': tenderNo,
+    'documentType': documentType,
     'title': title,
     'tenderCategory': tenderCategory,
     'division': division,
@@ -115,6 +122,7 @@ class TenderRecord extends Equatable {
   bool get isPublished => lifecycleStatus == TenderStatus.published;
   bool get isExtended => lifecycleStatus == TenderStatus.extended;
   bool get isClosed => lifecycleStatus == TenderStatus.closed;
+  bool get isCompleted => lifecycleStatus == TenderStatus.completed;
 
   /// Still accepting bids, whether or not the closing date was pushed out.
   bool get isOpenForBidding =>
@@ -141,6 +149,7 @@ class TenderRecord extends Equatable {
   List<Object?> get props => [
     referenceNo,
     tenderNo,
+    documentType,
     title,
     tenderCategory,
     division,

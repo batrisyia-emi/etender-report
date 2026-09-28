@@ -38,7 +38,7 @@ class ErfcReportTable extends StatefulWidget {
 
   /// The eleven columns plus their ten 16px gaps and the table's own
   /// margins. Below this Division / Dept and the status chip ellipsise.
-  static const double minTableWidth = 1975;
+  static const double minTableWidth = 2021;
 
   @override
   State<ErfcReportTable> createState() => _ErfcReportTableState();
@@ -77,12 +77,17 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
     // Cleared endorsement but still working through the publishing steps.
     ErfcStatus.paperworkReceived ||
     ErfcStatus.erfcCompleted ||
-    ErfcStatus.confirmedToPublish => ChipPalette.orange,
+    ErfcStatus.confirmToProceed => ChipPalette.orange,
+    // All six gate refusals share red. Which gate stopped the RFC, and
+    // whether it was sent back or refused outright, is in the label — at a
+    // glance what matters is that it is out of the running.
     ErfcStatus.rejectedByFirstVerifier ||
     ErfcStatus.rejectedBySecondVerifier ||
     ErfcStatus.rejectedByEndorser ||
-    ErfcStatus.decline => ChipPalette.red,
-    ErfcStatus.cancelled || ErfcStatus.closedBySystem => ChipPalette.blueGrey,
+    ErfcStatus.declinedByFirstVerifier ||
+    ErfcStatus.declinedBySecondVerifier ||
+    ErfcStatus.declinedByEndorser => ChipPalette.red,
+    ErfcStatus.cancelled || ErfcStatus.deletedBySystem => ChipPalette.blueGrey,
     null => ChipPalette.grey,
   };
 
@@ -184,7 +189,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
             columnIndex: 4,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 160,
+          fixedWidth: 178,
           numeric: true,
           onSort: _handleSort,
         ),
@@ -194,7 +199,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
             columnIndex: 5,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -203,7 +208,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
             columnIndex: 6,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -212,7 +217,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
             columnIndex: 7,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -221,7 +226,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
             columnIndex: 8,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         // 'System Cancelled' is the longest status; at 122 the chip was

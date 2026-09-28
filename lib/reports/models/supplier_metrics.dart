@@ -26,7 +26,7 @@ final Set<String> kSupplierParticipatedStatuses = SupplierStatus.wiresOf({
   SupplierStatus.participated,
 });
 final Set<String> kSupplierNoParticipateStatuses = SupplierStatus.wiresOf({
-  SupplierStatus.noParticipate,
+  SupplierStatus.notParticipate,
 });
 
 double _valueOf(Map<String, dynamic> record, String key) =>

@@ -9,7 +9,7 @@ const int kErfcOverdueDays = 14;
 // app actually passes around. The enum is the source of truth; rename a
 // status there and every one of these follows.
 final Set<String> kErfcRejectedStatuses = ErfcStatus.wiresOf(
-  ErfcStatus.rejected,
+  ErfcStatus.rejectedOrDeclined,
 );
 final Set<String> kErfcEndorsedStatuses = ErfcStatus.wiresOf(
   ErfcStatus.endorsedOrBeyond,

@@ -29,15 +29,36 @@ void main() {
     });
 
     test('the lifecycle reads in funnel order', () {
-      expect(TenderStatus.wireValues, ['Published', 'Extended', 'Closed']);
+      expect(TenderStatus.wireValues, [
+        'Published',
+        'Extended',
+        'Closed',
+        'Completed',
+      ]);
     });
 
-    test('open and closed partition the lifecycle', () {
-      expect(TenderStatus.openForBidding, isNot(contains(TenderStatus.closed)));
+    test('open for bidding and past closing partition the lifecycle', () {
+      expect(
+        TenderStatus.openForBidding.intersection(TenderStatus.pastClosing),
+        isEmpty,
+      );
       expect({
         ...TenderStatus.openForBidding,
-        TenderStatus.closed,
+        ...TenderStatus.pastClosing,
       }, TenderStatus.values.toSet());
+    });
+
+    test('Completed is past closing but is not Closed', () {
+      // Closed means bidding stopped; Completed means nothing further is
+      // expected. Counting them as one would hide work still in hand.
+      expect(
+        TenderStatus.pastClosing,
+        containsAll([TenderStatus.closed, TenderStatus.completed]),
+      );
+      expect(
+        TenderStatus.openForBidding,
+        isNot(contains(TenderStatus.completed)),
+      );
     });
 
     test('wiresOf returns the text the records are keyed by', () {
@@ -61,8 +82,21 @@ void main() {
 
     test('the lifecycle reads in funnel order', () {
       expect(ErfcStatus.wireValues.first, 'Draft');
-      expect(ErfcStatus.wireValues.last, 'Closed by System');
-      expect(ErfcStatus.wireValues, hasLength(14));
+      expect(ErfcStatus.wireValues.last, 'Deleted by System');
+      expect(ErfcStatus.wireValues, hasLength(16));
+    });
+
+    test('every status the enum names appears in the sample data', () {
+      // The filter offers all sixteen, so all sixteen should show
+      // something rather than an empty table.
+      final inData = statusesIn(ReportMockData.erfcRecords).toSet();
+      for (final status in ErfcStatus.values) {
+        expect(
+          inData,
+          contains(status.wireValue),
+          reason: 'no sample record reads as ${status.wireValue}',
+        );
+      }
     });
 
     test('in-flight and terminal partition the lifecycle', () {
@@ -73,13 +107,29 @@ void main() {
       }, ErfcStatus.values.toSet());
     });
 
-    test('endorsed and rejected are both terminal and disjoint', () {
+    test('endorsed and refused are both terminal and disjoint', () {
       expect(ErfcStatus.terminal, containsAll(ErfcStatus.endorsedOrBeyond));
-      expect(ErfcStatus.terminal, containsAll(ErfcStatus.rejected));
+      expect(ErfcStatus.terminal, containsAll(ErfcStatus.rejectedOrDeclined));
       expect(
-        ErfcStatus.endorsedOrBeyond.intersection(ErfcStatus.rejected),
+        ErfcStatus.endorsedOrBeyond.intersection(ErfcStatus.rejectedOrDeclined),
         isEmpty,
       );
+    });
+
+    test('rejected and declined are kept apart, three of each', () {
+      // Sent back and refused are different answers; the cards count them
+      // together but the vocabulary does not merge them.
+      expect(ErfcStatus.rejected, hasLength(3));
+      expect(ErfcStatus.declined, hasLength(3));
+      expect(ErfcStatus.rejected.intersection(ErfcStatus.declined), isEmpty);
+      expect(ErfcStatus.rejectedOrDeclined, hasLength(6));
+    });
+
+    test('each gate can both reject and decline', () {
+      for (final gate in ['1st Verifier', '2nd Verifier', 'Endorser']) {
+        expect(ErfcStatus.wireValues, contains('Rejected by $gate'));
+        expect(ErfcStatus.wireValues, contains('Declined by $gate'));
+      }
     });
 
     test('endorsed covers the states past endorsement, not just Endorsed', () {
@@ -87,8 +137,8 @@ void main() {
         'Endorsed',
         'Paperwork Received',
         'eRFC Completed',
-        'Confirmed to Publish',
-        'Closed by System',
+        'Confirm to Proceed',
+        'Deleted by System',
       });
     });
   });

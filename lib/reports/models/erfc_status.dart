@@ -1,8 +1,13 @@
 // lib/reports/models/erfc_status.dart
 //
-// The eRFC lifecycle, in funnel order: three approval gates that can each
-// turn the RFC back, then the states it passes through on its way to being
-// published.
+// The eRFC lifecycle, in funnel order: three approval gates, each of which
+// can reject or decline, then the states it passes through on its way to
+// being published.
+//
+// Rejected and Declined are recorded separately at every gate. Both stop the
+// RFC there, so the report counts them together on its cards — but the
+// vocabulary keeps them apart, because "sent back" and "refused" are not the
+// same answer and only the wire text says which happened.
 //
 // Declared as an enum rather than bare strings so a rename is a compile
 // error rather than a card that silently counts zero. Records still carry
@@ -17,12 +22,14 @@ enum ErfcStatus {
   rejectedBySecondVerifier(wireValue: 'Rejected by 2nd Verifier'),
   endorsed(wireValue: 'Endorsed'),
   rejectedByEndorser(wireValue: 'Rejected by Endorser'),
-  decline(wireValue: 'Decline'),
+  declinedByFirstVerifier(wireValue: 'Declined by 1st Verifier'),
+  declinedBySecondVerifier(wireValue: 'Declined by 2nd Verifier'),
+  declinedByEndorser(wireValue: 'Declined by Endorser'),
   cancelled(wireValue: 'Cancelled'),
   paperworkReceived(wireValue: 'Paperwork Received'),
   erfcCompleted(wireValue: 'eRFC Completed'),
-  confirmedToPublish(wireValue: 'Confirmed to Publish'),
-  closedBySystem(wireValue: 'Closed by System');
+  confirmToProceed(wireValue: 'Confirm to Proceed'),
+  deletedBySystem(wireValue: 'Deleted by System');
 
   const ErfcStatus({required this.wireValue});
 
@@ -57,14 +64,25 @@ enum ErfcStatus {
     secondVerified,
   };
 
-  /// Rejected at one of the three approval steps, or declined. The RFC goes
-  /// no further.
+  /// Sent back at one of the three approval gates.
   static const Set<ErfcStatus> rejected = {
     rejectedByFirstVerifier,
     rejectedBySecondVerifier,
     rejectedByEndorser,
-    decline,
   };
+
+  /// Refused at one of the three approval gates.
+  ///
+  /// Kept apart from [rejected] because the two are different answers, even
+  /// though the RFC stops either way and the cards count them together.
+  static const Set<ErfcStatus> declined = {
+    declinedByFirstVerifier,
+    declinedBySecondVerifier,
+    declinedByEndorser,
+  };
+
+  /// Stopped at a gate, however it was worded. What the report counts.
+  static const Set<ErfcStatus> rejectedOrDeclined = {...rejected, ...declined};
 
   /// Endorsement cleared. The RFC keeps moving through the publishing steps
   /// past this point, but the approval chain itself is finished.
@@ -72,14 +90,14 @@ enum ErfcStatus {
     endorsed,
     paperworkReceived,
     erfcCompleted,
-    confirmedToPublish,
-    closedBySystem,
+    confirmToProceed,
+    deletedBySystem,
   };
 
   /// Statuses that stop the clock: the RFC is not waiting on anyone.
   static const Set<ErfcStatus> terminal = {
     ...endorsedOrBeyond,
-    ...rejected,
+    ...rejectedOrDeclined,
     cancelled,
   };
 }

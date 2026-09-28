@@ -37,7 +37,7 @@ void main() {
         'Pending Payment',
         'Paid',
         'Participated',
-        'No Participate',
+        'Not Participate',
         'Draft',
         'Submitted',
       ]);
@@ -70,7 +70,7 @@ void main() {
       expect(SupplierStatus.terminal, containsAll(SupplierStatus.rejected));
       expect(SupplierStatus.terminal, containsAll(SupplierStatus.closedOut));
       // One rejection since the three gates collapsed into
-      // 'Request Rejected', plus Participated and No Participate.
+      // 'Request Rejected', plus Participated and Not Participate.
       expect(SupplierStatus.terminal, hasLength(3));
       expect(
         SupplierStatus.terminal.intersection(SupplierStatus.open),

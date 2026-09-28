@@ -38,7 +38,7 @@ class SupplierReportTable extends StatefulWidget {
 
   /// The eleven columns plus their ten 16px gaps and the table's own
   /// margins. Below this the status chips and the date columns ellipsise.
-  static const double minTableWidth = 1811;
+  static const double minTableWidth = 1839;
 
   @override
   State<SupplierReportTable> createState() => _SupplierReportTableState();
@@ -79,7 +79,7 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
         // The one status that asks the supplier to act.
         SupplierStatus.pendingPayment => ChipPalette.orange,
         SupplierStatus.requestRejected => ChipPalette.red,
-        SupplierStatus.noParticipate => ChipPalette.blueGrey,
+        SupplierStatus.notParticipate => ChipPalette.blueGrey,
         null => ChipPalette.grey,
       };
 
@@ -176,7 +176,7 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
             columnIndex: 3,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -185,7 +185,7 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
             columnIndex: 4,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -194,7 +194,7 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
             columnIndex: 5,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -213,7 +213,7 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
             columnIndex: 7,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 105,
+          fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(

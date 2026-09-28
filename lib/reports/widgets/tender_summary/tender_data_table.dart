@@ -35,7 +35,7 @@ class TenderDataTable extends StatefulWidget {
 
   /// The fourteen fixed columns (2164) + Title's 340 floor + the fourteen
   /// 16px gaps. Past this width Title grows and the table stays full.
-  static const double minTableWidth = 2590;
+  static const double minTableWidth = 2601;
 
   @override
   State<TenderDataTable> createState() => _TenderDataTableState();
@@ -69,6 +69,7 @@ class _TenderDataTableState extends State<TenderDataTable> {
         TenderStatus.published => ChipPalette.green,
         TenderStatus.extended => ChipPalette.orange,
         TenderStatus.closed => ChipPalette.blueGrey,
+        TenderStatus.completed => ChipPalette.indigo,
         null => ChipPalette.grey,
       };
 
@@ -163,7 +164,7 @@ class _TenderDataTableState extends State<TenderDataTable> {
             columnIndex: 12,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 95,
+          fixedWidth: 106,
           onSort: _handleSort,
         ),
         DataColumn2(

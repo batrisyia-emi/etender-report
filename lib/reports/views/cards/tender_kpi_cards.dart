@@ -88,7 +88,15 @@ List<Widget> buildTenderKpiCards({
       icon: Icons.lock_clock_outlined,
       tint: kKpiGreyTint,
       color: kKpiGreyText,
-      note: 'Bidding ended',
+      note: 'Bidding ended, still in hand',
+    ),
+    statusCard(
+      header: 'COMPLETED',
+      statuses: const {TenderStatus.completed},
+      icon: Icons.task_alt,
+      tint: kKpiBlueTint,
+      color: kKpiBlueText,
+      note: 'Finished with',
     ),
   ];
 }

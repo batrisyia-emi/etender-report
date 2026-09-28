@@ -31,7 +31,7 @@ void main() {
         record(status: 'Participated'),
         record(status: 'Participated'),
         record(status: 'Participated'),
-        record(status: 'No Participate'),
+        record(status: 'Not Participate'),
       ];
       expect(supplierParticipationRate(records), 75.0);
     });
@@ -39,7 +39,7 @@ void main() {
     test('ignores everything that has not closed yet', () {
       final records = [
         record(status: 'Participated'),
-        record(status: 'No Participate'),
+        record(status: 'Not Participate'),
         // None of these have run their course, so none count either way.
         record(status: 'Published'),
         record(status: 'Pending Payment'),
@@ -115,7 +115,7 @@ void main() {
     test('a terminal record is never closing soon, whatever the date', () {
       // The supplier is out of the running, so the deadline is not theirs
       // to worry about.
-      const statuses = ['Participated', 'No Participate', 'Request Rejected'];
+      const statuses = ['Participated', 'Not Participate', 'Request Rejected'];
       for (final status in statuses) {
         final subject = record(status: status);
         expect(
@@ -140,7 +140,7 @@ void main() {
 
   test('terminal matches the statuses that stop the clock', () {
     expect(supplierIsTerminal(record(status: 'Participated')), isTrue);
-    expect(supplierIsTerminal(record(status: 'No Participate')), isTrue);
+    expect(supplierIsTerminal(record(status: 'Not Participate')), isTrue);
     expect(supplierIsTerminal(record(status: 'Request Rejected')), isTrue);
     expect(supplierIsTerminal(record(status: 'Pending Payment')), isFalse);
     expect(supplierIsTerminal(record(status: 'Published')), isFalse);

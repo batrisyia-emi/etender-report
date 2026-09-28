@@ -9,6 +9,15 @@
 // selectable, otherwise the filter cannot answer "any two-envelope tenders
 // this quarter?" with a confident no.
 
+/// Tender or Quotation. Fixed rather than derived, like the rest of this
+/// file.
+///
+/// Some documents are neither — a fuel order raised under the Fuel Ordering
+/// mode, for instance. Those carry an empty `documentType`, so they are
+/// shown when the filter is cleared and excluded once it is set. See the
+/// note in docs/api-contract.md.
+const List<String> kDocumentTypes = ['Tender', 'Quotation'];
+
 /// What is being bought. Fixed for the same reason: a category with no
 /// tender against it today must still be selectable.
 const List<String> kTenderCategories = ['Work', 'Service', 'Supply & Delivery'];

@@ -75,7 +75,7 @@ void main() {
       expect(participated.missedParticipation, isFalse);
       expect(participated.isTerminal, isTrue);
 
-      final missed = build(status: 'No Participate');
+      final missed = build(status: 'Not Participate');
       expect(missed.hasParticipated, isFalse);
       expect(missed.missedParticipation, isTrue);
       expect(missed.isTerminal, isTrue);

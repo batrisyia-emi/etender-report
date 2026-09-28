@@ -29,6 +29,7 @@ class SeTenderStatusCard extends StatelessWidget {
       ('Published', countOf(const {TenderStatus.published}), DashTheme.success),
       ('Extended', countOf(const {TenderStatus.extended}), DashTheme.warning),
       ('Closed', countOf(const {TenderStatus.closed}), DashTheme.muted),
+      ('Completed', countOf(const {TenderStatus.completed}), DashTheme.info),
     ];
 
     return DashCard(

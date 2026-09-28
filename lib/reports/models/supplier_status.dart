@@ -20,7 +20,7 @@ enum SupplierStatus {
   pendingPayment(wireValue: 'Pending Payment'),
   paid(wireValue: 'Paid'),
   participated(wireValue: 'Participated'),
-  noParticipate(wireValue: 'No Participate'),
+  notParticipate(wireValue: 'Not Participate'),
   draft(wireValue: 'Draft'),
   submitted(wireValue: 'Submitted');
 
@@ -69,9 +69,9 @@ enum SupplierStatus {
     paid,
   };
 
-  /// How it ended once the tender closed. [noParticipate] is set by the
+  /// How it ended once the tender closed. [notParticipate] is set by the
   /// system rather than by anyone choosing it.
-  static const Set<SupplierStatus> closedOut = {participated, noParticipate};
+  static const Set<SupplierStatus> closedOut = {participated, notParticipate};
 
   /// Nothing more will happen on this tender. Together with [open] and
   /// [cleared] this partitions the lifecycle.

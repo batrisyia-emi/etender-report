@@ -6,6 +6,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-089',
     'tenderNo': 'SESB/T/2026/012',
+    'documentType': 'Tender',
     'title': 'Substation Maintenance Sabah West',
     'tenderCategory': 'Service',
     'division': 'Distribution',
@@ -28,6 +29,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-094',
     'tenderNo': 'SESB/Q/2026/045',
+    'documentType': 'Quotation',
     'title': 'HQ Server Room Cooling System Upgrade',
     'tenderCategory': 'Supply & Delivery',
     'division': 'Corporate Services',
@@ -50,6 +52,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-077',
     'tenderNo': 'SESB/T/2026/008',
+    'documentType': 'Tender',
     'title': 'Supply of High-Voltage Cables (Sandakan)',
     'tenderCategory': 'Supply & Delivery',
     'division': 'Transmission',
@@ -63,7 +66,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
     'endorsedDate': '2026-07-10T11:15:00',
     'floatingDate': '2026-07-15T08:00:00',
     'closingDate': '2026-08-15T17:00:00',
-    'status': 'Closed',
+    'status': 'Completed',
     'erfcId': 'ERFC/2026/00008843',
     'createdBy': 'Officer C',
     'lastUpdate': '2026-08-30T18:10:00',
@@ -72,6 +75,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-101',
     'tenderNo': 'SESB/Q/2026/052',
+    'documentType': 'Quotation',
     'title': 'Meter Reading Services (Tawau District)',
     'tenderCategory': 'Service',
     'division': 'Distribution',
@@ -94,6 +98,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-104',
     'tenderNo': 'SESB/T/2026/015',
+    'documentType': 'Tender',
     'title': 'Overhead Line Refurbishment (Keningau)',
     'tenderCategory': 'Work',
     'division': 'Distribution',
@@ -116,6 +121,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-108',
     'tenderNo': 'SESB/T/2026/017',
+    'documentType': 'Tender',
     'title': 'Gas Turbine Overhaul (Patau-Patau)',
     'tenderCategory': 'Work',
     'division': 'Generation',
@@ -129,7 +135,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
     'endorsedDate': '2026-06-26T15:45:00',
     'floatingDate': '2026-07-02T08:00:00',
     'closingDate': '2026-08-05T17:00:00',
-    'status': 'Closed',
+    'status': 'Completed',
     'erfcId': 'ERFC/2026/00008790',
     'createdBy': 'Officer B',
     'lastUpdate': '2026-08-20T17:05:00',
@@ -138,6 +144,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-112',
     'tenderNo': 'SESB/Q/2026/058',
+    'documentType': 'Quotation',
     'title': 'Office Furniture Supply (Kota Kinabalu HQ)',
     'tenderCategory': 'Supply & Delivery',
     'division': 'Corporate Services',
@@ -160,6 +167,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-115',
     'tenderNo': 'SESB/L/2026/003',
+    'documentType': '',
     'title': 'Protection Relay Testing Services',
     'tenderCategory': 'Service',
     'division': 'Transmission',
@@ -182,6 +190,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-119',
     'tenderNo': 'SESB/T/2026/019',
+    'documentType': 'Tender',
     'title': 'Distribution Transformer Supply (Lahad Datu)',
     'tenderCategory': 'Supply & Delivery',
     'division': 'Distribution',
@@ -204,6 +213,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-122',
     'tenderNo': 'SESB/Q/2026/061',
+    'documentType': 'Quotation',
     'title': 'Fire Extinguisher Servicing (All Districts)',
     'tenderCategory': 'Service',
     'division': 'Corporate Services',
@@ -226,6 +236,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-125',
     'tenderNo': 'SESB/D/2026/007',
+    'documentType': '',
     'title': 'Emergency Generator Fuel Supply',
     'tenderCategory': 'Supply & Delivery',
     'division': 'Generation',
@@ -248,6 +259,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-128',
     'tenderNo': 'SESB/T/2026/021',
+    'documentType': 'Tender',
     'title': 'SCADA System Upgrade Phase 2',
     'tenderCategory': 'Service',
     'division': 'Transmission',
@@ -270,6 +282,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-131',
     'tenderNo': 'SESB/Q/2026/064',
+    'documentType': 'Quotation',
     'title': 'Vegetation Management (Beaufort Line)',
     'tenderCategory': 'Service',
     'division': 'Distribution',
@@ -292,6 +305,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-134',
     'tenderNo': 'SESB/T/2026/023',
+    'documentType': 'Tender',
     'title': 'Rural Electrification Works (Pitas)',
     'tenderCategory': 'Work',
     'division': 'Distribution',
@@ -305,7 +319,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
     'endorsedDate': '2026-07-06T15:40:00',
     'floatingDate': '2026-07-10T08:00:00',
     'closingDate': '2026-08-14T17:00:00',
-    'status': 'Closed',
+    'status': 'Completed',
     'erfcId': 'ERFC/2026/00008812',
     'createdBy': 'Officer C',
     'lastUpdate': '2026-08-25T16:50:00',
@@ -314,6 +328,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-137',
     'tenderNo': 'SESB/T/2026/025',
+    'documentType': 'Tender',
     'title': 'Switchgear Replacement (Ranau)',
     'tenderCategory': 'Work',
     'division': 'Distribution',
@@ -336,6 +351,7 @@ const List<Map<String, dynamic>> kTenderRecords = [
   {
     'referenceNo': 'REF-2026-140',
     'tenderNo': 'SESB/Q/2026/067',
+    'documentType': 'Quotation',
     'title': 'Uniform Supply (Field Crew)',
     'tenderCategory': 'Supply & Delivery',
     'division': 'Corporate Services',

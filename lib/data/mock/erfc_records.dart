@@ -112,7 +112,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
     'verified1Date': '2026-08-19T10:20:00',
     'verified2Date': '2026-08-21T10:20:00',
     'endorsedDate': '2026-08-21T14:00:00',
-    'status': 'Confirmed to Publish',
+    'status': 'Confirm to Proceed',
     'createdBy': 'Officer D',
   },
   {
@@ -126,7 +126,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
     'verified1Date': '2026-08-13T15:30:00',
     'verified2Date': '2026-08-15T15:30:00',
     'endorsedDate': '2026-08-15T11:10:00',
-    'status': 'Confirmed to Publish',
+    'status': 'Confirm to Proceed',
     'createdBy': 'Officer A',
   },
   {
@@ -140,7 +140,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
     'verified1Date': '2026-08-11T16:40:00',
     'verified2Date': '2026-08-13T16:40:00',
     'endorsedDate': '2026-08-14T09:05:00',
-    'status': 'Confirmed to Publish',
+    'status': 'Confirm to Proceed',
     'createdBy': 'Officer A',
   },
   {
@@ -322,8 +322,41 @@ const List<Map<String, dynamic>> kErfcRecords = [
     'verified1Date': null,
     'verified2Date': null,
     'endorsedDate': null,
-    'status': 'Decline',
+    'status': 'Declined by 1st Verifier',
     'createdBy': 'Officer E',
+  },
+
+  // Refused at the second gate: the 1st Verifier passed it on, the 2nd did
+  // not. Declined rather than rejected — it was not sent back to be fixed.
+  {
+    'rfcNumber': 'ERFC/2026/00009263',
+    'division': 'Transmission',
+    'department': 'Network Planning',
+    'unit': 'Materials Unit',
+    'modeOfProcurement': 'Restricted Tender/Quotation',
+    'value': 178000.00,
+    'submissionDate': '2026-08-24T10:15:00',
+    'verified1Date': '2026-08-27T14:05:00',
+    'verified2Date': null,
+    'endorsedDate': null,
+    'status': 'Declined by 2nd Verifier',
+    'createdBy': 'Officer C',
+  },
+
+  // Refused at the last gate, with both verifications already behind it.
+  {
+    'rfcNumber': 'ERFC/2026/00009271',
+    'division': 'Distribution',
+    'department': 'Project Delivery',
+    'unit': 'Rural Unit',
+    'modeOfProcurement': 'Tender/Quotation',
+    'value': 540000.00,
+    'submissionDate': '2026-08-18T09:30:00',
+    'verified1Date': '2026-08-21T11:40:00',
+    'verified2Date': '2026-08-26T15:20:00',
+    'endorsedDate': null,
+    'status': 'Declined by Endorser',
+    'createdBy': 'Officer A',
   },
   {
     'rfcNumber': 'ERFC/2026/00009174',
@@ -364,7 +397,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
     'verified1Date': '2026-07-28T11:40:00',
     'verified2Date': '2026-07-30T11:40:00',
     'endorsedDate': '2026-07-31T15:10:00',
-    'status': 'Closed by System',
+    'status': 'Deleted by System',
     'createdBy': 'Officer A',
   },
   {
