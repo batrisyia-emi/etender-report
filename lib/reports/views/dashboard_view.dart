@@ -5,13 +5,24 @@
 // figure comes from the same blocs and metric helpers the three reports use,
 // so the dashboard cannot drift from them.
 import 'package:etender_reports/reports/bloc/erfc/erfc_bloc.dart';
+import 'package:etender_reports/reports/bloc/tender_security/tender_security_bloc.dart';
 import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
+import 'package:etender_reports/reports/bloc/toc/toc_bloc.dart';
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
+import 'package:etender_reports/reports/bloc/vtm_monitoring/vtm_monitoring_bloc.dart';
 import 'package:etender_reports/reports/models/metrics/erfc_metrics.dart';
 import 'package:etender_reports/reports/models/metrics/tender_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/tender_security_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
 import 'package:etender_reports/reports/models/metrics/vendor_metrics.dart';
+import 'package:etender_reports/reports/models/metrics/vtm_monitoring_metrics.dart';
+import 'package:etender_reports/reports/models/records/tender_security_record.dart';
+import 'package:etender_reports/reports/models/records/toc_opening_record.dart';
+import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/status/erfc_status.dart';
 import 'package:etender_reports/reports/models/status/tender_status.dart';
+import 'package:etender_reports/reports/models/status/toc_status.dart';
+import 'package:etender_reports/reports/models/status/vtm_monitoring_status.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_tabs.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
@@ -19,6 +30,7 @@ import 'package:etender_reports/reports/widgets/dashboard/se/se_active_tenders_g
 import 'package:etender_reports/reports/widgets/dashboard/se/se_breakdown_cards.dart';
 import 'package:etender_reports/reports/widgets/dashboard/se/se_closing_soon_card.dart';
 import 'package:etender_reports/reports/widgets/dashboard/se/se_kpi_row.dart';
+import 'package:etender_reports/reports/widgets/dashboard/se/se_process_cards.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +56,15 @@ class _DashboardViewState extends State<DashboardView> {
   /// The template's `.stabs` slice the page rather than the app: the sidebar
   /// already navigates between reports, so these narrow the same dashboard
   /// to one report's figures instead of duplicating that navigation.
-  static const List<String> _tabs = ['Overview', 'Tenders', 'eRFC', 'Vendors'];
+  static const List<String> _tabs = [
+    'Overview',
+    'Tenders',
+    'eRFC',
+    'Vendors',
+    'TOC & Opening',
+    'Tender Security',
+    'VTM Monitoring',
+  ];
 
   int _tab = 0;
 
@@ -53,12 +73,26 @@ class _DashboardViewState extends State<DashboardView> {
     final tenders = context.watch<TenderSummaryBloc>().state.records;
     final rfcs = context.watch<ErfcBloc>().state.records;
     final vendors = context.watch<VendorParticipationBloc>().state.records;
+    // The securities hang off the tender report rather than their own tab:
+    // they are money held against these tenders, not a separate subject.
+    final securities = context.watch<TenderSecurityBloc>().state.records;
+    final openings = context.watch<TocBloc>().state.records;
+    final appendixF = context.watch<VtmMonitoringBloc>().state.records;
 
     final panel = switch (_tab) {
-      1 => _TendersPanel(records: tenders),
+      1 => _TendersPanel(records: tenders, securities: securities),
       2 => _ErfcPanel(records: rfcs),
       3 => _VendorsPanel(records: vendors),
-      _ => _OverviewPanel(tenders: tenders, rfcs: rfcs, vendors: vendors),
+      4 => _TocPanel(records: openings),
+      5 => _TenderSecurityPanel(records: securities),
+      6 => _VtmPanel(records: appendixF),
+      _ => _OverviewPanel(
+        tenders: tenders,
+        rfcs: rfcs,
+        vendors: vendors,
+        openings: openings,
+        appendixF: appendixF,
+      ),
     };
 
     return Column(
@@ -93,11 +127,15 @@ class _OverviewPanel extends StatelessWidget {
     required this.tenders,
     required this.rfcs,
     required this.vendors,
+    required this.openings,
+    required this.appendixF,
   });
 
   final List<Map<String, dynamic>> tenders;
   final List<Map<String, dynamic>> rfcs;
   final List<Map<String, dynamic>> vendors;
+  final List<TocOpeningRecord> openings;
+  final List<VtmMonitoringRecord> appendixF;
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +154,14 @@ class _OverviewPanel extends StatelessWidget {
           wide: SeErfcPipelineCard(records: rfcs),
           narrow: SeVendorFunnelCard(records: vendors),
         ),
+        const SizedBox(height: DashTheme.gap),
+        // The two process reports get a row rather than headline cards: the
+        // top row stays at four, which is what the grid lays out evenly.
+        // Their own tabs carry the detail.
+        DashSplitRow(
+          wide: SeVtmPipelineCard(records: appendixF),
+          narrow: SeTocProgressCard(records: openings),
+        ),
       ],
     );
   }
@@ -124,9 +170,13 @@ class _OverviewPanel extends StatelessWidget {
 /// The tender report's figures, with the closing-soon table given the room
 /// the overview cannot spare.
 class _TendersPanel extends StatelessWidget {
-  const _TendersPanel({required this.records});
+  const _TendersPanel({required this.records, this.securities = const []});
 
   final List<Map<String, dynamic>> records;
+
+  /// From the tender security dataset, so the tender filters do not reach
+  /// it — see the same caveat on the VTM Monitoring card.
+  final List<TenderSecurityRecord> securities;
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +186,12 @@ class _TendersPanel extends StatelessWidget {
             .fold<int>(0, (total, wire) => total + (counts[wire] ?? 0));
 
     final average = tenderAverageValue(records);
+
+    // Lodged less refunded: what SESB is still holding for tenderers.
+    final outstandingSecurity = tenderSecurityHeld(securities);
+    final securitiesHeld = securities
+        .where((record) => !tenderSecurityIsRefunded(record))
+        .length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -192,6 +248,19 @@ class _TendersPanel extends StatelessWidget {
               label: 'Completed',
               note: 'Process concluded',
             ),
+            DashKpiCard(
+              icon: Icons.savings_outlined,
+              accent: DashTheme.purple,
+              // A dash, not RM 0: nothing held and nothing read are
+              // different statements.
+              value: securities.isEmpty
+                  ? '-'
+                  : formatValue(outstandingSecurity),
+              label: 'Outstanding Tender Security',
+              note: securities.isEmpty
+                  ? 'No tender security data'
+                  : '$securitiesHeld held, across all tenders',
+            ),
           ],
         ),
         const SizedBox(height: DashTheme.gap),
@@ -200,6 +269,211 @@ class _TendersPanel extends StatelessWidget {
         DashSplitRow(
           wide: SeClosingSoonCard(records: records, limit: 10),
           narrow: SeTenderStatusCard(records: records),
+        ),
+      ],
+    );
+  }
+}
+
+/// The opening committees: where each tender stands and who carries the load.
+///
+/// Counts and dates only. No figure on this page comes from a bid — see the
+/// warning on [TocOpeningRecord].
+class _TocPanel extends StatelessWidget {
+  const _TocPanel({required this.records});
+
+  final List<TocOpeningRecord> records;
+
+  @override
+  Widget build(BuildContext context) {
+    final awaiting = tocCountWithStatus(records, TocStatus.open);
+    final completed = tocCountWithStatus(records, TocStatus.openingCompleted);
+    final flags = tocExceptionFlags(records);
+    final urgent = flags
+        .where((flag) => flag.severity == TocFlagSeverity.high)
+        .length;
+    final average = tocAverageAging(records);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DashCardGrid(
+          cards: [
+            DashKpiCard(
+              icon: Icons.gavel_outlined,
+              accent: DashTheme.accent,
+              value: formatNumber(records.length, decimals: 0),
+              label: 'Openings',
+              note: '$completed completed',
+            ),
+            DashKpiCard(
+              icon: Icons.person_add_alt,
+              accent: awaiting > 0 ? DashTheme.warning : DashTheme.muted,
+              value: formatNumber(awaiting, decimals: 0),
+              label: 'Awaiting Committee',
+              note: awaiting > 0 ? 'Nobody appointed yet' : 'All appointed',
+              noteColor: awaiting > 0 ? DashTheme.warning : null,
+            ),
+            DashKpiCard(
+              icon: Icons.warning_amber_rounded,
+              accent: flags.isEmpty ? DashTheme.muted : DashTheme.danger,
+              value: formatNumber(flags.length, decimals: 0),
+              label: 'Needs Attention',
+              note: flags.isEmpty ? 'Nothing outstanding' : '$urgent urgent',
+              noteColor: urgent > 0 ? DashTheme.danger : null,
+            ),
+            DashKpiCard(
+              icon: Icons.timelapse_outlined,
+              accent: DashTheme.purple,
+              value: average == null
+                  ? '-'
+                  : '${average.toStringAsFixed(1)} days',
+              label: 'Avg Days to Close Out',
+              note: 'Closing to Appendix P',
+            ),
+          ],
+        ),
+        const SizedBox(height: DashTheme.gap),
+        DashSplitRow(
+          wide: SeTocProgressCard(records: records),
+          narrow: SeTocWorkloadCard(records: records),
+        ),
+      ],
+    );
+  }
+}
+
+/// The securities on file: what is held, what has lapsed, what is owed back.
+class _TenderSecurityPanel extends StatelessWidget {
+  const _TenderSecurityPanel({required this.records});
+
+  final List<TenderSecurityRecord> records;
+
+  @override
+  Widget build(BuildContext context) {
+    final expired = tenderSecurityExpiredCount(records);
+    final expiringSoon = tenderSecurityExpiringSoonCount(records);
+    final pendingRefund = tenderSecurityPendingRefundCount(records);
+    final held = records.where((r) => !tenderSecurityIsRefunded(r)).length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DashCardGrid(
+          cards: [
+            DashKpiCard(
+              icon: Icons.savings_outlined,
+              accent: DashTheme.accent,
+              // A dash, not RM 0: nothing held and nothing read are
+              // different statements.
+              value: records.isEmpty
+                  ? '-'
+                  : formatValue(tenderSecurityHeld(records)),
+              label: 'Outstanding Tender Security',
+              note: records.isEmpty ? 'No data' : '$held still held',
+            ),
+            DashKpiCard(
+              icon: Icons.schedule_outlined,
+              accent: expiringSoon > 0 ? DashTheme.warning : DashTheme.muted,
+              value: formatNumber(expiringSoon, decimals: 0),
+              label: 'Expiring Soon',
+              note: 'Within $kTenderSecurityExpiringSoonDays days',
+              noteColor: expiringSoon > 0 ? DashTheme.warning : null,
+            ),
+            DashKpiCard(
+              icon: Icons.report_gmailerrorred_outlined,
+              accent: expired > 0 ? DashTheme.danger : DashTheme.muted,
+              value: formatNumber(expired, decimals: 0),
+              label: 'Expired, Still Held',
+              // The state the report exists to surface: a lapsed instrument
+              // on file secures nothing.
+              note: expired > 0 ? 'Securing nothing' : 'None lapsed',
+              noteColor: expired > 0 ? DashTheme.danger : null,
+            ),
+            DashKpiCard(
+              icon: Icons.assignment_return_outlined,
+              accent: pendingRefund > 0 ? DashTheme.info : DashTheme.muted,
+              value: formatNumber(pendingRefund, decimals: 0),
+              label: 'Pending Refund',
+              note: 'Unsuccessful, not yet returned',
+            ),
+          ],
+        ),
+        const SizedBox(height: DashTheme.gap),
+        DashSplitRow(
+          wide: SeSecurityStatusCard(records: records),
+          narrow: SeSecurityHandoverCard(records: records),
+        ),
+      ],
+    );
+  }
+}
+
+/// VTM's own pipeline: Appendix F from preparation to floating.
+class _VtmPanel extends StatelessWidget {
+  const _VtmPanel({required this.records});
+
+  final List<VtmMonitoringRecord> records;
+
+  @override
+  Widget build(BuildContext context) {
+    final inProgress = vtmInProgressCount(records);
+    final rejected = vtmRejectedCount(records);
+    final awaitingFloat = vtmCountWithStatus(
+      records,
+      VtmStatus.approvedByManager,
+    );
+    final slow = vtmSlowCount(records);
+    final published = vtmPublishedCount(records);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DashCardGrid(
+          cards: [
+            DashKpiCard(
+              icon: Icons.description_outlined,
+              accent: DashTheme.accent,
+              value: formatNumber(records.length, decimals: 0),
+              label: 'Appendix F Documents',
+              note: '$published floated',
+            ),
+            DashKpiCard(
+              icon: Icons.autorenew,
+              accent: inProgress > 0 ? DashTheme.info : DashTheme.muted,
+              value: formatNumber(inProgress, decimals: 0),
+              label: 'In Progress',
+              note: 'Moving through preparation',
+            ),
+            DashKpiCard(
+              icon: Icons.assignment_return_outlined,
+              accent: rejected > 0 ? DashTheme.danger : DashTheme.muted,
+              value: formatNumber(rejected, decimals: 0),
+              label: 'Sent Back',
+              note: rejected > 0
+                  ? 'With the preparer to correct'
+                  : 'Nothing sent back',
+              noteColor: rejected > 0 ? DashTheme.danger : null,
+            ),
+            DashKpiCard(
+              icon: Icons.outbox_outlined,
+              accent: awaitingFloat > 0 ? DashTheme.warning : DashTheme.muted,
+              value: formatNumber(awaitingFloat, decimals: 0),
+              label: 'Awaiting Float',
+              note: slow > 0
+                  ? '$slow sitting over $kVtmSlowDays days'
+                  : 'Approved, one step from suppliers',
+              noteColor: slow > 0 ? DashTheme.danger : null,
+            ),
+          ],
+        ),
+        const SizedBox(height: DashTheme.gap),
+        DashSplitRow(
+          wide: SeVtmPipelineCard(records: records),
+          narrow: SeVtmAttentionCard(records: records),
         ),
       ],
     );

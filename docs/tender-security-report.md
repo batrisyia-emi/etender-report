@@ -137,6 +137,31 @@ Federal Territory of Labuan alongside the mainland ones.
 
 ---
 
+## Two other screens read this dataset
+
+`tenderSecurityHeld()` — everything lodged, less anything already refunded
+— is shown outside this report in two places:
+
+| Screen | Card |
+|---|---|
+| VTM Tender/Quotation Monitoring | Outstanding Tender Security |
+| SE Dashboard, Tenders tab | Outstanding Tender Security |
+
+Both call `fetchTenderSecurityRecords()` themselves. Neither applies its own
+filters to the figure, because the securities are not those screens' rows,
+and both footers say "across all tenders" rather than leave a reader to
+work that out. Both show a dash instead of RM 0 when the dataset is empty.
+
+On the VTM report the read is wrapped so that a missing tender security
+endpoint does not fail the report. Worth keeping that property if either
+screen changes: they are borrowing this data, not depending on it.
+
+Nothing supplier-facing shows it. The figure is every tenderer's money
+pooled, and the app has no notion of which supplier is signed in — see
+known issue 3 in the README.
+
+---
+
 ## Where things live
 
 | Thing | File |

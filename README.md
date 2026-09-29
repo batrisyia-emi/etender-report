@@ -7,7 +7,7 @@ that use them:
 |                   |                                                                                                                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Supplier View** | What one signed-in supplier sees: its own dashboard, and its own participation record. Never another supplier's.                                                               |
-| **SE View**       | What Sabah Electricity sees: tenders, vendor participation, the eRFC pipeline, Tender Opening Committee status, the tender securities held, and VTM's own Appendix F pipeline. |
+| **SE View**       | What Sabah Electricity sees: tenders, vendor participation, the eRFC pipeline, Tender Opening Committee status, the tender securities held, and VTM's own Appendix F pipeline. The SE dashboard carries a tab per report, so every one of them has a summary view. |
 
 **This is the frontend only, and every figure in it is mock data.** No
 network calls are made. The work of connecting it to a backend is
