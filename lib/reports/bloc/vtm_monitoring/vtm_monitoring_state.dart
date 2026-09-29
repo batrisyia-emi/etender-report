@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:etender_reports/reports/bloc/report_status.dart';
 import 'package:etender_reports/reports/models/filters/vtm_monitoring_filters.dart';
+import 'package:etender_reports/reports/models/records/tender_security_record.dart';
 import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 
 /// Holds typed records rather than maps, like the TOC and tender security
@@ -10,12 +11,22 @@ class VtmMonitoringState extends Equatable {
   const VtmMonitoringState({
     this.status = ReportStatus.initial,
     this.records = const [],
+    this.securities = const [],
     this.filters = const VtmMonitoringFilters(),
     this.errorMessage,
   });
 
   final ReportStatus status;
   final List<VtmMonitoringRecord> records;
+
+  /// The tender securities VTM is holding, read from the tender security
+  /// endpoint rather than this report's own.
+  ///
+  /// They belong to a different dataset, so the report's filters do not
+  /// touch them and the summary card says so. Empty when that endpoint is
+  /// unavailable, which is not treated as failing this report.
+  final List<TenderSecurityRecord> securities;
+
   final VtmMonitoringFilters filters;
   final String? errorMessage;
 
@@ -45,17 +56,25 @@ class VtmMonitoringState extends Equatable {
   VtmMonitoringState copyWith({
     ReportStatus? status,
     List<VtmMonitoringRecord>? records,
+    List<TenderSecurityRecord>? securities,
     VtmMonitoringFilters? filters,
     String? errorMessage,
   }) {
     return VtmMonitoringState(
       status: status ?? this.status,
       records: records ?? this.records,
+      securities: securities ?? this.securities,
       filters: filters ?? this.filters,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, records, filters, errorMessage];
+  List<Object?> get props => [
+    status,
+    records,
+    securities,
+    filters,
+    errorMessage,
+  ];
 }

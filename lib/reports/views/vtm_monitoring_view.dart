@@ -94,6 +94,8 @@ class _VtmMonitoringViewState extends State<VtmMonitoringView> {
             spacing: spacing,
             cards: buildVtmMonitoringKpiCards(
               records: records,
+              // Unfiltered on purpose: these are not this report's records.
+              securities: state.securities,
               // Tapping a card filters the table to that group, or clears
               // the filter when it is already the selection.
               onStatusTap: (statuses) =>

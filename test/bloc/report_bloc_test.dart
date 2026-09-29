@@ -223,13 +223,15 @@ void main() {
 
         await send(bloc, testCase.load);
         final loaded = testCase.recordCount(bloc.state);
+        // However many endpoints a load touches, filtering must add none.
+        final callsAfterLoad = counting.calls;
 
         await send(bloc, testCase.narrow);
 
         expect(testCase.filteredCount(bloc.state), 0);
         // Filtering is client-side: the rows are still held, just not shown.
         expect(testCase.recordCount(bloc.state), loaded);
-        expect(counting.calls, 1);
+        expect(counting.calls, callsAfterLoad);
       });
 
       test('clearing the filters restores every row', () async {
@@ -238,6 +240,7 @@ void main() {
         addTearDown(bloc.close);
 
         await send(bloc, testCase.load);
+        final callsAfterLoad = counting.calls;
         await send(bloc, testCase.narrow);
         await send(bloc, testCase.clear);
 
@@ -245,7 +248,7 @@ void main() {
           testCase.filteredCount(bloc.state),
           testCase.recordCount(bloc.state),
         );
-        expect(counting.calls, 1);
+        expect(counting.calls, callsAfterLoad);
       });
 
       test('a retry after a failure recovers', () async {

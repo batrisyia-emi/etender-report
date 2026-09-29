@@ -66,7 +66,25 @@ class VtmMonitoringBloc extends Bloc<VtmMonitoringEvent, VtmMonitoringState> {
     emit(state.copyWith(status: ReportStatus.loading));
     try {
       final records = await _repository.fetchVtmMonitoringRecords();
-      emit(state.copyWith(status: ReportStatus.ready, records: records));
+
+      // Read second and separately on purpose. The securities feed one
+      // summary card from another report's dataset, so this report has no
+      // business failing when that endpoint is missing — which it will be
+      // if the two are wired up in different weeks.
+      var securities = state.securities;
+      try {
+        securities = await _repository.fetchTenderSecurityRecords();
+      } catch (_) {
+        securities = const [];
+      }
+
+      emit(
+        state.copyWith(
+          status: ReportStatus.ready,
+          records: records,
+          securities: securities,
+        ),
+      );
     } catch (error) {
       emit(
         state.copyWith(

@@ -3,7 +3,9 @@
 // The summary figures for the VTM Tender/Quotation Monitoring report: what
 // is in the pipeline, what is stuck, and how long the ones that made it
 // took.
+import 'package:etender_reports/reports/models/metrics/tender_security_metrics.dart';
 import 'package:etender_reports/reports/models/metrics/vtm_monitoring_metrics.dart';
+import 'package:etender_reports/reports/models/records/tender_security_record.dart';
 import 'package:etender_reports/reports/models/records/vtm_monitoring_record.dart';
 import 'package:etender_reports/reports/models/status/vtm_monitoring_status.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
@@ -29,6 +31,12 @@ final Set<String> _published = VtmStatus.codesOf({VtmStatus.published});
 
 List<Widget> buildVtmMonitoringKpiCards({
   required List<VtmMonitoringRecord> records,
+
+  /// Every tender security on file, from the tender security dataset.
+  ///
+  /// Not this report's records, so [records]' filters do not apply to it.
+  /// Empty when that endpoint is unavailable.
+  List<TenderSecurityRecord> securities = const [],
   ValueChanged<Set<String>>? onStatusTap,
 }) {
   final inProgress = vtmInProgressCount(records);
@@ -38,6 +46,12 @@ List<Widget> buildVtmMonitoringKpiCards({
   final slow = vtmSlowCount(records);
   final averageAging = vtmAveragePublishedAging(records);
   final byType = vtmDocumentTypeCounts(records);
+
+  // Lodged less refunded: what VTM is still holding on behalf of tenderers.
+  final outstandingSecurity = tenderSecurityHeld(securities);
+  final securitiesHeld = securities
+      .where((record) => !tenderSecurityIsRefunded(record))
+      .length;
 
   /// Filters to [statuses], or clears that filter when it is already the
   /// selection. Null when nothing holds the status, so the card is inert
@@ -60,13 +74,21 @@ List<Widget> buildVtmMonitoringKpiCards({
       ),
     ),
     KpiCard(
-      header: 'VALUE IN FLIGHT',
-      value: formatValue(vtmInProgressValue(records)),
+      header: 'OUTSTANDING TENDER SECURITY',
+      // A dash rather than RM 0 when there is nothing to read: zero held
+      // and no data are different statements, and only one of them is
+      // about the securities.
+      value: securities.isEmpty ? '-' : formatValue(outstandingSecurity),
       icon: Icons.account_balance_wallet_outlined,
       iconTint: kKpiBlueTint,
       iconColor: kKpiBlueText,
-      // What is held up, not what exists: the published ones are away.
-      footer: const KpiFooterText('Not yet floated to suppliers'),
+      // Says "all tenders" because this comes from the tender security
+      // dataset, so the filters above it do not narrow it.
+      footer: KpiFooterText(
+        securities.isEmpty
+            ? 'No tender security data'
+            : '$securitiesHeld held, across all tenders',
+      ),
     ),
     KpiCard(
       header: 'IN PROGRESS',

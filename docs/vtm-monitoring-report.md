@@ -70,6 +70,33 @@ slow: it is finished, however long it took.
 
 ---
 
+## One card comes from another endpoint
+
+**Outstanding Tender Security** is the only figure on this report that is
+not computed from its own records. It is `tenderSecurityHeld()` over the
+tender security dataset — everything lodged, less anything already
+refunded — so the screen calls `fetchTenderSecurityRecords()` as well as
+`fetchVtmMonitoringRecords()`.
+
+Two consequences, both deliberate:
+
+- **The report's filters do not narrow it.** Filter the table down to one
+  division and this card does not move, because the securities are not
+  this report's rows. The footer says "across all tenders" so a reader is
+  not left to infer that.
+- **A missing tender security endpoint does not fail this report.** The
+  second read is wrapped separately: if it throws, `securities` stays
+  empty, the card shows a dash and "No tender security data", and the rest
+  of the report loads normally. Wiring the two endpoints in different weeks
+  is the expected case, not an error.
+
+A dash rather than RM 0 when there is nothing to read, because zero held
+and no data are different statements.
+
+`test/bloc/vtm_monitoring_bloc_test.dart` pins all of this down.
+
+---
+
 ## What the Needs Attention panel raises
 
 | Finding | Severity | Why |
