@@ -52,11 +52,6 @@ bool vtmIsSlow(VtmMonitoringRecord record, {DateTime? asOf}) {
 int vtmCountWithStatus(List<VtmMonitoringRecord> records, VtmStatus status) =>
     records.where((r) => r.statusValue == status).length;
 
-int vtmCountWithStatuses(
-  List<VtmMonitoringRecord> records,
-  Set<VtmStatus> statuses,
-) => records.where((r) => statuses.contains(r.statusValue)).length;
-
 /// Sent back by either gate, and so waiting on the preparer.
 int vtmRejectedCount(List<VtmMonitoringRecord> records) =>
     records.where((r) => r.isRejected).length;
@@ -70,15 +65,6 @@ int vtmPublishedCount(List<VtmMonitoringRecord> records) =>
 
 int vtmSlowCount(List<VtmMonitoringRecord> records, {DateTime? asOf}) =>
     records.where((r) => vtmIsSlow(r, asOf: asOf)).length;
-
-/// What the documents still in flight are worth, which is the figure that
-/// says how much is held up rather than how much exists.
-double vtmInProgressValue(List<VtmMonitoringRecord> records) => records
-    .where((r) => !r.isPublished)
-    .fold(0, (sum, record) => sum + record.estimatedValue);
-
-double vtmTotalValue(List<VtmMonitoringRecord> records) =>
-    records.fold(0, (sum, record) => sum + record.estimatedValue);
 
 /// How long the documents that made it to floating actually took, on
 /// average. Null when none have floated.
@@ -95,15 +81,6 @@ double? vtmAveragePublishedAging(
   ];
   if (completed.isEmpty) return null;
   return completed.reduce((a, b) => a + b) / completed.length;
-}
-
-/// Counts by status code, for the byStatus summary.
-Map<String, int> vtmStatusCounts(List<VtmMonitoringRecord> records) {
-  final counts = <String, int>{};
-  for (final record in records) {
-    counts[record.status] = (counts[record.status] ?? 0) + 1;
-  }
-  return counts;
 }
 
 /// Counts by document type, for the byDocumentType summary.

@@ -83,7 +83,6 @@ void main() {
         envelopeType: '2 Envelope',
       );
       expect(record.statusValue, TocStatus.commercialOpened);
-      expect(tocStatusOf(record), TocStatus.commercialOpened);
     });
 
     test('an unrecognised status is null rather than a wrong guess', () {
@@ -264,21 +263,26 @@ void main() {
       expect(tocAverageAging([build()], asOf: asOf), isNull);
     });
 
-    test('tocClosedOutCount counts Appendix P, not the status', () {
+    test('Appendix P and the status are counted separately', () {
+      // The status stops at the opening; Appendix P is filed afterwards, so
+      // "completed" and "closed out" are different questions.
       final records = [
         build(appendixP: '2026-09-22T09:00:00', status: 'Opening Completed'),
         build(tenderNo: 'T.2', status: 'Opening Completed'),
       ];
-      expect(tocClosedOutCount(records), 1);
+      expect(
+        records.where((r) => r.appendixPSubmittedAt != null),
+        hasLength(1),
+      );
       expect(tocCountWithStatus(records, TocStatus.openingCompleted), 2);
     });
 
-    test('tocEnvelopeMismatchCount counts the contradictions', () {
+    test('a status impossible under the envelope type is visible', () {
       final records = [
         build(envelopeType: '1 Envelope', status: 'Commercial Sealed'),
         build(tenderNo: 'T.2', envelopeType: '1 Envelope', status: 'Open'),
       ];
-      expect(tocEnvelopeMismatchCount(records), 1);
+      expect(records.where((r) => r.hasEnvelopeMismatch), hasLength(1));
     });
   });
 

@@ -1,11 +1,12 @@
 // lib/reports/views/tender_summary_view.dart
 import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/filters/report_filters.dart';
-import 'package:etender_reports/reports/widgets/cards/tender_kpi_cards.dart';
-import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/report_type.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
+import 'package:etender_reports/reports/widgets/shared/report_timeline_filter.dart';
 import 'package:etender_reports/reports/widgets/tender_summary/tender_data_table.dart';
 import 'package:etender_reports/reports/widgets/tender_summary/tender_filter_panel.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,22 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.tenderSummary.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'tenders and quotations',
+            ),
+            SizedBox(height: spacing),
+            ReportTimelineFilter(
+              label: 'Closing date',
+              selectedRange: filters.closingDateRange,
+              onChanged: (range) => bloc.add(
+                TenderDateRangeChanged(TenderDateField.closing, range),
+              ),
+            ),
+            SizedBox(height: spacing),
             TenderFilterPanel(
               searchController: _searchController,
               minimumValueController: _minimumValueController,
@@ -152,19 +169,6 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
                 TenderDateRangeChanged(TenderDateField.closing, range),
               ),
               onFiltersReset: () => bloc.add(const TenderFiltersCleared()),
-            ),
-            SizedBox(height: spacing),
-            CollapsibleSection(
-              title: 'Overview',
-              collapsedSummary: '6 metrics hidden',
-              child: KpiCardRow(
-                spacing: spacing,
-                cards: buildTenderKpiCards(
-                  records: records,
-                  onStatusTap: (statuses) =>
-                      bloc.add(TenderStatusGroupToggled(statuses)),
-                ),
-              ),
             ),
             SizedBox(height: spacing),
             if (widget.fillHeight) Expanded(child: table) else table,

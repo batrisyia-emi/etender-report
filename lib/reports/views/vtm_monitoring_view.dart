@@ -6,13 +6,15 @@
 // Read-only. The report watches a process that happens in other screens —
 // nothing here changes a document.
 import 'package:etender_reports/reports/bloc/vtm_monitoring/vtm_monitoring_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/filters/vtm_monitoring_filters.dart';
 import 'package:etender_reports/reports/models/metrics/vtm_monitoring_metrics.dart';
-import 'package:etender_reports/reports/widgets/cards/vtm_monitoring_kpi_cards.dart';
+import 'package:etender_reports/reports/report_type.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
+import 'package:etender_reports/reports/widgets/shared/report_timeline_filter.dart';
 import 'package:etender_reports/reports/widgets/vtm_monitoring/vtm_monitoring_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/vtm_monitoring/vtm_monitoring_flag_panel.dart';
 import 'package:etender_reports/reports/widgets/vtm_monitoring/vtm_monitoring_table.dart';
@@ -87,23 +89,6 @@ class _VtmMonitoringViewState extends State<VtmMonitoringView> {
         final filters = state.filters;
         final records = state.filteredRecords;
 
-        final overview = CollapsibleSection(
-          title: 'Overview',
-          collapsedSummary: '8 metrics hidden',
-          child: KpiCardRow(
-            spacing: spacing,
-            cards: buildVtmMonitoringKpiCards(
-              records: records,
-              // Unfiltered on purpose: these are not this report's records.
-              securities: state.securities,
-              // Tapping a card filters the table to that group, or clears
-              // the filter when it is already the selection.
-              onStatusTap: (statuses) =>
-                  bloc.add(VtmStatusGroupToggled(statuses)),
-            ),
-          ),
-        );
-
         final flags = vtmFlags(records);
         final urgent = flags
             .where((flag) => flag.severity == VtmFlagSeverity.high)
@@ -118,25 +103,32 @@ class _VtmMonitoringViewState extends State<VtmMonitoringView> {
           child: VtmMonitoringFlagPanel(records: records),
         );
 
-        final body = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            overview,
-            SizedBox(height: spacing),
-            attention,
-            SizedBox(height: spacing),
-            VtmMonitoringTable(records: records),
-          ],
-        );
-
         // The filters stay put at the top — still collapsible, just not
         // scrolled away — and the rest scrolls under them, as on the TOC
         // and tender security reports.
+        final table = VtmMonitoringTable(
+          records: records,
+          fillHeight: widget.fillHeight,
+        );
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.vtmMonitoring.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'documents',
+            ),
+            SizedBox(height: spacing),
+            ReportTimelineFilter(
+              label: 'eRFC endorsed',
+              selectedRange: filters.endorsedDateRange,
+              onChanged: (range) => bloc.add(VtmEndorsedDateChanged(range)),
+            ),
+            SizedBox(height: spacing),
             VtmMonitoringFilterPanel(
               erfcNoController: _erfcNoController,
               onErfcNoChanged: (value) =>
@@ -166,10 +158,9 @@ class _VtmMonitoringViewState extends State<VtmMonitoringView> {
               onFiltersReset: () => bloc.add(const VtmFiltersCleared()),
             ),
             SizedBox(height: spacing),
-            if (widget.fillHeight)
-              Expanded(child: SingleChildScrollView(child: body))
-            else
-              body,
+            attention,
+            SizedBox(height: spacing),
+            if (widget.fillHeight) Expanded(child: table) else table,
           ],
         );
       },

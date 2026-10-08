@@ -1,11 +1,12 @@
 // lib/reports/views/vendor_participation_view.dart
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/filters/report_filters.dart';
-import 'package:etender_reports/reports/widgets/cards/vendor_kpi_cards.dart';
-import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/report_type.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
+import 'package:etender_reports/reports/widgets/shared/report_timeline_filter.dart';
 import 'package:etender_reports/reports/widgets/vendor_participation/vendor_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/vendor_participation/vendor_participation_table.dart';
 import 'package:flutter/material.dart';
@@ -77,33 +78,25 @@ class _VendorParticipationViewState extends State<VendorParticipationView> {
           fillHeight: widget.fillHeight,
         );
 
-        final overview = CollapsibleSection(
-          title: 'Overview',
-          collapsedSummary: '4 metrics hidden',
-          child: KpiCardRow(
-            spacing: spacing,
-            cards: buildVendorKpiCards(
-              records: records,
-              onInvitedTap: () =>
-                  bloc.add(const VendorInvitationFilterToggled('Sent')),
-              onParticipatedTap: () => bloc.add(
-                const VendorParticipationFilterToggled('Participated'),
-              ),
-              onPurchasedTap: () =>
-                  bloc.add(const VendorPurchaseFilterToggled('Yes')),
-              onSubmittedTap: () => bloc.add(
-                const VendorSubmissionFilterToggled(kVendorSubmittedStatuses),
-              ),
-            ),
-          ),
-        );
-
-        // Filters first, then the overview of what they matched, then the
-        // table.
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.vendorParticipation.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'invitations',
+            ),
+            SizedBox(height: spacing),
+            ReportTimelineFilter(
+              label: 'Submission date',
+              selectedRange: filters.submissionDateRange,
+              onChanged: (range) =>
+                  bloc.add(VendorSubmissionDateChanged(range)),
+            ),
+            SizedBox(height: spacing),
             VendorFilterPanel(
               searchController: _searchController,
               onSearchChanged: (value) => bloc.add(VendorSearchChanged(value)),
@@ -140,8 +133,6 @@ class _VendorParticipationViewState extends State<VendorParticipationView> {
                   bloc.add(VendorSubmissionDateChanged(range)),
               onFiltersReset: () => bloc.add(const VendorFiltersCleared()),
             ),
-            SizedBox(height: spacing),
-            overview,
             SizedBox(height: spacing),
             if (widget.fillHeight) Expanded(child: table) else table,
           ],

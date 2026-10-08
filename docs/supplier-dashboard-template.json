@@ -1,0 +1,550 @@
+{
+  "spec": "SESB eTender — Supplier View Dashboard (\"My Bid\")",
+  "version": "1.0",
+  "generated": "2026-10-06",
+  "purpose": "A build specification for the supplier-facing dashboard, extracted from a working Flutter implementation. Hand this to an agent or developer to rebuild the same screen in another codebase. Every value here is taken from the running implementation, not invented.",
+  "dataSourceRule": {
+    "statement": "BUILD THIS AGAINST THE SYSTEM'S EXISTING DATA. Do not invent sample records, do not seed a fixture file, and do not hard-code the numbers shown on the tiles.",
+    "why": "Every figure on this page is a count of supplier participation rows that the system already holds and already serves to another screen. Inventing a parallel dataset produces a dashboard that disagrees with the report it is meant to summarise, and the disagreement will not show up until someone compares them.",
+    "theOneSource": {
+      "endpoint": "GET /reports/supplier-participation",
+      "returns": "One row per tender the signed-in supplier took part in.",
+      "contract": "See data.record.fields for the full field list.",
+      "everyFigureOnThisPage": "Derived from these rows by counting them. There is no second source and no computed total that is sent rather than counted."
+    },
+    "derivedNotStored": "The supplier's own name and the categories they bid in are read off their rows, not from a stored profile object. The reference implementation used to take them from a profile fixture that also carried an invented performance score; that fixture has been deleted. If your system has a real supplier profile service, read the name from it — but do not create one just to feed this page.",
+    "theOnlyExternalInput": "Which supplier is signed in. That is a property of the session, not of the data, and in production it comes from the auth token — at which point the endpoint scopes its rows server-side and the client no longer needs it at all.",
+    "ifTheDataIsNotThereYet": "Build against the endpoint and let the page render empty: every tile shows a muted 0, which is a truthful empty state. That is strictly better than mock rows, which make a broken wiring look like a working screen."
+  },
+  "sourceImplementation": {
+    "framework": "Flutter 3.47.5 / Dart, flutter_bloc",
+    "entryWidget": "lib/reports/views/supplier_dashboard_view.dart",
+    "files": {
+      "page": "lib/reports/widgets/dashboard/supplier/supplier_my_bid_dashboard.dart",
+      "stageCardsAndGrid": "lib/reports/widgets/dashboard/supplier/supplier_bid_stage_cards.dart",
+      "vendorBadge": "lib/reports/widgets/dashboard/supplier/supplier_vendor_badge.dart",
+      "periodSelector": "lib/reports/widgets/dashboard/dashboard_period.dart",
+      "themeTokens": "lib/reports/widgets/dashboard/dashboard_theme.dart",
+      "statusVocabulary": "lib/reports/models/status/supplier_status.dart"
+    },
+    "tests": "test/widgets/supplier_dashboard_test.dart"
+  },
+  "theme": {
+    "note": "Resolved hex values. The source maps these through AppColors and KPI-card constants so the dashboard and the report screens cannot drift apart; if you are porting into a system that already has tokens, map onto yours rather than hard-coding these.",
+    "colors": {
+      "primary": "#1F2D3D",
+      "accent": "#315B91",
+      "text": "#1F2D3D",
+      "muted": "#6B7A8F",
+      "background": "#F8FAFD",
+      "card": "#FFFFFF",
+      "border": "#D8E3F0",
+      "headerTint": "#DCEAFE",
+      "success": "#15803D",
+      "danger": "#B91C1C",
+      "warning": "#B45309",
+      "info": "#1D4ED8",
+      "purple": "#4F46E5",
+      "grey": "#475569"
+    },
+    "tints": {
+      "note": "Each accent pairs with a fixed pale tint rather than an alpha blend of itself, so tinted surfaces stay consistent. Tile backgrounds additionally apply 45% opacity to the tint.",
+      "success": "#ECFDF3",
+      "danger": "#FEF2F2",
+      "warning": "#FFF7ED",
+      "info": "#EFF6FF",
+      "purple": "#EEF2FF",
+      "grey": "#F1F5F9",
+      "muted": "#F1F5F9 — muted has no tint of its own and falls back to the grey one"
+    },
+    "metrics": {
+      "cornerRadius": 6,
+      "sectionGap": 16,
+      "cardPadding": 14,
+      "cardBorderWidth": 1,
+      "tileGap": 10,
+      "tilePadding": 12,
+      "scrollbarGutter": 14
+    },
+    "typography": {
+      "pageTitle": {
+        "size": 20,
+        "weight": 600,
+        "color": "text"
+      },
+      "stageTitle": {
+        "size": 11,
+        "weight": 700,
+        "letterSpacing": 0.5,
+        "color": "primary",
+        "transform": "uppercase"
+      },
+      "tileValue": {
+        "size": 28,
+        "weight": 700,
+        "lineHeight": 1.0
+      },
+      "tileLabel": {
+        "size": 13,
+        "weight": 600,
+        "color": "text"
+      },
+      "tileHint": {
+        "size": 11,
+        "lineHeight": 1.3,
+        "color": "statusColor"
+      },
+      "badgeName": {
+        "size": 14,
+        "weight": 700,
+        "color": "primary"
+      },
+      "badgeMeta": {
+        "size": 11.5,
+        "color": "muted"
+      },
+      "footnote": {
+        "size": 11,
+        "color": "muted"
+      }
+    }
+  },
+  "data": {
+    "source": {
+      "endpoint": "GET /reports/supplier-participation",
+      "scopedServerSide": true,
+      "note": "The same dataset the 'My Participation' report reads. This dashboard is a summary of it, so the two must never be fed from different places."
+    },
+    "record": {
+      "description": "One row per tender the signed-in supplier took part in. The full contract is listed because you should bind the real record type, not a three-field subset of it — but only the fields marked usedByThisPage are read here.",
+      "fields": {
+        "supplierName": "string — the supplier's own name; the badge reads it from the first row",
+        "supplierId": "string — the supplier this row belongs to",
+        "referenceNo": "string",
+        "tenderNo": "string",
+        "title": "string",
+        "tenderCategory": "string — the badge's category pills are the distinct values across the supplier's rows",
+        "division": "string",
+        "modeOfProcurement": "string",
+        "openTo": "string",
+        "certificationType": "string",
+        "status": "string — one of statusVocabulary.values; drives every tile count",
+        "publishedDate": "date|null",
+        "requestDate": "date|null — request to participate",
+        "decisionDate": "date|null — approved or rejected",
+        "paymentDate": "date|null — null until the document fee is settled",
+        "closingDate": "date|null — the period filter tests this",
+        "submissionDateTime": "date|null",
+        "documentFee": "number — RM",
+        "bidAmount": "number — RM"
+      },
+      "usedByThisPage": [
+        "supplierId",
+        "supplierName",
+        "tenderCategory",
+        "status",
+        "closingDate"
+      ],
+      "doNotDisplay": [
+        "bidAmount — this dashboard counts states, never values",
+        "documentFee — same"
+      ]
+    },
+    "session": {
+      "signedInSupplierId": "string — from the auth token in production. The only input to this page that is not a record field."
+    },
+    "statusVocabulary": {
+      "note": "Wire strings exactly as the API sends them. Model these as an enum, not bare strings, so a rename is a compile error rather than a counter that silently reads zero. Parse through a fromWire() that returns null for an unrecognised value.",
+      "values": [
+        "Published",
+        "Participation Requested",
+        "Request Rejected",
+        "Request Approved",
+        "Pending Payment",
+        "Paid",
+        "Participated",
+        "Not Participate",
+        "Draft",
+        "Submitted"
+      ],
+      "unknownValue": "Render as itself rather than hiding the row. An unrecognised status is a finding, not a blank."
+    }
+  },
+  "page": {
+    "title": "My Bid",
+    "tabStrip": {
+      "present": false,
+      "reason": "This page has one view. A strip holding a single tab that cannot be changed is decoration, and it repeated the page heading directly beneath it. Add a strip only if a second tab exists."
+    },
+    "sections": [
+      {
+        "order": 1,
+        "id": "vendorBadge",
+        "description": "Who the signed-in supplier is, derived entirely from their own rows.",
+        "background": "headerTint",
+        "border": "1px border, radius 6",
+        "padding": {
+          "horizontal": 18,
+          "vertical": 14
+        },
+        "content": {
+          "icon": "storefront_outlined, 22px, primary",
+          "iconGap": 12,
+          "line1": "supplierName — badgeName style, single line, ellipsised",
+          "line2": "'{supplierId} · Registered Supplier' — badgeMeta style",
+          "trailing": "One pill per derived category, accent coloured, wrapping, 6px spacing"
+        },
+        "derivation": {
+          "supplierName": "records.where(supplierId == session).first.supplierName",
+          "supplierId": "session.signedInSupplierId",
+          "categories": "distinct non-empty tenderCategory across the supplier's rows",
+          "note": "Derived from every row the supplier has, not from the rows left after the period filter: who they are does not change when they pick a shorter window."
+        },
+        "emptyCase": "A supplier with no rows at all shows an empty name. Render the badge anyway — the supplier ID still identifies them."
+      },
+      {
+        "order": 2,
+        "id": "periodSelector",
+        "gapAbove": 20,
+        "description": "How far back the page is looking. A segmented control on the left, the resolved month on the right.",
+        "options": [
+          {
+            "months": 1,
+            "label": "Current Month"
+          },
+          {
+            "months": 3,
+            "label": "3 Months"
+          },
+          {
+            "months": 6,
+            "label": "6 Months"
+          },
+          {
+            "months": 9,
+            "label": "9 Months"
+          },
+          {
+            "months": 12,
+            "label": "12 Months"
+          }
+        ],
+        "default": 1,
+        "control": {
+          "container": "card background, 1px border, radius 8, 3px padding",
+          "button": {
+            "padding": {
+              "horizontal": 14,
+              "vertical": 10
+            },
+            "radius": 6,
+            "size": 12
+          },
+          "selectedButton": {
+            "background": "accent",
+            "textColor": "#FFFFFF",
+            "weight": 600
+          },
+          "unselectedButton": {
+            "background": "transparent",
+            "textColor": "text",
+            "weight": 500
+          },
+          "overflow": "Scrolls horizontally when the row is too narrow; never wraps."
+        },
+        "rightSide": "Calendar icon 16px muted, then 'Showing {MonthName} {Year}' at footnote size.",
+        "wrapBehaviour": "The two halves sit at opposite ends of the row and wrap onto separate lines when narrow (runSpacing 10)."
+      },
+      {
+        "order": 3,
+        "id": "pageHeader",
+        "gapAbove": 20,
+        "description": "Page title on the left; what needs doing and the data vintage on the right.",
+        "left": "'My Bid' in pageTitle style",
+        "right": [
+          {
+            "id": "actionBadge",
+            "renderWhen": "actionCount > 0",
+            "reason": "Its presence is the signal. Showing '0 responses need your action' would be noise.",
+            "background": "warning tint",
+            "radius": 6,
+            "padding": {
+              "horizontal": 12,
+              "vertical": 8
+            },
+            "icon": "flag_outlined, 16px, warning",
+            "text": "'{n} responses need your action', singular '1 response needs your action'",
+            "textStyle": {
+              "size": 12,
+              "weight": 600,
+              "color": "warning"
+            }
+          },
+          {
+            "id": "vintage",
+            "text": "'Data as of {dd MMM yyyy}'",
+            "style": "footnote",
+            "note": "The reference implementation says 'Prototype data as of …' because it runs on a stand-in dataset. Once the page is reading the live endpoint, either drop this line or have it state when the data was actually fetched. Do not leave the word 'Prototype' on a screen showing real figures."
+          }
+        ]
+      },
+      {
+        "order": 4,
+        "id": "stageGrid",
+        "gapAbove": 16,
+        "description": "The four stages a participation request moves through, as equal cards. This is the substance of the page.",
+        "seeAlso": "stages, layout"
+      }
+    ]
+  },
+  "stages": {
+    "note": "Numbered because the numbering is the point: it tells a supplier what comes next, which a flat row of counters would not. Each tile's hint states the action the count implies, not a description of the status — a supplier reading '3 Pending Payment' needs to be told to go and pay.",
+    "items": [
+      {
+        "number": "1",
+        "title": "Request to Participate",
+        "tiles": [
+          {
+            "status": "Participation Requested",
+            "label": "Participation Requested",
+            "hint": "Awaiting approval",
+            "color": "warning",
+            "icon": "back_hand_outlined"
+          },
+          {
+            "status": "Request Approved",
+            "label": "Request Approved",
+            "hint": "Proceed to buy document",
+            "color": "accent",
+            "icon": "check_circle_outline"
+          },
+          {
+            "status": "Request Rejected",
+            "label": "Request Rejected",
+            "hint": "View rejected remarks",
+            "color": "danger",
+            "icon": "cancel_outlined"
+          }
+        ]
+      },
+      {
+        "number": "2",
+        "title": "Document Purchase",
+        "tiles": [
+          {
+            "status": "Pending Payment",
+            "label": "Pending Payment",
+            "hint": "Complete document payment",
+            "color": "danger",
+            "icon": "credit_card_outlined"
+          },
+          {
+            "status": "Paid",
+            "label": "Paid",
+            "hint": "Document downloadable",
+            "color": "success",
+            "icon": "receipt_long_outlined"
+          }
+        ]
+      },
+      {
+        "number": "3",
+        "title": "Participation",
+        "tiles": [
+          {
+            "status": "Participated",
+            "label": "Participated",
+            "hint": "Prepare your bid",
+            "color": "purple",
+            "icon": "flag_outlined"
+          },
+          {
+            "status": "Not Participate",
+            "label": "Not Participate",
+            "hint": "Not bidding",
+            "color": "muted",
+            "icon": "remove_circle_outline"
+          }
+        ]
+      },
+      {
+        "number": "4",
+        "title": "Bid Submission",
+        "tiles": [
+          {
+            "status": "Draft",
+            "label": "Draft",
+            "hint": "Submit before closing",
+            "color": "warning",
+            "icon": "edit_outlined"
+          },
+          {
+            "status": "Submitted",
+            "label": "Submitted",
+            "hint": "Bid documents received",
+            "color": "success",
+            "icon": "send_outlined"
+          }
+        ]
+      }
+    ],
+    "unmappedStatus": {
+      "value": "Published",
+      "note": "In the vocabulary but shown on no tile: it means the tender exists, not that the supplier has done anything. Counted nowhere on this page."
+    }
+  },
+  "components": {
+    "stageCard": {
+      "background": "card",
+      "border": "1px border, radius 6",
+      "padding": 14,
+      "header": {
+        "numberBadge": {
+          "size": 22,
+          "shape": "circle",
+          "background": "primary",
+          "text": "stage.number",
+          "textStyle": {
+            "size": 11,
+            "weight": 700,
+            "color": "#FFFFFF"
+          }
+        },
+        "gap": 8,
+        "title": "stageTitle style, single line, ellipsised",
+        "rule": "12px gap, 1px divider in border colour, 12px gap, then the tiles"
+      }
+    },
+    "statTile": {
+      "background": "45% opacity of the status colour's tint",
+      "topBorder": "3px solid, status colour",
+      "radius": 6,
+      "padding": 12,
+      "row1": {
+        "iconBox": {
+          "size": 30,
+          "background": "card",
+          "radius": 6,
+          "icon": "17px, status colour"
+        },
+        "spacer": true,
+        "value": "tileValue style; status colour normally, muted when the count is 0"
+      },
+      "gapAfterRow1": 12,
+      "label": "tileLabel style",
+      "gapAfterLabel": 4,
+      "hint": "tileHint style, status colour",
+      "zeroHandling": "A zero is greyed, never hidden. 'Nothing pending payment' is worth seeing, and a tile that disappeared would shift the ones beside it."
+    }
+  },
+  "layout": {
+    "principle": "Every card the same size and every tile the same size. Those cannot both hold while a card stretches to fit whatever it contains, because stage 1 holds three tiles and the others hold two — so the tiles-per-line is decided once for the page and handed down to every card.",
+    "rules": {
+      "stagesPerRow": {
+        "tryInOrder": [
+          4,
+          2,
+          1
+        ],
+        "accept": "the first count whose resulting tile width is >= minTileWidth",
+        "cardWidth": "(availableWidth - (columns - 1) * sectionGap) / columns",
+        "cards": "equal width, filled by flex — never sized to their contents"
+      },
+      "tilesPerLine": {
+        "value": 2,
+        "fallback": 1,
+        "fallbackWhen": "no stages-per-row choice yields a tile >= minTileWidth",
+        "reason": "At two abreast a three-tile stage reads as two-then-one and a two-tile stage fills its line exactly. Three abreast would leave an empty slot inside every two-tile card."
+      },
+      "tileWidth": "(cardWidth - 2*(cardPadding + cardBorderWidth) - (tilesPerLine - 1) * tileGap) / tilesPerLine",
+      "minTileWidth": 116,
+      "rowHeights": "Cards in the same row stretch to the tallest. Stage 1 carries an extra tile line, so in the 2-across layout its row is taller than the row below — inherent to wrapping.",
+      "noHorizontalScroll": "The stage grid must never scroll sideways. Scrolling right to read a four-step summary was the original fault; it wraps instead.",
+      "measuredResults": [
+        {
+          "pageWidth": 1500,
+          "stagesPerRow": 4,
+          "cardWidth": 363,
+          "tileWidth": 162
+        },
+        {
+          "pageWidth": 1400,
+          "stagesPerRow": 4,
+          "cardWidth": 338,
+          "tileWidth": 149
+        },
+        {
+          "pageWidth": 1200,
+          "stagesPerRow": 4,
+          "cardWidth": 288,
+          "tileWidth": 124
+        },
+        {
+          "pageWidth": 1000,
+          "stagesPerRow": 2,
+          "cardWidth": 492,
+          "tileWidth": 226
+        },
+        {
+          "pageWidth": 700,
+          "stagesPerRow": 2,
+          "cardWidth": 342,
+          "tileWidth": 151
+        },
+        {
+          "pageWidth": 520,
+          "stagesPerRow": 1,
+          "cardWidth": 520,
+          "tileWidth": 240
+        }
+      ]
+    },
+    "pitfalls": [
+      "If the card draws a 1px border, that border comes out of the card's own width. Omitting it from the tile-width arithmetic overflows every card by exactly 2px.",
+      "Do not derive the layout from pixel breakpoints AND a minimum tile width at once. They are two ways of saying the same thing, and when they disagree the page stacks at widths that had room to spare.",
+      "Do not let each card stretch to fit its tile count. That is what made stage 1 47% wider than its neighbours."
+    ]
+  },
+  "behaviour": {
+    "recordScoping": {
+      "rule": "Show only records whose supplierId equals the signed-in supplier's.",
+      "warning": "SECURITY — in the reference implementation this filter runs in the widget, which is a stand-in only. The endpoint must scope to the authenticated supplier server-side. A supplier must never receive another supplier's rows, because the payload would carry competitors' participation and fees even if the UI hid them."
+    },
+    "periodFilter": {
+      "window": "start = first day of (currentMonth - periodMonths + 1); end = first day of next month",
+      "test": "closingDate >= start AND closingDate < end",
+      "appliesTo": "every tile count on the page"
+    },
+    "counting": "For each tile, count the filtered records whose parsed status equals that tile's status. A record with an unrecognised status is counted on no tile.",
+    "actionCount": {
+      "definition": "Sum of the counts for: Request Approved, Request Rejected, Pending Payment, Participated, Draft",
+      "meaning": "The statuses where the next move is the supplier's.",
+      "drives": "The action badge in the page header."
+    },
+    "interactions": {
+      "periodSelector": "Changes the window and recounts. The only interactive control on the page.",
+      "tiles": "Not interactive in the reference implementation. If you make them clickable, a tile should filter a list of the matching tenders — do not navigate away from the dashboard."
+    },
+    "emptyState": "No special empty state. Every tile shows 0 in muted grey, which tells a supplier with no activity exactly as much as a message would."
+  },
+  "acceptanceCriteria": [
+    "All four stage cards render at the same width at every page width.",
+    "All nine tiles render at the same width at every page width.",
+    "A three-tile stage wraps as [2, 1]; a two-tile stage stays [2].",
+    "The stage grid never produces a horizontal scrollbar.",
+    "Nothing overflows at 1400, 1000, 700 and 380 px.",
+    "The page heading appears exactly once.",
+    "A count of zero renders as a muted 0, not a hidden tile.",
+    "Changing the period re-counts every tile without re-fetching.",
+    "Every tile count traces to rows from GET /reports/supplier-participation; nothing on the page is hard-coded or seeded."
+  ],
+  "doNotBuild": [
+    "A fixture, seed file or hard-coded array of sample participation rows. Read the endpoint.",
+    "A supplier profile object invented to feed the badge — the name and categories are already on the records.",
+    "Any figure that is sent rather than counted. Every number here is a count of rows you already have.",
+    "A tab strip with a single tab.",
+    "Any figure belonging to another supplier — totals across suppliers, rankings, or counts of who else bid.",
+    "A bid amount or price anywhere on this page. The dashboard counts states, never values.",
+    "A horizontally scrolling stage row."
+  ]
+}

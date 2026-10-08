@@ -71,9 +71,7 @@ Widget harness({bool loaded = true}) {
     ],
     child: const MaterialApp(
       home: Scaffold(
-        body: SingleChildScrollView(
-          child: DashboardView(sectionSpacing: 16, fillHeight: false),
-        ),
+        body: SingleChildScrollView(child: DashboardView(fillHeight: false)),
       ),
     ),
   );
@@ -103,8 +101,6 @@ void main() {
       'eRFC',
       'Vendors',
       'TOC & Opening',
-      'Tender Security',
-      'VTM Monitoring',
       'Overview',
     ]) {
       await openTab(tester, tab);
@@ -116,31 +112,29 @@ void main() {
     }
   });
 
-  testWidgets('the three later reports show their own figures', (tester) async {
+  testWidgets('the later reports show their own figures', (tester) async {
     tester.view.physicalSize = wide;
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(harness());
     await tester.pumpAndSettle();
+
+    await openTab(tester, 'Tenders');
+    expect(find.text('Tender Response Status'), findsOneWidget);
+    expect(find.text('Tender Lifecycle'), findsOneWidget);
+
+    await openTab(tester, 'eRFC');
+    expect(find.text('RFC Approval Flow'), findsOneWidget);
+    await openTab(tester, 'Vendors');
+    expect(find.text('Vendor Participation Flow'), findsOneWidget);
 
     await openTab(tester, 'TOC & Opening');
-    expect(find.text('Openings'), findsOneWidget);
-    expect(find.text('Awaiting Committee'), findsOneWidget);
-    expect(find.text('Committee Workload'), findsOneWidget);
-
-    await openTab(tester, 'Tender Security');
-    expect(find.text('Outstanding Tender Security'), findsOneWidget);
-    expect(find.text('Expired, Still Held'), findsOneWidget);
-    expect(find.text('Security Status'), findsOneWidget);
-
-    await openTab(tester, 'VTM Monitoring');
-    expect(find.text('Appendix F Documents'), findsOneWidget);
-    expect(find.text('Sent Back'), findsOneWidget);
-    expect(find.text('Appendix F Pipeline'), findsOneWidget);
+    expect(find.text('Tender Opening Status Flow'), findsOneWidget);
+    expect(find.text('Opening Lifecycle'), findsOneWidget);
   });
 
-  testWidgets('the overview carries the two process reports', (tester) async {
+  testWidgets('the overview shows tender and RFC status', (tester) async {
     tester.view.physicalSize = wide;
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
@@ -148,10 +142,14 @@ void main() {
     await tester.pumpWidget(harness());
     await tester.pumpAndSettle();
 
-    // Both are on the landing tab, so neither report is invisible until
-    // somebody finds its tab.
-    expect(find.text('Appendix F Pipeline'), findsOneWidget);
-    expect(find.text('Opening Progress'), findsOneWidget);
+    expect(find.text('Tender Status'), findsOneWidget);
+    expect(find.text('RFC Status'), findsOneWidget);
+    expect(find.text('Tenders Closing Soon'), findsOneWidget);
+    expect(find.text('RFC Exceeded Validity'), findsOneWidget);
+
+    await tester.tap(find.text('Go to Tenders ›'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tender Response Status'), findsOneWidget);
   });
 
   testWidgets('it survives the frame before any data arrives', (tester) async {
@@ -165,7 +163,7 @@ void main() {
     await tester.pumpWidget(harness(loaded: false));
     await tester.pumpAndSettle();
 
-    for (final tab in ['TOC & Opening', 'Tender Security', 'VTM Monitoring']) {
+    for (final tab in ['Tenders', 'eRFC', 'Vendors', 'TOC & Opening']) {
       await openTab(tester, tab);
       expect(
         tester.takeException(),
@@ -173,11 +171,5 @@ void main() {
         reason: 'the $tab panel threw with no records',
       );
     }
-
-    // A dash rather than RM 0: nothing held and nothing read differ. Asserted
-    // on the tab that shows it, since the loop above ends elsewhere.
-    await openTab(tester, 'Tender Security');
-    expect(find.text('No data'), findsOneWidget);
-    expect(find.text('No tender security data'), findsWidgets);
   });
 }

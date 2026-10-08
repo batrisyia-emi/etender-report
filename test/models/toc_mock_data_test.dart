@@ -78,7 +78,10 @@ void main() {
       test(
         'one opening is closed out, so the average has something to average',
         () {
-          expect(tocClosedOutCount(records), greaterThan(0));
+          expect(
+            records.where((r) => r.appendixPSubmittedAt != null),
+            isNotEmpty,
+          );
           expect(tocAverageAging(records, asOf: day), isNotNull);
         },
       );

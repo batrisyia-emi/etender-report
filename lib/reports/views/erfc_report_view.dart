@@ -1,14 +1,16 @@
 // lib/reports/views/erfc_report_view.dart
 import 'package:etender_reports/reports/bloc/erfc/erfc_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/filters/report_filters.dart';
-import 'package:etender_reports/reports/widgets/cards/erfc_kpi_cards.dart';
+import 'package:etender_reports/reports/report_type.dart';
 import 'package:etender_reports/reports/widgets/erfc/erfc_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/erfc/erfc_processing_time_panel.dart';
 import 'package:etender_reports/reports/widgets/erfc/erfc_report_table.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
+import 'package:etender_reports/reports/widgets/shared/report_timeline_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -72,24 +74,13 @@ class _ErfcReportViewState extends State<ErfcReportView> {
         final filters = state.filters;
         final records = state.filteredRecords;
 
+        // fillHeight is deliberately not passed through. This page
+        // pins only the filters; everything below them scrolls as one
+        // column, so the table takes its own capped height rather
+        // than the page's.
         final table = ErfcReportTable(
           records: records,
           fillHeight: widget.fillHeight,
-        );
-
-        final overview = CollapsibleSection(
-          title: 'Overview',
-          collapsedSummary: '8 metrics hidden',
-          child: KpiCardRow(
-            spacing: spacing,
-            cards: buildErfcKpiCards(
-              records: records,
-              // Clicking the Overdue card filters the table to overdue RFCs.
-              onStatusTap: (statuses) =>
-                  bloc.add(ErfcStatusGroupToggled(statuses)),
-              onOverdueTap: () => bloc.add(const ErfcOverdueOnlyToggled()),
-            ),
-          ),
         );
 
         // Aging metrics by division. Collapsed by default so the table
@@ -102,12 +93,24 @@ class _ErfcReportViewState extends State<ErfcReportView> {
           child: ErfcProcessingTimePanel(records: records),
         );
 
-        // Filters first, then the overview of what they matched, then the
-        // table.
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.erfc.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'eRFCs',
+            ),
+            SizedBox(height: spacing),
+            ReportTimelineFilter(
+              label: 'Submission date',
+              selectedRange: filters.submissionDateRange,
+              onChanged: (range) => bloc.add(ErfcSubmissionDateChanged(range)),
+            ),
+            SizedBox(height: spacing),
             ErfcFilterPanel(
               searchController: _searchController,
               onSearchChanged: (value) => bloc.add(ErfcSearchChanged(value)),
@@ -134,8 +137,6 @@ class _ErfcReportViewState extends State<ErfcReportView> {
                   bloc.add(ErfcOverdueOnlyChanged(value)),
               onFiltersReset: () => bloc.add(const ErfcFiltersCleared()),
             ),
-            SizedBox(height: spacing),
-            overview,
             SizedBox(height: spacing),
             processingTimes,
             SizedBox(height: spacing),

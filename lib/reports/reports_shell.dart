@@ -114,12 +114,8 @@ class ReportsShell extends StatelessWidget {
     required bool fillHeight,
   }) {
     return switch (reportType) {
-      ReportType.seDashboard => DashboardView(
-        sectionSpacing: spacing,
-        fillHeight: fillHeight,
-      ),
+      ReportType.seDashboard => DashboardView(fillHeight: fillHeight),
       ReportType.supplierDashboard => SupplierDashboardView(
-        sectionSpacing: spacing,
         fillHeight: fillHeight,
       ),
       ReportType.tenderSummary => TenderSummaryView(
@@ -181,15 +177,20 @@ class ReportsShell extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
-            Text(
-              selectedReport.pageTitle,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: pageTitleSize,
-                color: Colors.blue.shade900,
+            // Reports print their own title inside ReportHeader, along
+            // with the criteria that produced the rows. Only the two
+            // dashboards need a heading from the shell.
+            if (!selectedReport.isReport) ...[
+              Text(
+                selectedReport.pageTitle,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: pageTitleSize,
+                  color: Colors.blue.shade900,
+                ),
               ),
-            ),
-            SizedBox(height: sectionSpacing),
+              SizedBox(height: sectionSpacing),
+            ],
             if (fillHeight) Expanded(child: body) else body,
           ],
         );

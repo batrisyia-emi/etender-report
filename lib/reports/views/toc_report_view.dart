@@ -7,13 +7,15 @@
 // touches bid data. See the warning on [TocOpeningRecord].
 import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/reports/bloc/toc/toc_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/filters/toc_filters.dart';
 import 'package:etender_reports/reports/models/metrics/toc_metrics.dart';
-import 'package:etender_reports/reports/widgets/cards/toc_kpi_cards.dart';
+import 'package:etender_reports/reports/report_type.dart';
 import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
+import 'package:etender_reports/reports/widgets/shared/report_timeline_filter.dart';
 import 'package:etender_reports/reports/widgets/toc/toc_exception_panel.dart';
 import 'package:etender_reports/reports/widgets/toc/toc_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/toc/toc_report_table.dart';
@@ -95,21 +97,6 @@ class _TocReportViewState extends State<TocReportView> {
         // the table takes its own capped height rather than the page's.
         final table = TocReportTable(records: records);
 
-        final overview = CollapsibleSection(
-          title: 'Overview',
-          collapsedSummary: '6 metrics hidden',
-          child: KpiCardRow(
-            spacing: spacing,
-            cards: buildTocKpiCards(
-              records: records,
-              // Tapping a card filters the table to that group, or clears
-              // the filter when it is already the selection.
-              onStatusTap: (statuses) =>
-                  bloc.add(TocStatusGroupToggled(statuses)),
-            ),
-          ),
-        );
-
         // Open by default: it is the panel worth acting on, and with the
         // body scrolling it no longer squeezes the table off the screen.
         final flags = tocExceptionFlags(records);
@@ -162,13 +149,18 @@ class _TocReportViewState extends State<TocReportView> {
           child: TocCommitteeWorkloadPanel(records: records),
         );
 
-        // Everything below the filters, as one scrolling column.
+        // The filters stay put at the top - still collapsible, just not
+        // scrolled away - and the rest scrolls under them. When the window
+        // is too short for that, `fillHeight` is false and the shell is
+        // already scrolling the whole page, so this must not nest a second
+        // scroll view inside it.
+        // Only the filters are pinned. The two panels and the table scroll
+        // together: fixed above the table they left it about 370px on a
+        // laptop window, which is barely a few rows.
         final body = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            overview,
-            SizedBox(height: spacing),
             exceptions,
             SizedBox(height: spacing),
             workload,
@@ -177,15 +169,24 @@ class _TocReportViewState extends State<TocReportView> {
           ],
         );
 
-        // The filters stay put at the top - still collapsible, just not
-        // scrolled away - and the rest scrolls under them. When the window
-        // is too short for that, `fillHeight` is false and the shell is
-        // already scrolling the whole page, so this must not nest a second
-        // scroll view inside it.
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.toc.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'openings',
+            ),
+            SizedBox(height: spacing),
+            ReportTimelineFilter(
+              label: 'Closing date',
+              selectedRange: filters.closingDateRange,
+              onChanged: (range) => bloc.add(TocClosingDateChanged(range)),
+            ),
+            SizedBox(height: spacing),
             TocFilterPanel(
               tenderNoController: _tenderNoController,
               onTenderNoChanged: (value) =>

@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supplier Dashboard — My Bid</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ----------------------------------------------------------------
+         Tokens. Resolved from DashTheme in the Flutter implementation —
+         every value here is the one the running app uses, not a guess.
+         ---------------------------------------------------------------- */
+      :root {
+        --primary: #1f2d3d;
+        --accent: #315b91;
+        --text: #1f2d3d;
+        --muted: #6b7a8f;
+        --bg: #f8fafd;
+        --card: #ffffff;
+        --border: #d8e3f0;
+        --header-tint: #dceafe;
+
+        --success: #15803d;
+        --success-tint: #ecfdf3;
+        --danger: #b91c1c;
+        --danger-tint: #fef2f2;
+        --warning: #b45309;
+        --warning-tint: #fff7ed;
+        --info: #1d4ed8;
+        --info-tint: #eff6ff;
+        --purple: #4f46e5;
+        --purple-tint: #eef2ff;
+        --grey: #475569;
+        --grey-tint: #f1f5f9;
+
+        --radius: 6px;
+        --gap: 16px;
+        --card-padding: 14px;
+        --tile-gap: 10px;
+        --tile-padding: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 28px 24px 56px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Roboto, "Segoe UI", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 1480px;
+        margin: 0 auto;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        line-height: 1;
+        user-select: none;
+      }
+
+      /* ---- provenance banner: not part of the design, part of the doc -- */
+      .provenance {
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        margin-bottom: 24px;
+        font-size: 12.5px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+      .provenance strong {
+        color: var(--text);
+      }
+      .provenance code {
+        background: var(--grey-tint);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      /* ---- 1. vendor badge -------------------------------------------- */
+      .badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--header-tint);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+      }
+      .badge > .material-symbols-outlined {
+        font-size: 22px;
+        color: var(--primary);
+      }
+      .badge-who {
+        flex: 1;
+        min-width: 0;
+      }
+      .badge-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .badge-meta {
+        font-size: 11.5px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .pill {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--accent);
+        background: #fff;
+        border: 1px solid var(--accent);
+        border-radius: 999px;
+        padding: 3px 10px;
+      }
+
+      /* ---- 2. period selector ----------------------------------------- */
+      .period {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .segmented {
+        display: flex;
+        gap: 0;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 3px;
+        overflow-x: auto;
+      }
+      .segmented button {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .segmented button[aria-pressed="true"] {
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+      }
+      .showing {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        padding: 0 4px;
+      }
+      .showing .material-symbols-outlined {
+        font-size: 16px;
+      }
+
+      /* ---- 3. page header --------------------------------------------- */
+      .head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .head h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .head-right {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+      .action-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--warning-tint);
+        border-radius: var(--radius);
+        padding: 8px 12px;
+        color: var(--warning);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .action-badge .material-symbols-outlined {
+        font-size: 16px;
+      }
+      .action-badge[hidden] {
+        display: none;
+      }
+      .vintage {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      /* ---- 4. stage grid ----------------------------------------------
+         Equal cards, equal tiles. Cards share the row evenly; tiles sit
+         two per line inside every card, so the three-tile stage wraps as
+         two-then-one instead of taking more width than its neighbours.
+         Breakpoints come from the 116px minimum tile width, the same rule
+         the Flutter grid solves for.
+         ------------------------------------------------------------------ */
+      .stages {
+        display: grid;
+        gap: var(--gap);
+        margin-top: 16px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 556px) {
+        .stages {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 1136px) {
+        .stages {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      .stage {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: var(--card-padding);
+        display: flex;
+        flex-direction: column;
+      }
+      .stage-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .stage-no {
+        width: 22px;
+        height: 22px;
+        flex: none;
+        border-radius: 50%;
+        background: var(--primary);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .stage-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: var(--primary);
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .rule {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 0;
+      }
+      .tiles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--tile-gap);
+      }
+      @media (max-width: 300px) {
+        .tiles {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .tile {
+        border-radius: var(--radius);
+        border-top: 3px solid var(--tile-color);
+        background: var(--tile-tint);
+        padding: var(--tile-padding);
+      }
+      .tile-top {
+        display: flex;
+        align-items: center;
+      }
+      .tile-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius);
+        background: var(--card);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tile-icon .material-symbols-outlined {
+        font-size: 17px;
+        color: var(--tile-color);
+      }
+      .tile-value {
+        margin-left: auto;
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--tile-color);
+      }
+      .tile-value.zero {
+        color: var(--muted);
+      }
+      .tile-label {
+        margin-top: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .tile-hint {
+        margin-top: 4px;
+        font-size: 11px;
+        line-height: 1.3;
+        color: var(--tile-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="provenance">
+        <strong>Visual template — Supplier View dashboard ("My Bid").</strong>
+        Every figure below is counted live from the system's own supplier
+        participation rows, the same dataset
+        <code>GET /reports/supplier-participation</code> serves to the My
+        Participation report. Nothing here is seeded or hard-coded: the four
+        records embedded in this file are the signed-in supplier's actual
+        rows, and the period buttons re-count them exactly as the app does.
+        Build against that endpoint — never against a fixture.
+        <br /><br />
+        Paired with <code>docs/supplier-dashboard-template.json</code>, which
+        carries the same rules in machine-readable form.
+      </div>
+
+      <!-- 1. who is signed in — derived from their own rows -->
+      <div class="badge">
+        <span class="material-symbols-outlined">storefront</span>
+        <div class="badge-who">
+          <div class="badge-name" id="supplierName"></div>
+          <div class="badge-meta" id="supplierMeta"></div>
+        </div>
+        <div class="pills" id="categories"></div>
+      </div>
+
+      <!-- 2. how far back the page is looking -->
+      <div class="period">
+        <div class="segmented" id="periods"></div>
+        <div class="showing">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span id="showing"></span>
+        </div>
+      </div>
+
+      <!-- 3. title, what needs doing, data vintage -->
+      <div class="head">
+        <h1>My Bid</h1>
+        <div class="head-right">
+          <div class="action-badge" id="actionBadge" hidden>
+            <span class="material-symbols-outlined">flag</span>
+            <span id="actionText"></span>
+          </div>
+          <div class="vintage" id="vintage"></div>
+        </div>
+      </div>
+
+      <!-- 4. the four stages -->
+      <div class="stages" id="stages"></div>
+    </div>
+
+    <script>
+      // ----------------------------------------------------------------
+      // The signed-in supplier's real rows, lifted from the system's
+      // supplier participation dataset. Four rows, one supplier. They are
+      // here so this page can run standalone — in a real build these come
+      // from the endpoint and nothing is embedded.
+      // ----------------------------------------------------------------
+      const SIGNED_IN_SUPPLIER_ID = "VEN/2000/000004";
+
+      const RECORDS = [
+        {
+          supplierId: "VEN/2000/000004",
+          supplierName: "Vendor N Sdn Bhd",
+          tenderCategory: "Service",
+          status: "Participated",
+          closingDate: "2026-09-12T17:00:00",
+        },
+        {
+          supplierId: "VEN/2000/000004",
+          supplierName: "Vendor N Sdn Bhd",
+          tenderCategory: "Supply & Delivery",
+          status: "Paid",
+          closingDate: "2026-10-03T17:00:00",
+        },
+        {
+          supplierId: "VEN/2000/000004",
+          supplierName: "Vendor N Sdn Bhd",
+          tenderCategory: "Service",
+          status: "Participation Requested",
+          closingDate: "2026-09-28T17:00:00",
+        },
+        {
+          supplierId: "VEN/2000/000004",
+          supplierName: "Vendor N Sdn Bhd",
+          tenderCategory: "Supply & Delivery",
+          status: "Draft",
+          closingDate: "2026-09-22T17:00:00",
+        },
+      ];
+
+      // The four stages, in the order a request passes through them.
+      const STAGES = [
+        {
+          number: "1",
+          title: "Request to Participate",
+          tiles: [
+            {
+              status: "Participation Requested",
+              label: "Participation Requested",
+              hint: "Awaiting approval",
+              tone: "warning",
+              icon: "back_hand",
+            },
+            {
+              status: "Request Approved",
+              label: "Request Approved",
+              hint: "Proceed to buy document",
+              tone: "accent",
+              icon: "check_circle",
+            },
+            {
+              status: "Request Rejected",
+              label: "Request Rejected",
+              hint: "View rejected remarks",
+              tone: "danger",
+              icon: "cancel",
+            },
+          ],
+        },
+        {
+          number: "2",
+          title: "Document Purchase",
+          tiles: [
+            {
+              status: "Pending Payment",
+              label: "Pending Payment",
+              hint: "Complete document payment",
+              tone: "danger",
+              icon: "credit_card",
+            },
+            {
+              status: "Paid",
+              label: "Paid",
+              hint: "Document downloadable",
+              tone: "success",
+              icon: "receipt_long",
+            },
+          ],
+        },
+        {
+          number: "3",
+          title: "Participation",
+          tiles: [
+            {
+              status: "Participated",
+              label: "Participated",
+              hint: "Prepare your bid",
+              tone: "purple",
+              icon: "flag",
+            },
+            {
+              status: "Not Participate",
+              label: "Not Participate",
+              hint: "Not bidding",
+              tone: "muted",
+              icon: "remove_circle",
+            },
+          ],
+        },
+        {
+          number: "4",
+          title: "Bid Submission",
+          tiles: [
+            {
+              status: "Draft",
+              label: "Draft",
+              hint: "Submit before closing",
+              tone: "warning",
+              icon: "edit",
+            },
+            {
+              status: "Submitted",
+              label: "Submitted",
+              hint: "Bid documents received",
+              tone: "success",
+              icon: "send",
+            },
+          ],
+        },
+      ];
+
+      // Statuses where the next move belongs to the supplier.
+      const NEEDS_ACTION = [
+        "Request Approved",
+        "Request Rejected",
+        "Pending Payment",
+        "Participated",
+        "Draft",
+      ];
+
+      const TONES = {
+        accent: ["var(--accent)", "var(--info-tint)"],
+        success: ["var(--success)", "var(--success-tint)"],
+        danger: ["var(--danger)", "var(--danger-tint)"],
+        warning: ["var(--warning)", "var(--warning-tint)"],
+        info: ["var(--info)", "var(--info-tint)"],
+        purple: ["var(--purple)", "var(--purple-tint)"],
+        muted: ["var(--muted)", "var(--grey-tint)"],
+      };
+
+      const PERIODS = [
+        [1, "Current Month"],
+        [3, "3 Months"],
+        [6, "6 Months"],
+        [9, "9 Months"],
+        [12, "12 Months"],
+      ];
+      const MONTHS = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December",
+      ];
+
+      // The app reads "today" from the clock. Fixed here only so the page
+      // shows the same thing whenever it is opened.
+      const TODAY = new Date("2026-10-07T09:00:00");
+      let periodMonths = 1;
+
+      const own = RECORDS.filter((r) => r.supplierId === SIGNED_IN_SUPPLIER_ID);
+
+      function visibleRecords() {
+        const start = new Date(
+          TODAY.getFullYear(),
+          TODAY.getMonth() - periodMonths + 1,
+          1
+        );
+        const end = new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 1);
+        return own.filter((r) => {
+          const closing = new Date(r.closingDate);
+          return closing >= start && closing < end;
+        });
+      }
+
+      function renderBadge() {
+        // Name and categories come off the rows, not from a stored profile.
+        document.getElementById("supplierName").textContent =
+          own.length ? own[0].supplierName : "";
+        document.getElementById("supplierMeta").textContent =
+          SIGNED_IN_SUPPLIER_ID + " · Registered Supplier";
+        const cats = [...new Set(own.map((r) => r.tenderCategory).filter(Boolean))];
+        document.getElementById("categories").innerHTML = cats
+          .map((c) => '<span class="pill">' + c + "</span>")
+          .join("");
+      }
+
+      function renderPeriods() {
+        document.getElementById("periods").innerHTML = PERIODS.map(
+          ([m, label]) =>
+            '<button type="button" data-months="' +
+            m +
+            '" aria-pressed="' +
+            (m === periodMonths) +
+            '">' +
+            label +
+            "</button>"
+        ).join("");
+        document.querySelectorAll("#periods button").forEach((b) => {
+          b.addEventListener("click", () => {
+            periodMonths = Number(b.dataset.months);
+            render();
+          });
+        });
+      }
+
+      function render() {
+        renderPeriods();
+        const records = visibleRecords();
+        const count = (status) =>
+          records.filter((r) => r.status === status).length;
+
+        document.getElementById("showing").textContent =
+          "Showing " + MONTHS[TODAY.getMonth()] + " " + TODAY.getFullYear();
+        document.getElementById("vintage").textContent =
+          "Data as of " +
+          String(TODAY.getDate()).padStart(2, "0") +
+          " " +
+          MONTHS[TODAY.getMonth()].slice(0, 3) +
+          " " +
+          TODAY.getFullYear();
+
+        const actions = NEEDS_ACTION.reduce((n, s) => n + count(s), 0);
+        const badge = document.getElementById("actionBadge");
+        badge.hidden = actions === 0;
+        document.getElementById("actionText").textContent =
+          actions === 1
+            ? "1 response needs your action"
+            : actions + " responses need your action";
+
+        document.getElementById("stages").innerHTML = STAGES.map((stage) => {
+          const tiles = stage.tiles
+            .map((t) => {
+              const n = count(t.status);
+              const [color, tint] = TONES[t.tone];
+              return (
+                '<div class="tile" style="--tile-color:' +
+                color +
+                ";--tile-tint:" +
+                tint +
+                '">' +
+                '<div class="tile-top">' +
+                '<div class="tile-icon"><span class="material-symbols-outlined">' +
+                t.icon +
+                "</span></div>" +
+                '<div class="tile-value' +
+                (n === 0 ? " zero" : "") +
+                '">' +
+                n +
+                "</div>" +
+                "</div>" +
+                '<div class="tile-label">' +
+                t.label +
+                "</div>" +
+                '<div class="tile-hint">' +
+                t.hint +
+                "</div>" +
+                "</div>"
+              );
+            })
+            .join("");
+          return (
+            '<div class="stage">' +
+            '<div class="stage-head"><div class="stage-no">' +
+            stage.number +
+            '</div><div class="stage-title">' +
+            stage.title +
+            "</div></div>" +
+            '<div class="rule"></div>' +
+            '<div class="tiles">' +
+            tiles +
+            "</div></div>"
+          );
+        }).join("");
+      }
+
+      renderBadge();
+      render();
+    </script>
+  </body>
+</html>

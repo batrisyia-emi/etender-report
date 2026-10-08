@@ -40,6 +40,13 @@ enum ReportType {
   /// Short form, for the sidebar.
   final String navLabel;
 
-  /// Full form, for the page heading.
+  /// Full form, for the page heading and the report header.
   final String pageTitle;
+
+  /// True for everything except the two dashboards.
+  ///
+  /// A report draws its own header — title, criteria, record count — so the
+  /// shell leaves the heading to it rather than printing the title twice.
+  bool get isReport =>
+      this != ReportType.seDashboard && this != ReportType.supplierDashboard;
 }

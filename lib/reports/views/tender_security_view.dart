@@ -8,12 +8,12 @@
 // gesture — see _applyEdit.
 import 'package:etender_reports/data/actions/report_actions.dart';
 import 'package:etender_reports/reports/bloc/tender_security/tender_security_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/records/tender_security_record.dart';
-import 'package:etender_reports/reports/widgets/cards/tender_security_kpi_cards.dart';
-import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/report_type.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
 import 'package:etender_reports/reports/widgets/tender_security/tender_security_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/tender_security/tender_security_table.dart';
@@ -130,20 +130,6 @@ class _TenderSecurityReportViewState extends State<TenderSecurityReportView> {
         final filters = state.filters;
         final records = state.filteredRecords;
 
-        final overview = CollapsibleSection(
-          title: 'Overview',
-          collapsedSummary: '5 metrics hidden',
-          child: KpiCardRow(
-            spacing: spacing,
-            // The cards are the spec's named views: tapping one switches
-            // the table to it, or back to All when it is already showing.
-            cards: buildTenderSecurityKpiCards(
-              records: records,
-              onViewTap: (view) => bloc.add(TenderSecurityViewToggled(view)),
-            ),
-          ),
-        );
-
         final table = TenderSecurityTable(
           records: records,
           onEdit: _applyEdit,
@@ -151,16 +137,6 @@ class _TenderSecurityReportViewState extends State<TenderSecurityReportView> {
             context,
             () => context.read<ReportActions>().openTenderSecurityScanCopy(url),
           ),
-        );
-
-        final body = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            overview,
-            SizedBox(height: spacing),
-            table,
-          ],
         );
 
         // The filters stay put at the top — still collapsible, just not
@@ -171,6 +147,14 @@ class _TenderSecurityReportViewState extends State<TenderSecurityReportView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.tenderSecurity.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'securities',
+            ),
+            SizedBox(height: spacing),
             TenderSecurityFilterPanel(
               tenderNoController: _tenderNoController,
               onTenderNoChanged: (value) =>
@@ -192,10 +176,7 @@ class _TenderSecurityReportViewState extends State<TenderSecurityReportView> {
                   bloc.add(const TenderSecurityFiltersCleared()),
             ),
             SizedBox(height: spacing),
-            if (widget.fillHeight)
-              Expanded(child: SingleChildScrollView(child: body))
-            else
-              body,
+            if (widget.fillHeight) Expanded(child: table) else table,
           ],
         );
       },

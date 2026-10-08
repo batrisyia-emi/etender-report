@@ -1,11 +1,12 @@
 // lib/reports/views/supplier_report_view.dart
 import 'package:etender_reports/reports/bloc/supplier/supplier_bloc.dart';
+import 'package:etender_reports/reports/models/filters/report_criteria.dart';
 // The bloc file re-exports its event, state and ReportStatus.
 import 'package:etender_reports/reports/models/filters/report_filters.dart';
-import 'package:etender_reports/reports/widgets/cards/supplier_kpi_cards.dart';
-import 'package:etender_reports/reports/widgets/shared/collapsible_section.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
+import 'package:etender_reports/reports/report_type.dart';
+import 'package:etender_reports/reports/widgets/shared/report_header.dart';
 import 'package:etender_reports/reports/widgets/shared/report_status_panel.dart';
+import 'package:etender_reports/reports/widgets/shared/report_timeline_filter.dart';
 import 'package:etender_reports/reports/widgets/supplier/supplier_filter_panel.dart';
 import 'package:etender_reports/reports/widgets/supplier/supplier_report_table.dart';
 import 'package:flutter/material.dart';
@@ -71,33 +72,33 @@ class _SupplierReportViewState extends State<SupplierReportView> {
         final filters = state.filters;
         final records = state.filteredRecords;
 
+        // fillHeight is deliberately not passed through. This page
+        // pins only the filters; everything below them scrolls as one
+        // column, so the table takes its own capped height rather
+        // than the page's.
         final table = SupplierReportTable(
           records: records,
           fillHeight: widget.fillHeight,
         );
 
-        final overview = CollapsibleSection(
-          title: 'Overview',
-          collapsedSummary: '8 metrics hidden',
-          child: KpiCardRow(
-            spacing: spacing,
-            cards: buildSupplierKpiCards(
-              records: records,
-              onStatusTap: (statuses) =>
-                  bloc.add(SupplierStatusGroupToggled(statuses)),
-              // Tapping Pending Payment narrows to the rows owing a fee.
-              onPendingPaymentTap: () =>
-                  bloc.add(const SupplierPendingPaymentOnlyToggled()),
-            ),
-          ),
-        );
-
-        // Filters first, then the overview of what they matched, then the
-        // table.
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: widget.fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
+            ReportHeader(
+              title: ReportType.supplier.pageTitle,
+              criteria: filters.describe(),
+              shownCount: records.length,
+              totalCount: state.records.length,
+              unit: 'participations',
+            ),
+            SizedBox(height: spacing),
+            ReportTimelineFilter(
+              label: 'Closing date',
+              selectedRange: filters.closingDateRange,
+              onChanged: (range) => bloc.add(SupplierClosingDateChanged(range)),
+            ),
+            SizedBox(height: spacing),
             SupplierFilterPanel(
               searchController: _searchController,
               onSearchChanged: (value) =>
@@ -129,8 +130,6 @@ class _SupplierReportViewState extends State<SupplierReportView> {
                   bloc.add(SupplierPendingPaymentOnlyChanged(value)),
               onFiltersReset: () => bloc.add(const SupplierFiltersCleared()),
             ),
-            SizedBox(height: spacing),
-            overview,
             SizedBox(height: spacing),
             if (widget.fillHeight) Expanded(child: table) else table,
           ],

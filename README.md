@@ -234,10 +234,18 @@ Honest list of what is unfinished, for whoever picks this up.
 5. **The supplier dashboard's notifications, vendor score and document
    metadata are invented.** No such data existed; it was added to make the
    panels render. Replace with real sources or drop the panels.
-6. **Export is built but not wired to any button.** `report_export.dart` and
-   the CSV / Excel services work and are tested, and all seven tables accept
-   an `onExport` callback — but no view passes one, so the Export menu never
-   appears. Wiring it is a one-line change per view.
+6. **Export is half-wired, and the unwired half is unreferenced.** The CSV
+   encoding in `report_export.dart` works and is tested, the Export menu
+   exists, and all seven tables accept an `onExport` callback — but no view
+   passes one, so the menu never appears. Behind it,
+   `data/services/report_export_service.dart` (the only file that touches
+   the `excel` and `file_saver` packages) and
+   `models/export/report_export_columns.dart` (the per-report column lists)
+   are imported by nothing and covered by no test. They are kept because
+   they are the missing half of this feature, not refactor debris — wiring
+   a view to them is roughly a one-line change, and deleting them would
+   also orphan two pubspec dependencies. Treat them as untested until a
+   view uses them.
 7. **The TOC report rests on five unanswered questions.** A threshold, two
    process questions, one about which form Appendix L is, and one the
    frontend added, listed in

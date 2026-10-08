@@ -86,8 +86,6 @@ class VendorParticipationRecord extends Equatable {
   /// Took the invitation up, as opposed to turning it down.
   bool get hasParticipated => participationStatus == 'Participated';
 
-  bool get wasInvited => invitationStatus == 'Sent';
-
   bool get wasLate => submissionStatus == 'Late';
 
   /// For display and for the Yes / No filter.

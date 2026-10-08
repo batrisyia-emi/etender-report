@@ -232,18 +232,12 @@ void main() {
       expect(vtmPublishedCount(records), 1);
     });
 
-    test('value in flight excludes what has floated', () {
-      expect(vtmTotalValue(records), 1000);
-      expect(vtmInProgressValue(records), 600);
-    });
-
     test('average lead time uses published records only', () {
       expect(vtmAveragePublishedAging(records, asOf: asOf), 20.0);
       expect(vtmAveragePublishedAging([records.first], asOf: asOf), isNull);
     });
 
-    test('status and document type counts key by what was sent', () {
-      expect(vtmStatusCounts(records)['DRAFT'], 1);
+    test('document type counts key by what was sent', () {
       expect(vtmDocumentTypeCounts(records)['Tender'], 4);
     });
   });

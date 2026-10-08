@@ -3,6 +3,7 @@
 // The template's `.stabs` strip: a row of labels over a 2px rule, the active
 // one picked out in the primary colour with the rule carrying through under
 // it. Scrolls sideways rather than wrapping when the window is narrow.
+import 'package:etender_reports/reports/widgets/dashboard/dashboard_scroll.dart';
 import 'package:etender_reports/reports/widgets/dashboard/dashboard_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -31,8 +32,8 @@ class DashTabs extends StatelessWidget {
             child: Container(height: 2, color: DashTheme.border),
           ),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+        DashHorizontalScroll(
+          barSpace: 10,
           child: Row(
             children: [
               for (var i = 0; i < labels.length; i++)

@@ -4,7 +4,6 @@
 // referenceNo and tenderNo, and RFC numbers match the tenders they came
 // from, so cross-report figures stay consistent.
 import 'package:etender_reports/data/mock/erfc_records.dart';
-import 'package:etender_reports/data/mock/supplier_portal.dart';
 import 'package:etender_reports/data/mock/supplier_records.dart';
 import 'package:etender_reports/data/mock/tender_records.dart';
 import 'package:etender_reports/data/mock/tender_security_records.dart';
@@ -36,12 +35,4 @@ class ReportMockData {
   /// See [buildVtmMonitoringRecords].
   static List<Map<String, dynamic>> get vtmMonitoringRecords =>
       buildVtmMonitoringRecords();
-
-  static const Map<String, dynamic> supplierProfile = kSupplierProfile;
-  static const List<Map<String, dynamic>> supplierDocuments =
-      kSupplierDocuments;
-  static const List<Map<String, dynamic>> supplierBidPipeline =
-      kSupplierBidPipeline;
-  static const List<Map<String, dynamic>> supplierNotifications =
-      kSupplierNotifications;
 }

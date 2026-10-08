@@ -16,13 +16,6 @@ const int kTocClosingSoonDays = 3;
 /// How long after Appendix G the closing Appendix P is expected.
 const int kTocAppendixPDueDays = 1;
 
-/// The status the server sent, or null when it sent something this app
-/// does not recognise.
-///
-/// A thin wrapper, kept so callers read the same way they did when this was
-/// derived. The report no longer computes the stage: see [TocStatus].
-TocStatus? tocStatusOf(TocOpeningRecord record) => record.statusValue;
-
 /// Days from closing to Appendix P, or to [asOf] while it is still open.
 ///
 /// Null when there is no closing date to count from. Never negative: a
@@ -46,17 +39,6 @@ int tocCountWithStatuses(
   List<TocOpeningRecord> records,
   Set<TocStatus> statuses,
 ) => records.where((r) => statuses.contains(r.statusValue)).length;
-
-/// Openings whose status cannot occur under their envelope arrangement.
-int tocEnvelopeMismatchCount(List<TocOpeningRecord> records) =>
-    records.where((r) => r.hasEnvelopeMismatch).length;
-
-/// Openings closed out with Appendix P.
-///
-/// Counted from the record rather than from the status, because the status
-/// stops at committee readiness and says nothing about the opening day.
-int tocClosedOutCount(List<TocOpeningRecord> records) =>
-    records.where((r) => r.appendixPSubmittedAt != null).length;
 
 /// Mean aging over the openings that actually finished the cycle. Null when
 /// none have.
