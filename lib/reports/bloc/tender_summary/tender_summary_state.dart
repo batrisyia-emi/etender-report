@@ -49,7 +49,6 @@ class TenderSummaryState extends Equatable {
   List<String> get statusOptions => lifecycleStatuses;
   List<String> get divisionOptions => distinctValues(records, 'division');
   List<String> get departmentOptions => distinctValues(records, 'department');
-  List<String> get unitOptions => distinctValues(records, 'unit');
 
   TenderSummaryState copyWith({
     ReportStatus? status,

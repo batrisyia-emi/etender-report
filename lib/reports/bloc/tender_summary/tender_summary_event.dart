@@ -102,15 +102,6 @@ final class TenderDepartmentsChanged extends TenderSummaryEvent {
   List<Object?> get props => [departments];
 }
 
-final class TenderUnitsChanged extends TenderSummaryEvent {
-  const TenderUnitsChanged(this.units);
-
-  final Set<String> units;
-
-  @override
-  List<Object?> get props => [units];
-}
-
 final class TenderMinimumValueChanged extends TenderSummaryEvent {
   const TenderMinimumValueChanged(this.value);
 
@@ -129,7 +120,8 @@ final class TenderMaximumValueChanged extends TenderSummaryEvent {
   List<Object?> get props => [value];
 }
 
-/// One event for all three date pickers, keyed by [field].
+/// One event for every date picker on this report, keyed by
+/// [field]. A new date filter is an enum case, not a new event.
 final class TenderDateRangeChanged extends TenderSummaryEvent {
   const TenderDateRangeChanged(this.field, this.range);
 

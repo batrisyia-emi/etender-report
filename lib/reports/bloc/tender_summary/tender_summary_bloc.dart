@@ -49,9 +49,6 @@ class TenderSummaryBloc extends Bloc<TenderSummaryEvent, TenderSummaryState> {
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(departments: event.departments)),
     );
-    on<TenderUnitsChanged>(
-      (event, emit) => _emit(emit, (f) => f.copyWith(units: event.units)),
-    );
     on<TenderMinimumValueChanged>(
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(minimumValue: event.value)),

@@ -88,9 +88,9 @@ extension TenderFilterCriteria on TenderFilters {
     _fromOption('Item type', itemType),
     _fromSet('Division', divisions),
     _fromSet('Department', departments),
-    _fromSet('Unit', units),
     _fromMoney(minimumValue, maximumValue),
     _fromRange('Endorsed', endorsedDateRange),
+    _fromRange('Published', publishedDateRange),
     _fromRange('Opening', openingDateRange),
     _fromRange('Closing', closingDateRange),
   ]);

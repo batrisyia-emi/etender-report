@@ -149,12 +149,13 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
               selectedDepartments: filters.departments,
               onDepartmentsChanged: (values) =>
                   bloc.add(TenderDepartmentsChanged(values)),
-              units: state.unitOptions,
-              selectedUnits: filters.units,
-              onUnitsChanged: (values) => bloc.add(TenderUnitsChanged(values)),
               endorsedDateFilter: filters.endorsedDateRange,
               onEndorsedDateChanged: (range) => bloc.add(
                 TenderDateRangeChanged(TenderDateField.endorsed, range),
+              ),
+              publishedDateFilter: filters.publishedDateRange,
+              onPublishedDateChanged: (range) => bloc.add(
+                TenderDateRangeChanged(TenderDateField.published, range),
               ),
               openingDateFilter: filters.openingDateRange,
               onOpeningDateChanged: (range) => bloc.add(

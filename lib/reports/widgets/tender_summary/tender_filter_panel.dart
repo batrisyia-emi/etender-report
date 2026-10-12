@@ -2,8 +2,9 @@
 import 'package:etender_reports/reports/widgets/shared/filter_fields.dart';
 import 'package:flutter/material.dart';
 
-/// Filters for the tender/quotation summary report: organisational ownership,
-/// procurement type, financial threshold and the date ranges.
+/// Filters for the tender/quotation summary report: what kind of document
+/// it is, how it is run and who owns it, what it is worth, and the four
+/// dates it passes through.
 class TenderFilterPanel extends StatelessWidget {
   const TenderFilterPanel({
     super.key,
@@ -35,11 +36,10 @@ class TenderFilterPanel extends StatelessWidget {
     required this.departments,
     required this.selectedDepartments,
     required this.onDepartmentsChanged,
-    required this.units,
-    required this.selectedUnits,
-    required this.onUnitsChanged,
     required this.endorsedDateFilter,
     required this.onEndorsedDateChanged,
+    required this.publishedDateFilter,
+    required this.onPublishedDateChanged,
     required this.openingDateFilter,
     required this.onOpeningDateChanged,
     required this.closingDateFilter,
@@ -84,11 +84,12 @@ class TenderFilterPanel extends StatelessWidget {
   final Set<String> selectedDepartments;
   final ValueChanged<Set<String>> onDepartmentsChanged;
 
-  final List<String> units;
-  final Set<String> selectedUnits;
-  final ValueChanged<Set<String>> onUnitsChanged;
-
   final DateTimeRange? endorsedDateFilter;
+
+  /// The record carries this as floatingDate; everything people see calls
+  /// it Published.
+  final DateTimeRange? publishedDateFilter;
+  final ValueChanged<DateTimeRange?> onPublishedDateChanged;
   final DateTimeRange? openingDateFilter;
   final ValueChanged<DateTimeRange?> onOpeningDateChanged;
   final ValueChanged<DateTimeRange?> onEndorsedDateChanged;
@@ -124,11 +125,15 @@ class TenderFilterPanel extends StatelessWidget {
   static const Icon _itemTypeIcon = Icon(Icons.inventory_2_outlined, size: 18);
   static const Icon _divisionIcon = Icon(Icons.account_tree_outlined, size: 18);
   static const Icon _departmentIcon = Icon(Icons.apartment_outlined, size: 18);
-  static const Icon _unitIcon = Icon(Icons.groups_outlined, size: 18);
   static const Icon _minValueIcon = Icon(Icons.arrow_downward, size: 18);
   static const Icon _maxValueIcon = Icon(Icons.arrow_upward, size: 18);
   static const Icon _endorsedDateIcon = Icon(Icons.event_available, size: 18);
   static const Icon _closingDateIcon = Icon(Icons.event_busy, size: 18);
+  // The same glyph the Published Date column heading uses.
+  static const Icon _publishedDateIcon = Icon(
+    Icons.campaign_outlined,
+    size: 18,
+  );
   static const Icon _openingDateIcon = Icon(Icons.drafts_outlined, size: 18);
 
   @override
@@ -139,14 +144,13 @@ class TenderFilterPanel extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Three rows of five cells. Fourteen filters will not fit three
-            // rows of four, so this panel alone runs on a five-cell rhythm:
-            // search spans two, everything else takes one, and each row
-            // comes to five. Every edge lands on a fifth, and row one's
-            // edges are a subset of the other two's.
+            // Five, five and four. Fourteen filters will not fit three rows
+            // of four, so this panel alone runs on a five-cell rhythm:
+            // every edge lands on a fifth, and the short last row keeps the
+            // four dates together rather than splitting them.
             //
-            // The groups are kept whole - division/department/unit, the two
-            // value bounds, the two dates - so no pair is split across a
+            // The groups stay whole - division and department, the two
+            // value bounds, the four dates - so no pair is split across a
             // row break.
             //
             // What kind of document it is, and where it has reached.
@@ -205,13 +209,22 @@ class TenderFilterPanel extends StatelessWidget {
             ),
             const SizedBox(height: kFilterRowSpacing),
 
-            // Where it sits in the organisation, and what it is worth.
+            // How it is run, who owns it, and what it is worth.
             FilterFieldRow(
               useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
               flexes: const [1, 1, 1, 1, 1],
               gridSpans: const [1, 1, 1, 1, 1],
               fieldBuilders: [
+                (width) => FilterMultiSelectField(
+                  icon: _modeIcon,
+                  label: 'Mode of Procurement',
+                  placeholder: 'All modes',
+                  options: procurementModes,
+                  selectedValues: selectedProcurementModes,
+                  onChanged: onProcurementModesChanged,
+                  width: width,
+                ),
                 (width) => FilterMultiSelectField(
                   icon: _divisionIcon,
                   label: 'Divisions',
@@ -228,15 +241,6 @@ class TenderFilterPanel extends StatelessWidget {
                   options: departments,
                   selectedValues: selectedDepartments,
                   onChanged: onDepartmentsChanged,
-                  width: width,
-                ),
-                (width) => FilterMultiSelectField(
-                  icon: _unitIcon,
-                  label: 'Units',
-                  placeholder: 'All units',
-                  options: units,
-                  selectedValues: selectedUnits,
-                  onChanged: onUnitsChanged,
                   width: width,
                 ),
                 (width) => FilterNumberField(
@@ -259,27 +263,25 @@ class TenderFilterPanel extends StatelessWidget {
             ),
             const SizedBox(height: kFilterRowSpacing),
 
-            // How it is run, and when it happened.
+            // When it happened, in the order the table shows the dates.
             FilterFieldRow(
               useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
               flexes: const [1, 1, 1, 1],
               gridSpans: const [1, 1, 1, 1],
               fieldBuilders: [
-                (width) => FilterMultiSelectField(
-                  icon: _modeIcon,
-                  label: 'Mode of Procurement',
-                  placeholder: 'All modes',
-                  options: procurementModes,
-                  selectedValues: selectedProcurementModes,
-                  onChanged: onProcurementModesChanged,
-                  width: width,
-                ),
                 (width) => FilterDateField(
                   icon: _endorsedDateIcon,
                   label: 'RFC Endorsed Date',
                   selectedRange: endorsedDateFilter,
                   onChanged: onEndorsedDateChanged,
+                  width: width,
+                ),
+                (width) => FilterDateField(
+                  icon: _publishedDateIcon,
+                  label: 'Published Date',
+                  selectedRange: publishedDateFilter,
+                  onChanged: onPublishedDateChanged,
                   width: width,
                 ),
                 (width) => FilterDateField(

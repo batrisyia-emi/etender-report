@@ -8,7 +8,7 @@ import 'package:flutter/material.dart' show DateTimeRange;
 /// Sentinel so copyWith can tell "not supplied" from "set to null".
 const Object _unset = Object();
 
-enum TenderDateField { endorsed, opening, closing }
+enum TenderDateField { endorsed, published, opening, closing }
 
 /// Filters for the tender/quotation summary report. Immutable, and owns its
 /// own matching rule so the bloc stays thin and this stays unit-testable.
@@ -22,10 +22,10 @@ class TenderFilters extends Equatable {
     this.itemType,
     this.divisions = const {},
     this.departments = const {},
-    this.units = const {},
     this.minimumValue,
     this.maximumValue,
     this.endorsedDateRange,
+    this.publishedDateRange,
     this.openingDateRange,
     this.closingDateRange,
   });
@@ -47,10 +47,14 @@ class TenderFilters extends Equatable {
   final String? itemType;
   final Set<String> divisions;
   final Set<String> departments;
-  final Set<String> units;
   final double? minimumValue;
   final double? maximumValue;
   final DateTimeRange? endorsedDateRange;
+
+  /// The day the tender was published. The record calls the field
+  /// floatingDate, which is what the endpoint sends; everything
+  /// people see says Published.
+  final DateTimeRange? publishedDateRange;
   final DateTimeRange? openingDateRange;
   final DateTimeRange? closingDateRange;
 
@@ -74,12 +78,15 @@ class TenderFilters extends Equatable {
         matchesOptional(itemType, record['itemType']) &&
         matchesAnyOf(divisions, record['division']) &&
         matchesAnyOf(departments, record['department']) &&
-        matchesAnyOf(units, record['unit']) &&
         (minimumValue == null || value >= minimumValue!) &&
         (maximumValue == null || value <= maximumValue!) &&
         matchesDateRange(
           parseRecordDate(record['endorsedDate']),
           endorsedDateRange,
+        ) &&
+        matchesDateRange(
+          parseRecordDate(record['floatingDate']),
+          publishedDateRange,
         ) &&
         matchesDateRange(
           parseRecordDate(record['openingDate']),
@@ -105,6 +112,7 @@ class TenderFilters extends Equatable {
   TenderFilters withRange(TenderDateField field, DateTimeRange? range) {
     return switch (field) {
       TenderDateField.endorsed => copyWith(endorsedDateRange: range),
+      TenderDateField.published => copyWith(publishedDateRange: range),
       TenderDateField.opening => copyWith(openingDateRange: range),
       TenderDateField.closing => copyWith(closingDateRange: range),
     };
@@ -119,10 +127,10 @@ class TenderFilters extends Equatable {
     Object? itemType = _unset,
     Set<String>? divisions,
     Set<String>? departments,
-    Set<String>? units,
     Object? minimumValue = _unset,
     Object? maximumValue = _unset,
     Object? endorsedDateRange = _unset,
+    Object? publishedDateRange = _unset,
     Object? openingDateRange = _unset,
     Object? closingDateRange = _unset,
   }) {
@@ -141,7 +149,6 @@ class TenderFilters extends Equatable {
           : itemType as String?,
       divisions: divisions ?? this.divisions,
       departments: departments ?? this.departments,
-      units: units ?? this.units,
       minimumValue: identical(minimumValue, _unset)
           ? this.minimumValue
           : minimumValue as double?,
@@ -151,6 +158,9 @@ class TenderFilters extends Equatable {
       endorsedDateRange: identical(endorsedDateRange, _unset)
           ? this.endorsedDateRange
           : endorsedDateRange as DateTimeRange?,
+      publishedDateRange: identical(publishedDateRange, _unset)
+          ? this.publishedDateRange
+          : publishedDateRange as DateTimeRange?,
       openingDateRange: identical(openingDateRange, _unset)
           ? this.openingDateRange
           : openingDateRange as DateTimeRange?,
@@ -170,10 +180,10 @@ class TenderFilters extends Equatable {
     itemType,
     divisions,
     departments,
-    units,
     minimumValue,
     maximumValue,
     endorsedDateRange,
+    publishedDateRange,
     openingDateRange,
     closingDateRange,
   ];
