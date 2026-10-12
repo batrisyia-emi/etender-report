@@ -49,10 +49,10 @@ void main() {
   });
 
   test('toggling leaves the other filters alone', () {
-    const filters = TenderFilters(searchQuery: 'cable', minimumValue: 1000);
+    const filters = TenderFilters(categories: {'Work'}, minimumValue: 1000);
     final toggled = filters.toggleStatuses(closed);
-    expect(toggled.searchQuery, 'cable');
+    expect(toggled.categories, {'Work'});
     expect(toggled.minimumValue, 1000);
-    expect(toggled.toggleStatuses(closed).searchQuery, 'cable');
+    expect(toggled.toggleStatuses(closed).categories, {'Work'});
   });
 }

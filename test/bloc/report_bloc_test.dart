@@ -72,7 +72,9 @@ final List<ReportBlocCase> cases = [
     name: 'TenderSummaryBloc',
     build: (repository) => TenderSummaryBloc(repository: repository),
     load: const TenderDataRequested(),
-    narrow: const TenderSearchChanged(kNoSuchRecord),
+    // This report has no free-text search, so narrow it on a category
+    // no record carries.
+    narrow: const TenderCategoriesChanged({kNoSuchRecord}),
     clear: const TenderFiltersCleared(),
     status: (s) => (s as TenderSummaryState).status,
     recordCount: (s) => (s as TenderSummaryState).records.length,

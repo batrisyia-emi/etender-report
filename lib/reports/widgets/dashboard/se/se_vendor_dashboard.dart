@@ -52,7 +52,9 @@ class _SeVendorDashboardState extends State<SeVendorDashboard> {
     final participated = count(
       (r) => r['participationStatus'] == 'Participated',
     );
-    final declined = count((r) => r['participationStatus'] == 'Rejected');
+    final declined = count(
+      (r) => r['participationStatus'] == 'Not Participated',
+    );
     final purchased = count((r) => r['documentPurchased'] == true);
     final onTime = count((r) => r['submissionStatus'] == 'Submitted');
     final late = count((r) => r['submissionStatus'] == 'Late');
@@ -72,7 +74,7 @@ class _SeVendorDashboardState extends State<SeVendorDashboard> {
         title: 'Participation',
         lines: [
           ('Participated', participated, DashTheme.success),
-          ('Declined', declined, DashTheme.danger),
+          ('Not Participated', declined, DashTheme.danger),
         ],
         footer: '${invited - participated - declined} pending at this stage',
       ),

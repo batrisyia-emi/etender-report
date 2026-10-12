@@ -14,15 +14,6 @@ final class TenderDataRequested extends TenderSummaryEvent {
   const TenderDataRequested();
 }
 
-final class TenderSearchChanged extends TenderSummaryEvent {
-  const TenderSearchChanged(this.query);
-
-  final String query;
-
-  @override
-  List<Object?> get props => [query];
-}
-
 final class TenderStatusesChanged extends TenderSummaryEvent {
   const TenderStatusesChanged(this.statuses);
 

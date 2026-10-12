@@ -29,7 +29,6 @@ class TenderSummaryView extends StatefulWidget {
 }
 
 class _TenderSummaryViewState extends State<TenderSummaryView> {
-  late final TextEditingController _searchController;
   late final TextEditingController _minimumValueController;
   late final TextEditingController _maximumValueController;
 
@@ -37,7 +36,6 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
   void initState() {
     super.initState();
     final filters = context.read<TenderSummaryBloc>().state.filters;
-    _searchController = TextEditingController(text: filters.searchQuery);
     _minimumValueController = TextEditingController(
       text: filters.minimumValue?.toString() ?? '',
     );
@@ -48,7 +46,6 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
 
   @override
   void dispose() {
-    _searchController.dispose();
     _minimumValueController.dispose();
     _maximumValueController.dispose();
     super.dispose();
@@ -58,9 +55,6 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
   /// never interrupted and the caret does not jump. This is what makes
   /// "Clear filters" empty the boxes.
   void _syncControllers(TenderFilters filters) {
-    if (_searchController.text != filters.searchQuery) {
-      _searchController.text = filters.searchQuery;
-    }
     _syncNumberField(_minimumValueController, filters.minimumValue);
     _syncNumberField(_maximumValueController, filters.maximumValue);
   }
@@ -117,10 +111,8 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
             ),
             SizedBox(height: spacing),
             TenderFilterPanel(
-              searchController: _searchController,
               minimumValueController: _minimumValueController,
               maximumValueController: _maximumValueController,
-              onSearchChanged: (value) => bloc.add(TenderSearchChanged(value)),
               onMinValueChanged: (value) =>
                   bloc.add(TenderMinimumValueChanged(double.tryParse(value))),
               onMaxValueChanged: (value) =>
@@ -163,6 +155,10 @@ class _TenderSummaryViewState extends State<TenderSummaryView> {
               endorsedDateFilter: filters.endorsedDateRange,
               onEndorsedDateChanged: (range) => bloc.add(
                 TenderDateRangeChanged(TenderDateField.endorsed, range),
+              ),
+              openingDateFilter: filters.openingDateRange,
+              onOpeningDateChanged: (range) => bloc.add(
+                TenderDateRangeChanged(TenderDateField.opening, range),
               ),
               closingDateFilter: filters.closingDateRange,
               onClosingDateChanged: (range) => bloc.add(

@@ -30,7 +30,8 @@ void main() {
     });
 
     test('a blank search box is not a criterion', () {
-      expect(const TenderFilters(searchQuery: '   ').describe(), isEmpty);
+      // The tender report has no search box; its siblings still do.
+      expect(const ErfcFilters(searchQuery: '   ').describe(), isEmpty);
     });
   });
 
@@ -64,7 +65,7 @@ void main() {
     });
 
     test('a search term is quoted so a one-word filter is obvious', () {
-      expect(lines(const TenderFilters(searchQuery: 'substation').describe()), [
+      expect(lines(const ErfcFilters(searchQuery: 'substation').describe()), [
         'Search: "substation"',
       ]);
     });
@@ -86,6 +87,27 @@ void main() {
           ).describe(),
         ).single,
         contains(' to '),
+      );
+    });
+
+    test('each date range is named for its own field', () {
+      // Three date filters now, and a header that called them all "Date"
+      // would be no use for telling them apart.
+      final range = DateTimeRange(
+        start: DateTime(2026, 9),
+        end: DateTime(2026, 9, 30),
+      );
+      expect(
+        lines(TenderFilters(openingDateRange: range).describe()).single,
+        startsWith('Opening:'),
+      );
+      expect(
+        lines(TenderFilters(endorsedDateRange: range).describe()).single,
+        startsWith('Endorsed:'),
+      );
+      expect(
+        lines(TenderFilters(closingDateRange: range).describe()).single,
+        startsWith('Closing:'),
       );
     });
 

@@ -32,9 +32,19 @@ class TenderDataTable extends StatefulWidget {
   final ValueChanged<ExportFormat>? onExport;
   final bool isExporting;
 
-  /// The fourteen fixed columns (2164) + Title's 340 floor + the fourteen
-  /// 16px gaps. Past this width Title grows and the table stays full.
-  static const double minTableWidth = 2601;
+  /// The horizontal scroll extent: the fifteen column widths, their
+  /// fourteen 16px gaps, and the table's own 12px side margins.
+  ///
+  /// Written as arithmetic rather than a literal because it has to agree
+  /// with the columns below — under the total, data_table_2 clips the table
+  /// instead of scrolling it. The previous literal had drifted: it claimed
+  /// fourteen columns totalling 2164 and a 340px Title when the code had
+  /// fifteen columns and a 300px Title.
+  static const double minTableWidth = _columnWidthTotal + 14 * 16 + 2 * 12;
+
+  /// 155 + 300 + 100 + 130 + 135 + 162 + 178 + 250 + 90 + 112 + 156 + 150
+  /// + 175 + 170 + 190
+  static const double _columnWidthTotal = 2453;
 
   @override
   State<TenderDataTable> createState() => _TenderDataTableState();
@@ -81,6 +91,8 @@ class _TenderDataTableState extends State<TenderDataTable> {
 
     return DataRow(
       cells: [
+        cell(record['tenderNo']),
+        cell(record['title']),
         DataCell(
           Text(
             record['referenceNo'] ?? '',
@@ -91,18 +103,16 @@ class _TenderDataTableState extends State<TenderDataTable> {
             ),
           ),
         ),
-        cell(record['tenderNo']),
-        cell(record['title']),
         cell(record['tenderCategory']),
         cell(record['division']),
         cell(record['department']),
-        cell(record['unit']),
         DataCell(Text(formatValue(record['value']))),
         cell(record['modeOfProcurement']),
         cell(record['envelopeType']),
         cell(record['itemType']),
         cell(formatDateOnly(record['endorsedDate'])),
         cell(formatDateOnly(record['floatingDate'])),
+        cell(formatDateOnly(record['openingDate'])),
         cell(formatDateOnly(record['closingDate'])),
         DataCell(StatusChip(label: status, colors: _statusColors(status))),
       ],
@@ -121,24 +131,23 @@ class _TenderDataTableState extends State<TenderDataTable> {
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending,
       emptyMessage: 'No records match your filter criteria.',
-      // Division, department, unit, tender value, mode of procurement, the
+      // Division, department, tender value, mode of procurement, the
       // envelope and item split, then the RFC endorsed, floating and closing
       // dates. Audit fields stay in the data for search and export.
       // Only value and date columns are sortable; the rest are
       // plain labels so nothing looks tappable when it is not.
       columns: [
-        const DataColumn2(label: Text('Ref No'), fixedWidth: 100),
         const DataColumn2(label: Text('Tender/Quotation No'), fixedWidth: 155),
         // 'Distribution Transformer Supply (Lahad Datu)' is the longest.
         const DataColumn2(label: Text('Title'), fixedWidth: 300),
+        const DataColumn2(label: Text('Ref No'), fixedWidth: 100),
         const DataColumn2(label: Text('Category'), fixedWidth: 130),
         const DataColumn2(label: Text('Division'), fixedWidth: 135),
         const DataColumn2(label: Text('Department'), fixedWidth: 162),
-        const DataColumn2(label: Text('Unit'), fixedWidth: 155),
         DataColumn2(
           label: SortableHeader(
             'Estimated Value (RM)',
-            columnIndex: 7,
+            columnIndex: 6,
             activeIndex: _sortColumnIndex,
           ),
           fixedWidth: 178,
@@ -151,7 +160,7 @@ class _TenderDataTableState extends State<TenderDataTable> {
         DataColumn2(
           label: SortableHeader(
             'RFC Endorsed Date',
-            columnIndex: 11,
+            columnIndex: 10,
             activeIndex: _sortColumnIndex,
           ),
           fixedWidth: 156,
@@ -159,11 +168,20 @@ class _TenderDataTableState extends State<TenderDataTable> {
         ),
         DataColumn2(
           label: SortableHeader(
-            'Floating',
+            'Published Date',
+            columnIndex: 11,
+            activeIndex: _sortColumnIndex,
+          ),
+          fixedWidth: 150,
+          onSort: _handleSort,
+        ),
+        DataColumn2(
+          label: SortableHeader(
+            'Tender Opening Date',
             columnIndex: 12,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 106,
+          fixedWidth: 175,
           onSort: _handleSort,
         ),
         DataColumn2(
@@ -175,7 +193,10 @@ class _TenderDataTableState extends State<TenderDataTable> {
           fixedWidth: 170,
           onSort: _handleSort,
         ),
-        const DataColumn2(label: Text('Tender Status'), fixedWidth: 140),
+        const DataColumn2(
+          label: Text('Tender Overall Status'),
+          fixedWidth: 190,
+        ),
       ],
       rows: _sortedRecords.map(_buildRecordRow).toList(),
     );

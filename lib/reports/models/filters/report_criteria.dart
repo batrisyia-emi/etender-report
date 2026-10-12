@@ -80,7 +80,6 @@ List<ReportCriterion> _compact(List<ReportCriterion?> items) => [
 
 extension TenderFilterCriteria on TenderFilters {
   List<ReportCriterion> describe() => _compact([
-    _fromText('Search', searchQuery),
     _fromOption('Document type', documentType),
     _fromSet('Status', statuses),
     _fromSet('Category', categories),
@@ -92,6 +91,7 @@ extension TenderFilterCriteria on TenderFilters {
     _fromSet('Unit', units),
     _fromMoney(minimumValue, maximumValue),
     _fromRange('Endorsed', endorsedDateRange),
+    _fromRange('Opening', openingDateRange),
     _fromRange('Closing', closingDateRange),
   ]);
 }

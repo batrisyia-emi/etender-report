@@ -8,13 +8,12 @@ import 'package:flutter/material.dart' show DateTimeRange;
 /// Sentinel so copyWith can tell "not supplied" from "set to null".
 const Object _unset = Object();
 
-enum TenderDateField { endorsed, closing }
+enum TenderDateField { endorsed, opening, closing }
 
 /// Filters for the tender/quotation summary report. Immutable, and owns its
 /// own matching rule so the bloc stays thin and this stays unit-testable.
 class TenderFilters extends Equatable {
   const TenderFilters({
-    this.searchQuery = '',
     this.documentType,
     this.statuses = const {},
     this.categories = const {},
@@ -27,10 +26,9 @@ class TenderFilters extends Equatable {
     this.minimumValue,
     this.maximumValue,
     this.endorsedDateRange,
+    this.openingDateRange,
     this.closingDateRange,
   });
-
-  final String searchQuery;
 
   /// Tender / Quotation. Null means both, and also keeps the documents that
   /// are neither — see [kDocumentTypes].
@@ -53,6 +51,7 @@ class TenderFilters extends Equatable {
   final double? minimumValue;
   final double? maximumValue;
   final DateTimeRange? endorsedDateRange;
+  final DateTimeRange? openingDateRange;
   final DateTimeRange? closingDateRange;
 
   static const List<String> searchKeys = [
@@ -67,8 +66,7 @@ class TenderFilters extends Equatable {
   bool matches(Map<String, dynamic> record) {
     final value = double.tryParse(record['value']?.toString() ?? '') ?? 0;
 
-    return matchesQuery(record, searchKeys, searchQuery) &&
-        matchesAnyOf(statuses, record['status']) &&
+    return matchesAnyOf(statuses, record['status']) &&
         matchesOptional(documentType, record['documentType']) &&
         matchesAnyOf(categories, record['tenderCategory']) &&
         matchesAnyOf(procurementModes, record['modeOfProcurement']) &&
@@ -82,6 +80,10 @@ class TenderFilters extends Equatable {
         matchesDateRange(
           parseRecordDate(record['endorsedDate']),
           endorsedDateRange,
+        ) &&
+        matchesDateRange(
+          parseRecordDate(record['openingDate']),
+          openingDateRange,
         ) &&
         matchesDateRange(
           parseRecordDate(record['closingDate']),
@@ -103,12 +105,12 @@ class TenderFilters extends Equatable {
   TenderFilters withRange(TenderDateField field, DateTimeRange? range) {
     return switch (field) {
       TenderDateField.endorsed => copyWith(endorsedDateRange: range),
+      TenderDateField.opening => copyWith(openingDateRange: range),
       TenderDateField.closing => copyWith(closingDateRange: range),
     };
   }
 
   TenderFilters copyWith({
-    String? searchQuery,
     Object? documentType = _unset,
     Set<String>? statuses,
     Set<String>? categories,
@@ -121,10 +123,10 @@ class TenderFilters extends Equatable {
     Object? minimumValue = _unset,
     Object? maximumValue = _unset,
     Object? endorsedDateRange = _unset,
+    Object? openingDateRange = _unset,
     Object? closingDateRange = _unset,
   }) {
     return TenderFilters(
-      searchQuery: searchQuery ?? this.searchQuery,
       documentType: identical(documentType, _unset)
           ? this.documentType
           : documentType as String?,
@@ -149,6 +151,9 @@ class TenderFilters extends Equatable {
       endorsedDateRange: identical(endorsedDateRange, _unset)
           ? this.endorsedDateRange
           : endorsedDateRange as DateTimeRange?,
+      openingDateRange: identical(openingDateRange, _unset)
+          ? this.openingDateRange
+          : openingDateRange as DateTimeRange?,
       closingDateRange: identical(closingDateRange, _unset)
           ? this.closingDateRange
           : closingDateRange as DateTimeRange?,
@@ -157,7 +162,6 @@ class TenderFilters extends Equatable {
 
   @override
   List<Object?> get props => [
-    searchQuery,
     documentType,
     statuses,
     categories,
@@ -170,6 +174,7 @@ class TenderFilters extends Equatable {
     minimumValue,
     maximumValue,
     endorsedDateRange,
+    openingDateRange,
     closingDateRange,
   ];
 }

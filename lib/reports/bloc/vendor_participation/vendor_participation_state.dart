@@ -29,7 +29,7 @@ class VendorParticipationState extends Equatable {
   /// arrived and whether it was on time.
   static const List<String> participationStatuses = [
     'Participated',
-    'Rejected',
+    'Not Participated',
   ];
 
   static const List<String> submissionStatuses = [

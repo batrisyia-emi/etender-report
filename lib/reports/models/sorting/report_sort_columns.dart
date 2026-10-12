@@ -7,35 +7,35 @@
 // field rather than failing loudly.
 import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
 
-/// Tender/quotation summary — 15 columns, 4 sortable.
+/// Tender/quotation summary — 15 columns, 5 sortable.
 final List<SortableColumn?> tenderSortColumns = [
-  null, // 0  Ref No
-  null, // 1  Tender/Quotation No
-  null, // 2  Title
+  null, // 0  Tender/Quotation No
+  null, // 1  Title
+  null, // 2  Ref No
   null, // 3  Category
   null, // 4  Division
   null, // 5  Department
-  null, // 6  Unit
-  SortableColumn.number('value'), // 7  Tender Value
-  null, // 8  Mode of Procurement
-  null, // 9  Envelope
-  null, // 10 Item Type
-  SortableColumn.date('endorsedDate'), // 11 RFC Endorsed Date
-  SortableColumn.date('floatingDate'), // 12
+  SortableColumn.number('value'), // 6  Tender Value
+  null, // 7  Mode of Procurement
+  null, // 8  Envelope
+  null, // 9  Item Type
+  SortableColumn.date('endorsedDate'), // 10 RFC Endorsed Date
+  SortableColumn.date('floatingDate'), // 11 Published Date
+  SortableColumn.date('openingDate'), // 12 Tender Opening Date
   SortableColumn.date('closingDate'), // 13 Tender Closing Date
-  null, // 14 Status
+  null, // 14 Tender Overall Status
 ];
 
 /// Vendor participation — 9 columns, 1 sortable. The only value or date
 /// column on this report is the submission timestamp.
 final List<SortableColumn?> vendorSortColumns = [
   null, // 0 Tender/Quotation ID
-  null, // 1 Vendor Name
-  null, // 2 Invitation Status
+  null, // 1 Tender Description
+  null, // 2 Vendor Name
   null, // 3 Document Purchased
   null, // 4 Participation
-  null, // 5 Submission Status
-  SortableColumn.date('submissionDateTime'), // 6
+  null, // 5 Tender Respond Status
+  SortableColumn.date('requestedDate'), // 6 Requested Date
   null, // 7 Open To
   null, // 8 Vendor Certification Type
 ];

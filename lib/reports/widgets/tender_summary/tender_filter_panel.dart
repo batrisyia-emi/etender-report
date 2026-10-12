@@ -7,10 +7,8 @@ import 'package:flutter/material.dart';
 class TenderFilterPanel extends StatelessWidget {
   const TenderFilterPanel({
     super.key,
-    required this.searchController,
     required this.minimumValueController,
     required this.maximumValueController,
-    required this.onSearchChanged,
     required this.onMinValueChanged,
     required this.onMaxValueChanged,
     required this.statuses,
@@ -42,15 +40,15 @@ class TenderFilterPanel extends StatelessWidget {
     required this.onUnitsChanged,
     required this.endorsedDateFilter,
     required this.onEndorsedDateChanged,
+    required this.openingDateFilter,
+    required this.onOpeningDateChanged,
     required this.closingDateFilter,
     required this.onClosingDateChanged,
     required this.onFiltersReset,
   });
 
-  final TextEditingController searchController;
   final TextEditingController minimumValueController;
   final TextEditingController maximumValueController;
-  final ValueChanged<String> onSearchChanged;
   final ValueChanged<String> onMinValueChanged;
   final ValueChanged<String> onMaxValueChanged;
 
@@ -91,6 +89,8 @@ class TenderFilterPanel extends StatelessWidget {
   final ValueChanged<Set<String>> onUnitsChanged;
 
   final DateTimeRange? endorsedDateFilter;
+  final DateTimeRange? openingDateFilter;
+  final ValueChanged<DateTimeRange?> onOpeningDateChanged;
   final ValueChanged<DateTimeRange?> onEndorsedDateChanged;
   final DateTimeRange? closingDateFilter;
   final ValueChanged<DateTimeRange?> onClosingDateChanged;
@@ -129,6 +129,7 @@ class TenderFilterPanel extends StatelessWidget {
   static const Icon _maxValueIcon = Icon(Icons.arrow_upward, size: 18);
   static const Icon _endorsedDateIcon = Icon(Icons.event_available, size: 18);
   static const Icon _closingDateIcon = Icon(Icons.event_busy, size: 18);
+  static const Icon _openingDateIcon = Icon(Icons.drafts_outlined, size: 18);
 
   @override
   Widget build(BuildContext context) {
@@ -148,22 +149,16 @@ class TenderFilterPanel extends StatelessWidget {
             // value bounds, the two dates - so no pair is split across a
             // row break.
             //
-            // Find it: free text, where it has reached, what kind of
-            // document, and what is being bought.
+            // What kind of document it is, and where it has reached.
             FilterFieldRow(
               useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
-              flexes: const [2, 1, 1, 1],
-              gridSpans: const [2, 1, 1, 1],
+              flexes: const [1, 1, 1, 1, 1],
+              gridSpans: const [1, 1, 1, 1, 1],
               fieldBuilders: [
-                (width) => FilterSearchField(
-                  controller: searchController,
-                  onChanged: onSearchChanged,
-                  width: width,
-                ),
                 (width) => FilterMultiSelectField(
                   icon: _statusIcon,
-                  label: 'Status',
+                  label: 'Tender Overall Status',
                   placeholder: 'All statuses',
                   options: statuses,
                   selectedValues: selectedStatuses,
@@ -186,6 +181,24 @@ class TenderFilterPanel extends StatelessWidget {
                   options: categories,
                   selectedValues: selectedCategories,
                   onChanged: onCategoriesChanged,
+                  width: width,
+                ),
+                (width) => FilterDropdownField(
+                  icon: _envelopeIcon,
+                  label: 'Envelope',
+                  placeholder: 'All envelopes',
+                  options: envelopeTypes,
+                  value: selectedEnvelopeType,
+                  onChanged: onEnvelopeTypeChanged,
+                  width: width,
+                ),
+                (width) => FilterDropdownField(
+                  icon: _itemTypeIcon,
+                  label: 'Item Type',
+                  placeholder: 'All item types',
+                  options: itemTypes,
+                  value: selectedItemType,
+                  onChanged: onItemTypeChanged,
                   width: width,
                 ),
               ],
@@ -229,7 +242,7 @@ class TenderFilterPanel extends StatelessWidget {
                 (width) => FilterNumberField(
                   controller: minimumValueController,
                   icon: _minValueIcon,
-                  label: 'From Estimated Value',
+                  label: 'From RFC Estimated Value (RM)',
                   placeholder: 'No minimum',
                   onChanged: onMinValueChanged,
                   width: width,
@@ -237,7 +250,7 @@ class TenderFilterPanel extends StatelessWidget {
                 (width) => FilterNumberField(
                   controller: maximumValueController,
                   icon: _maxValueIcon,
-                  label: 'To Estimated Value (RM)',
+                  label: 'To RFC Estimated Value (RM)',
                   placeholder: 'No maximum',
                   onChanged: onMaxValueChanged,
                   width: width,
@@ -250,8 +263,8 @@ class TenderFilterPanel extends StatelessWidget {
             FilterFieldRow(
               useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
-              flexes: const [1, 1, 1, 1, 1],
-              gridSpans: const [1, 1, 1, 1, 1],
+              flexes: const [1, 1, 1, 1],
+              gridSpans: const [1, 1, 1, 1],
               fieldBuilders: [
                 (width) => FilterMultiSelectField(
                   icon: _modeIcon,
@@ -262,29 +275,18 @@ class TenderFilterPanel extends StatelessWidget {
                   onChanged: onProcurementModesChanged,
                   width: width,
                 ),
-                (width) => FilterDropdownField(
-                  icon: _envelopeIcon,
-                  label: 'Envelope',
-                  placeholder: 'All envelopes',
-                  options: envelopeTypes,
-                  value: selectedEnvelopeType,
-                  onChanged: onEnvelopeTypeChanged,
-                  width: width,
-                ),
-                (width) => FilterDropdownField(
-                  icon: _itemTypeIcon,
-                  label: 'Item Type',
-                  placeholder: 'All item types',
-                  options: itemTypes,
-                  value: selectedItemType,
-                  onChanged: onItemTypeChanged,
-                  width: width,
-                ),
                 (width) => FilterDateField(
                   icon: _endorsedDateIcon,
                   label: 'RFC Endorsed Date',
                   selectedRange: endorsedDateFilter,
                   onChanged: onEndorsedDateChanged,
+                  width: width,
+                ),
+                (width) => FilterDateField(
+                  icon: _openingDateIcon,
+                  label: 'Tender Opening Date',
+                  selectedRange: openingDateFilter,
+                  onChanged: onOpeningDateChanged,
                   width: width,
                 ),
                 (width) => FilterDateField(

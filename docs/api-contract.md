@@ -48,6 +48,7 @@ Every tender and quotation. → `TenderRecord`
 | `endorsedDate` | date? | eRFC endorsement |
 | `floatingDate` | date? | published to market |
 | `closingDate` | date? | |
+| `openingDate` | date? | when the envelopes were opened; null until the tender has closed and the opening has been coordinated |
 | `status` | string | see *Tender status* |
 | `erfcId` | string | the eRFC this came from |
 | `createdBy` | string | |
@@ -86,8 +87,9 @@ exist and parsing a reference format is not a contract.
 | `vendorName` | string | |
 | `invitationStatus` | string | `Sent` · `Not Sent` |
 | `documentPurchased` | boolean | |
-| `participationStatus` | string | `Participated` · `Rejected` |
+| `participationStatus` | string | `Participated` · `Not Participated` — two values only |
 | `submissionStatus` | string | `Submitted` · `Late` · `Not Submitted` |
+| `requestedDate` | date? | when the vendor asked to take part; null when never invited |
 | `submissionDateTime` | date? | null unless submitted |
 | `openTo` | string | see *Open to* |
 | `vendorCategory` | string | `Bumiputera` · `Non-Bumiputera` |

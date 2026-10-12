@@ -36,7 +36,11 @@ class VendorParticipationTable extends StatefulWidget {
 
   /// The nine columns plus their eight 16px gaps and the table's own
   /// margins. Below this the certification type ellipsises.
-  static const double minTableWidth = 1826;
+  ///
+  /// Tender Description replaced Invitation Status and is twice as wide;
+  /// Requested Date then replaced the submission timestamp, which was
+  /// wider, and the respond status needed 25 more for its longer label.
+  static const double minTableWidth = 1961;
 
   @override
   State<VendorParticipationTable> createState() =>
@@ -61,9 +65,6 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
     ascending: _sortAscending,
   );
 
-  ChipColors _invitationColors(String value) =>
-      value == 'Sent' ? ChipPalette.green : ChipPalette.grey;
-
   ChipColors _participationColors(String value) =>
       value == 'Participated' ? ChipPalette.green : ChipPalette.red;
 
@@ -80,14 +81,13 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
   };
 
   DataRow _buildRecordRow(Map<String, dynamic> record) {
-    final invitationStatus = record['invitationStatus'] as String? ?? 'Unknown';
     final participationStatus =
         record['participationStatus'] as String? ?? 'Unknown';
     final submissionStatus = record['submissionStatus'] as String? ?? 'Unknown';
     final openTo = record['openTo'] as String? ?? 'Unknown';
     final openToLabel = OpenTo.labelFor(openTo);
     final purchased = record['documentPurchased'] == true;
-    final submissionDateTime = formatLastUpdate(record['submissionDateTime']);
+    final requestedDate = formatDateOnly(record['requestedDate']);
 
     return DataRow(
       cells: [
@@ -102,16 +102,16 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
           ),
         ),
         DataCell(
+          Tooltip(
+            message: record['title'] ?? '',
+            child: Text(record['title'] ?? '', overflow: TextOverflow.ellipsis),
+          ),
+        ),
+        DataCell(
           Text(
             record['vendorName'] ?? '',
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-        ),
-        DataCell(
-          StatusChip(
-            label: invitationStatus,
-            colors: _invitationColors(invitationStatus),
           ),
         ),
         DataCell(
@@ -132,7 +132,7 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
             colors: _submissionColors(submissionStatus),
           ),
         ),
-        DataCell(Text(submissionDateTime.isEmpty ? '—' : submissionDateTime)),
+        DataCell(Text(requestedDate)),
         DataCell(
           // The blueprint wording is ~95 characters; the chip shows the
           // short form and the full sentence on hover.
@@ -174,18 +174,21 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
         // them instead of sitting dead past the last column. Certification
         // stays pinned -- it is already the widest and should not grow.
         const DataColumn2(label: Text('Tender/Quotation ID'), fixedWidth: 165),
+        const DataColumn2(label: Text('Tender Description'), fixedWidth: 300),
         const DataColumn2(label: Text('Vendor Name'), fixedWidth: 210),
-        const DataColumn2(label: Text('Invitation Status'), fixedWidth: 150),
         const DataColumn2(label: Text('Document Purchased'), fixedWidth: 170),
         const DataColumn2(label: Text('Participation'), fixedWidth: 150),
-        const DataColumn2(label: Text('Submission Status'), fixedWidth: 165),
+        const DataColumn2(
+          label: Text('Tender Respond Status'),
+          fixedWidth: 190,
+        ),
         DataColumn2(
           label: SortableHeader(
-            'Submission Date & Time',
+            'Requested Date',
             columnIndex: 6,
             activeIndex: _sortColumnIndex,
           ),
-          fixedWidth: 190,
+          fixedWidth: 150,
           onSort: _handleSort,
         ),
         const DataColumn2(label: Text('Open To'), fixedWidth: 174),

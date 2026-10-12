@@ -25,6 +25,7 @@ class TenderRecord extends Equatable {
     required this.endorsedDate,
     required this.floatingDate,
     required this.closingDate,
+    required this.openingDate,
     required this.status,
     required this.erfcId,
     required this.createdBy,
@@ -49,6 +50,7 @@ class TenderRecord extends Equatable {
     endorsedDate: asDateOrNull(json['endorsedDate']),
     floatingDate: asDateOrNull(json['floatingDate']),
     closingDate: asDateOrNull(json['closingDate']),
+    openingDate: asDateOrNull(json['openingDate']),
     status: asString(json['status']),
     erfcId: asString(json['erfcId']),
     createdBy: asString(json['createdBy']),
@@ -85,6 +87,11 @@ class TenderRecord extends Equatable {
   final DateTime? floatingDate;
   final DateTime? closingDate;
 
+  /// When the envelopes were opened. Null until the tender has
+  /// closed and the opening has been coordinated, which is the
+  /// same rule TOC's own record follows.
+  final DateTime? openingDate;
+
   final String status;
 
   final String erfcId;
@@ -109,6 +116,7 @@ class TenderRecord extends Equatable {
     'endorsedDate': endorsedDate?.toIso8601String(),
     'floatingDate': floatingDate?.toIso8601String(),
     'closingDate': closingDate?.toIso8601String(),
+    'openingDate': openingDate?.toIso8601String(),
     'status': status,
     'erfcId': erfcId,
     'createdBy': createdBy,

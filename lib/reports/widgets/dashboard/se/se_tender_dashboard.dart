@@ -261,7 +261,7 @@ class _ResponseFlow extends StatelessWidget {
         .where((r) => r['participationStatus'] == 'Participated')
         .length;
     final declined = requests
-        .where((r) => r['participationStatus'] == 'Rejected')
+        .where((r) => r['participationStatus'] == 'Not Participated')
         .length;
     final purchased = requests.where((r) => r['documentPurchased'] == true);
     final submitted = requests
@@ -325,7 +325,7 @@ class _ResponseFlow extends StatelessWidget {
         title: 'Bid Decision',
         lines: [
           ('Participated', participated, DashTheme.success),
-          ('Not Participate', declined, DashTheme.danger),
+          ('Not Participated', declined, DashTheme.danger),
         ],
         footer:
             '${requests.length - participated - declined} pending at this '

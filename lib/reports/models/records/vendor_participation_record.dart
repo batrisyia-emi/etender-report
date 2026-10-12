@@ -14,6 +14,7 @@ class VendorParticipationRecord extends Equatable {
     required this.invitationStatus,
     required this.documentPurchased,
     required this.submissionStatus,
+    required this.requestedDate,
     required this.submissionDateTime,
     required this.participationStatus,
     required this.openTo,
@@ -32,6 +33,7 @@ class VendorParticipationRecord extends Equatable {
         invitationStatus: asString(json['invitationStatus']),
         documentPurchased: asBool(json['documentPurchased']),
         submissionStatus: asString(json['submissionStatus']),
+        requestedDate: asDateOrNull(json['requestedDate']),
         submissionDateTime: asDateOrNull(json['submissionDateTime']),
         participationStatus: asString(json['participationStatus']),
         openTo: asString(json['openTo']),
@@ -50,10 +52,17 @@ class VendorParticipationRecord extends Equatable {
   final String submissionStatus;
 
   /// Null unless the vendor submitted.
+  /// When the vendor asked to take part. Null when it was never
+  /// invited, since there was nothing to ask about.
+  final DateTime? requestedDate;
+
   final DateTime? submissionDateTime;
 
   /// Whether the vendor took the invitation up: 'Participated' or
-  /// 'Rejected'. The funnel counts off this, not off the submission.
+  /// 'Not Participated'. Counted off this, not off the submission.
+  ///
+  /// Two values only. 'Rejected' used to be the second, which read as
+  /// SE turning the vendor down rather than the vendor declining.
   final String participationStatus;
 
   /// Appendix A 8.1 eligibility the tender was opened to.
@@ -72,6 +81,7 @@ class VendorParticipationRecord extends Equatable {
     'invitationStatus': invitationStatus,
     'documentPurchased': documentPurchased,
     'submissionStatus': submissionStatus,
+    'requestedDate': requestedDate?.toIso8601String(),
     'submissionDateTime': submissionDateTime?.toIso8601String(),
     'participationStatus': participationStatus,
     'openTo': openTo,

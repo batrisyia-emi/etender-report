@@ -16,9 +16,6 @@ class TenderSummaryBloc extends Bloc<TenderSummaryEvent, TenderSummaryState> {
     : super(const TenderSummaryState()) {
     on<TenderDataRequested>(_onDataRequested);
 
-    on<TenderSearchChanged>(
-      (event, emit) => _emit(emit, (f) => f.copyWith(searchQuery: event.query)),
-    );
     on<TenderStatusesChanged>(
       (event, emit) => _emit(emit, (f) => f.copyWith(statuses: event.statuses)),
     );
