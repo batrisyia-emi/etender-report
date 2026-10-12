@@ -10,9 +10,9 @@ import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
-/// One row per vendor per tender/quotation: Tender/Quotation ID, Vendor
-/// Name, Invitation Status, Document Purchased, Participation, Submission
-/// Status, Submission Date & Time, Open To, Vendor Certification Type.
+/// One row per vendor per tender/quotation: Tender/Quotation ID, Tender
+/// Description, Vendor Name, Document Purchased, Tender Respond Status,
+/// Requested Date, Submission Date, Open To, Vendor Certification Type.
 ///
 /// Sorting is held here rather than in the bloc: tap a header to sort, tap
 /// again to reverse.
@@ -34,9 +34,6 @@ class VendorParticipationTable extends StatefulWidget {
   final ValueChanged<ExportFormat>? onExport;
   final bool isExporting;
 
-  /// The nine columns plus their eight 16px gaps and the table's own
-  /// margins. Below this the certification type ellipsises.
-  ///
   /// The nine columns plus their eight 16px gaps and the table's own
   /// margins. Below this the certification type ellipsises.
   ///
@@ -96,8 +93,8 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
     final openTo = record['openTo'] as String? ?? 'Unknown';
     final openToLabel = OpenTo.labelFor(openTo);
     final purchased = record['documentPurchased'] == true;
-    final requestedDate = formatDateOnly(record['requestedDate']);
-    final submissionDate = formatDateOnly(record['submissionDateTime']);
+    final requestedDate = formatDate(record['requestedDate']);
+    final submissionDate = formatDate(record['submissionDateTime']);
 
     return DataRow(
       cells: [
@@ -175,9 +172,6 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
       // Only value and date columns are sortable; the rest are
       // plain labels so nothing looks tappable when it is not.
       columns: [
-        // These three are flexible so spare window width is shared between
-        // them instead of sitting dead past the last column. Certification
-        // stays pinned -- it is already the widest and should not grow.
         const DataColumn2(label: Text('Tender/Quotation ID'), fixedWidth: 165),
         const DataColumn2(label: Text('Tender Description'), fixedWidth: 300),
         const DataColumn2(label: Text('Vendor Name'), fixedWidth: 210),
@@ -205,8 +199,8 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
           onSort: _handleSort,
         ),
         const DataColumn2(label: Text('Open To'), fixedWidth: 174),
-        // Pinned: this is the longest text in the app, and letting it flex
-        // made it swallow every spare pixel. 380 fits the longest value.
+        // The longest text in the app. Pinned rather than flexible, or it
+        // swallows every spare pixel; 300 fits the longest value.
         const DataColumn2(
           label: Text('Vendor Certification Type'),
           fixedWidth: 300,

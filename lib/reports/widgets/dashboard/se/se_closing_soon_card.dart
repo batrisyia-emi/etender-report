@@ -136,7 +136,7 @@ class SeClosingRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              formatDateOnly(record['closingDate']),
+              formatDate(record['closingDate']),
               style: const TextStyle(fontSize: 12, color: DashTheme.text),
             ),
           ),

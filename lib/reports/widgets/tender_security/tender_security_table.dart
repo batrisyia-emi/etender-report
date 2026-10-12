@@ -167,7 +167,7 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
       children: [
         Flexible(
           child: Text(
-            formatDateOnly(value),
+            formatDate(value),
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: setColor ?? AppColors.tableBodyText,
@@ -203,7 +203,7 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
           const SizedBox(width: 4),
           Flexible(
             child: Text(
-              formatDateOnly(expiry),
+              formatDate(expiry),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Color(0xFFC62828),
@@ -221,7 +221,7 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            formatDateOnly(expiry),
+            formatDate(expiry),
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Color(0xFFEF6C00),
@@ -237,7 +237,7 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
         ],
       );
     }
-    return Text(formatDateOnly(expiry));
+    return Text(formatDate(expiry));
   }
 
   /// The blueprint groups the payment type and the bank's reference under
@@ -448,5 +448,5 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
   }
 }
 
-/// Stands in for every empty cell, matching `formatDateOnly`.
+/// Stands in for every empty cell, matching `formatDate`.
 const String _none = '—';

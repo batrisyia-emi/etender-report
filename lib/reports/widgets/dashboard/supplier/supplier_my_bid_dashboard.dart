@@ -218,7 +218,7 @@ class _MyBidHeader extends StatelessWidget {
           children: [
             if (actionCount > 0) _ActionBadge(count: actionCount),
             Text(
-              'Prototype data as of ${formatDateOnly(asOf.toIso8601String())}',
+              'Prototype data as of ${formatDate(asOf.toIso8601String())}',
               style: const TextStyle(color: DashTheme.muted, fontSize: 11),
             ),
           ],

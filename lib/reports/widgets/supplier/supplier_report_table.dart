@@ -130,11 +130,11 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
         ),
         cell(record['title']),
         cell(record['tenderCategory']),
-        cell(formatDateOnly(record['publishedDate'])),
-        cell(formatDateOnly(record['requestDate'])),
-        cell(formatDateOnly(record['decisionDate'])),
+        cell(formatDate(record['publishedDate'])),
+        cell(formatDate(record['requestDate'])),
+        cell(formatDate(record['decisionDate'])),
         DataCell(Text(formatValue(record['documentFee']))),
-        cell(formatDateOnly(record['closingDate'])),
+        cell(formatDate(record['closingDate'])),
         // A bid amount of zero means no bid yet, not a free one.
         DataCell(
           Text(

@@ -25,8 +25,12 @@ String formatLastUpdate(dynamic value) {
 }
 
 /// Date without a time, for columns the spec shows as dates only.
-/// Returns an em dash when there is no parsable date.
-String formatDateOnly(dynamic value) {
+///
+/// Takes whatever the record holds — a DateTime, an ISO string or null —
+/// and returns an em dash when there is no parsable date, so an empty
+/// cell looks deliberate rather than broken. Use [formatLastUpdate]
+/// where the time of day matters.
+String formatDate(dynamic value) {
   final parsed = DateTime.tryParse(value?.toString() ?? '');
   if (parsed == null) return '—';
   final day = parsed.day.toString().padLeft(2, '0');
@@ -36,13 +40,6 @@ String formatDateOnly(dynamic value) {
 
 String formatDateRange(DateTimeRange? range) {
   if (range == null) return 'Any date range';
-
-  String formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    return '$day/$month/${date.year}';
-  }
-
   return '${formatDate(range.start)} - ${formatDate(range.end)}';
 }
 

@@ -186,7 +186,7 @@ class _TocReportTableState extends State<TocReportTable> {
       detail.writeln('${member.role}: ${member.name} (${member.staffId})');
     }
     if (record.appointedAt != null) {
-      detail.writeln('Appointed ${formatDateOnly(record.appointedAt)}');
+      detail.writeln('Appointed ${formatDate(record.appointedAt)}');
     }
     for (final swap in record.replacements) {
       detail.writeln(
@@ -270,7 +270,7 @@ class _TocReportTableState extends State<TocReportTable> {
 
     // A date with something extra behind it, shown on hover.
     DataCell dateWithDetail(DateTime? value, String? detail) {
-      final label = Text(formatDateOnly(value));
+      final label = Text(formatDate(value));
       if (value == null || detail == null || detail.isEmpty) {
         return DataCell(label);
       }
@@ -423,5 +423,5 @@ class _TocReportTableState extends State<TocReportTable> {
   }
 }
 
-/// Stands in for every empty cell, matching `formatDateOnly`.
+/// Stands in for every empty cell, matching `formatDate`.
 const String _none = '—';

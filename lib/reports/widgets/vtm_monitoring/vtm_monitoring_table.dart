@@ -163,7 +163,7 @@ class _VtmMonitoringTableState extends State<VtmMonitoringTable> {
   /// dash, so the gap in the trail is where the document is now.
   DataCell _stepCell(DateTime? value, {String? by}) {
     if (value == null) return const DataCell(Text(_none));
-    final date = Text(formatDateOnly(value));
+    final date = Text(formatDate(value));
     if (by == null || by.isEmpty) return DataCell(date);
     return DataCell(Tooltip(message: by, child: date));
   }
@@ -324,5 +324,5 @@ class _VtmMonitoringTableState extends State<VtmMonitoringTable> {
   }
 }
 
-/// Stands in for every empty cell, matching `formatDateOnly`.
+/// Stands in for every empty cell, matching `formatDate`.
 const String _none = '—';
