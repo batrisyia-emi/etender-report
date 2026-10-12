@@ -8,6 +8,7 @@ import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/reports/widgets/shared/table_heading.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -48,15 +49,15 @@ class TenderSecurityTable extends StatefulWidget {
   final ValueChanged<ExportFormat>? onExport;
   final bool isExporting;
 
-  /// The 12 column widths, plus their 11 sixteen-pixel gaps and the table's
+  /// The 11 column widths, plus their 10 sixteen-pixel gaps and the table's
   /// own 12px side margins.
   ///
   /// This number is the horizontal scroll extent. Below what the columns
   /// need it truncates the table rather than compressing it.
-  static const double minTableWidth = _columnWidthTotal + 11 * 16 + 2 * 12;
+  static const double minTableWidth = _columnWidthTotal + 10 * 16 + 2 * 12;
 
-  /// 170 + 190 + 145 + 150 + 140 + 190 + 100 + 130 + 175 + 150 + 150 + 130
-  static const double _columnWidthTotal = 1820;
+  /// 170 + 190 + 145 + 150 + 140 + 190 + 100 + 175 + 150 + 150 + 145
+  static const double _columnWidthTotal = 1705;
 
   @override
   State<TenderSecurityTable> createState() => _TenderSecurityTableState();
@@ -382,19 +383,31 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
   /// Chapter 9.1's List columns in their own order, with the scan copy and
   /// the original-copy tick inserted where they read best.
   List<DataColumn> get _columns {
-    DataColumn2 plain(String label, double width, {String? tooltip}) =>
-        DataColumn2(label: Text(label), tooltip: tooltip, fixedWidth: width);
+    DataColumn2 plain(
+      IconData icon,
+      String label,
+      double width, {
+      String? tooltip,
+    }) => DataColumn2(
+      label: TableHeading.label(icon, label),
+      tooltip: tooltip,
+      fixedWidth: width,
+    );
 
     DataColumn2 sortable(
+      IconData icon,
       String label,
       int index,
       double width, {
       String? tooltip,
     }) => DataColumn2(
-      label: SortableHeader(
-        label,
-        columnIndex: index,
-        activeIndex: _sortColumnIndex,
+      label: TableHeading(
+        icon: icon,
+        child: SortableHeader(
+          label,
+          columnIndex: index,
+          activeIndex: _sortColumnIndex,
+        ),
       ),
       tooltip: tooltip,
       fixedWidth: width,
@@ -402,29 +415,43 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
     );
 
     return [
-      sortable('Tender/Quotation No.', 0, 170),
-      sortable('Name of Tenderer', 1, 190),
-      sortable('Unique Number', 2, 145),
-      sortable('Amount', 3, 150, tooltip: 'Amount of Tender Security'),
-      sortable('Bank Name', 4, 140),
+      sortable(Icons.numbers_outlined, 'Tender/Quotation No.', 0, 170),
+      sortable(Icons.storefront_outlined, 'Name of Tenderer', 1, 190),
+      sortable(Icons.tag_outlined, 'Unique Number', 2, 145),
+      sortable(
+        Icons.payments_outlined,
+        'Amount',
+        3,
+        150,
+        tooltip: 'Amount of Tender Security',
+      ),
+      sortable(Icons.account_balance_outlined, 'Bank Name', 4, 140),
       plain(
+        Icons.credit_card_outlined,
         'Payment Type',
         190,
         tooltip: "Cashier's Order, Bank Draft or Bank Guarantee number",
       ),
-      plain('Scan Copy', 100),
+      plain(Icons.attach_file_outlined, 'Scan Copy', 100),
       sortable(
+        Icons.upload_file_outlined,
         'Submitted to RA/CSU',
         7,
         175,
         tooltip: 'Submitted to Revenue Assurance / Contract Services Unit',
       ),
-      plain('Unsuccessful', 150, tooltip: 'Unsuccessful Tenderer'),
-      sortable('Expiry Date', 9, 150),
+      plain(
+        Icons.cancel_outlined,
+        'Unsuccessful',
+        150,
+        tooltip: 'Unsuccessful Tenderer',
+      ),
+      sortable(Icons.event_busy_outlined, 'Expiry Date', 9, 150),
       sortable(
+        Icons.undo_outlined,
         'Date of Refund',
         10,
-        130,
+        145,
         tooltip: 'Date of Refund Tender Security',
       ),
     ];

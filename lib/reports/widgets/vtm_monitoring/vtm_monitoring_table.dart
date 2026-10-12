@@ -8,6 +8,7 @@ import 'package:etender_reports/reports/models/status/vtm_monitoring_status.dart
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/reports/widgets/shared/table_heading.dart';
 import 'package:etender_reports/shared/app_colors.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +39,9 @@ class VtmMonitoringTable extends StatefulWidget {
   /// need it truncates the table rather than compressing it.
   static const double minTableWidth = _columnWidthTotal + 15 * 16 + 2 * 12;
 
-  /// 165 + 172 + 250 + 100 + 175 + 190 + 140 + 130 + 190 + 134 + 115 + 115
-  /// + 115 + 120 + 130 + 95
-  static const double _columnWidthTotal = 2336;
+  /// 165 + 172 + 250 + 100 + 175 + 190 + 140 + 145 + 190 + 134 + 115 + 115
+  /// + 115 + 136 + 136 + 95
+  static const double _columnWidthTotal = 2373;
 
   @override
   State<VtmMonitoringTable> createState() => _VtmMonitoringTableState();
@@ -247,20 +248,32 @@ class _VtmMonitoringTableState extends State<VtmMonitoringTable> {
 
   /// The report spec's column order.
   List<DataColumn> get _columns {
-    DataColumn2 plain(String label, double width, {String? tooltip}) =>
-        DataColumn2(label: Text(label), tooltip: tooltip, fixedWidth: width);
+    DataColumn2 plain(
+      IconData icon,
+      String label,
+      double width, {
+      String? tooltip,
+    }) => DataColumn2(
+      label: TableHeading.label(icon, label),
+      tooltip: tooltip,
+      fixedWidth: width,
+    );
 
     DataColumn2 sortable(
+      IconData icon,
       String label,
       int index,
       double width, {
       String? tooltip,
       bool numeric = false,
     }) => DataColumn2(
-      label: SortableHeader(
-        label,
-        columnIndex: index,
-        activeIndex: _sortColumnIndex,
+      label: TableHeading(
+        icon: icon,
+        child: SortableHeader(
+          label,
+          columnIndex: index,
+          activeIndex: _sortColumnIndex,
+        ),
       ),
       tooltip: tooltip,
       fixedWidth: width,
@@ -269,33 +282,46 @@ class _VtmMonitoringTableState extends State<VtmMonitoringTable> {
     );
 
     return [
-      sortable('eRFC No.', 0, 165),
+      sortable(Icons.numbers_outlined, 'eRFC No.', 0, 165),
       sortable(
+        Icons.numbers_outlined,
         'Tender/Quotation No.',
         1,
         172,
         tooltip: 'Assigned once the Appendix F is approved',
       ),
-      plain('Project Title', 250),
-      plain('Type', 100, tooltip: 'Document type, and 1 or 2 stage'),
-      plain('Mode', 175, tooltip: 'Mode of procurement, Appendix A section 7'),
-      plain('Division', 190),
-      sortable('Value (RM)', 6, 140, numeric: true),
+      plain(Icons.article_outlined, 'Project Title', 250),
+      plain(
+        Icons.category_outlined,
+        'Type',
+        100,
+        tooltip: 'Document type, and 1 or 2 stage',
+      ),
+      plain(
+        Icons.gavel_outlined,
+        'Mode',
+        175,
+        tooltip: 'Mode of procurement, Appendix A section 7',
+      ),
+      plain(Icons.account_tree_outlined, 'Division', 190),
+      sortable(Icons.payments_outlined, 'Value (RM)', 6, 140, numeric: true),
       sortable(
+        Icons.payments_outlined,
         'Doc Price (RM)',
         7,
-        130,
+        145,
         numeric: true,
         tooltip: 'What a supplier pays for the document',
       ),
-      sortable('Status', 8, 190),
-      sortable('eRFC Endorsed', 9, 134),
-      sortable('Submitted', 10, 115),
-      sortable('Verified', 11, 115),
-      sortable('Approved', 12, 115),
-      sortable('Floating Date', 13, 120),
-      sortable('Closing Date', 14, 130),
+      sortable(Icons.flag_outlined, 'Status', 8, 190),
+      sortable(Icons.verified_outlined, 'eRFC Endorsed', 9, 134),
+      sortable(Icons.upload_file_outlined, 'Submitted', 10, 115),
+      sortable(Icons.fact_check_outlined, 'Verified', 11, 115),
+      sortable(Icons.thumb_up_outlined, 'Approved', 12, 115),
+      sortable(Icons.campaign_outlined, 'Floating Date', 13, 136),
+      sortable(Icons.event_busy_outlined, 'Closing Date', 14, 136),
       sortable(
+        Icons.hourglass_empty_outlined,
         'Aging',
         15,
         95,

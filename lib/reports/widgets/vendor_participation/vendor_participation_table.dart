@@ -7,6 +7,7 @@ import 'package:etender_reports/reports/models/sorting/report_sorting.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/reports/widgets/shared/table_heading.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
@@ -172,37 +173,73 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
       // Only value and date columns are sortable; the rest are
       // plain labels so nothing looks tappable when it is not.
       columns: [
-        const DataColumn2(label: Text('Tender/Quotation ID'), fixedWidth: 165),
-        const DataColumn2(label: Text('Tender Description'), fixedWidth: 300),
-        const DataColumn2(label: Text('Vendor Name'), fixedWidth: 210),
-        const DataColumn2(label: Text('Document Purchased'), fixedWidth: 170),
-        const DataColumn2(
-          label: Text('Tender Respond Status'),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.numbers_outlined,
+            'Tender/Quotation ID',
+          ),
+          fixedWidth: 165,
+        ),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.article_outlined,
+            'Tender Description',
+          ),
+          fixedWidth: 300,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.storefront_outlined, 'Vendor Name'),
+          fixedWidth: 210,
+        ),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.shopping_cart_outlined,
+            'Document Purchased',
+          ),
+          fixedWidth: 170,
+        ),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.flag_outlined,
+            'Tender Respond Status',
+          ),
           fixedWidth: 190,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Requested Date',
-            columnIndex: 5,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.pending_actions_outlined,
+            child: SortableHeader(
+              'Requested Date',
+              columnIndex: 5,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 150,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Submission Date',
-            columnIndex: 6,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.upload_file_outlined,
+            child: SortableHeader(
+              'Submission Date',
+              columnIndex: 6,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 150,
           onSort: _handleSort,
         ),
-        const DataColumn2(label: Text('Open To'), fixedWidth: 174),
+        DataColumn2(
+          label: TableHeading.label(Icons.public_outlined, 'Open To'),
+          fixedWidth: 174,
+        ),
         // The longest text in the app. Pinned rather than flexible, or it
         // swallows every spare pixel; 300 fits the longest value.
-        const DataColumn2(
-          label: Text('Vendor Certification Type'),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.workspace_premium_outlined,
+            'Vendor Certification Type',
+          ),
           fixedWidth: 300,
         ),
       ],

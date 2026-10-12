@@ -8,6 +8,7 @@ import 'package:etender_reports/reports/models/status/supplier_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/reports/widgets/shared/table_heading.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,13 @@ class SupplierReportTable extends StatefulWidget {
 
   /// The eleven columns plus their ten 16px gaps and the table's own
   /// margins. Below this the status chips and the date columns ellipsise.
-  static const double minTableWidth = 1839;
+  ///
+  /// Written as arithmetic, like the other tables: a literal total drifts
+  /// silently the first time a column is added or taken away.
+  static const double minTableWidth = _columnWidthTotal + 10 * 16 + 2 * 12;
+
+  /// 155 + 300 + 130 + 112 + 112 + 112 + 130 + 112 + 150 + 190 + 152
+  static const double _columnWidthTotal = 1655;
 
   @override
   State<SupplierReportTable> createState() => _SupplierReportTableState();
@@ -164,62 +171,92 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
       // Only value and date columns are sortable; the rest are plain labels
       // so nothing looks tappable when it is not.
       columns: [
-        const DataColumn2(label: Text('Tender/Quotation No'), fixedWidth: 155),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.numbers_outlined,
+            'Tender/Quotation No',
+          ),
+          fixedWidth: 155,
+        ),
         // The three text columns are flexible, so spare window width is
         // shared between them rather than left dead past the last column.
-        const DataColumn2(label: Text('Title'), fixedWidth: 300),
-        const DataColumn2(label: Text('Category'), fixedWidth: 130),
         DataColumn2(
-          label: SortableHeader(
-            'Published',
-            columnIndex: 3,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading.label(Icons.article_outlined, 'Title'),
+          fixedWidth: 300,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.category_outlined, 'Category'),
+          fixedWidth: 130,
+        ),
+        DataColumn2(
+          label: TableHeading(
+            icon: Icons.campaign_outlined,
+            child: SortableHeader(
+              'Published',
+              columnIndex: 3,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Requested',
-            columnIndex: 4,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.pending_actions_outlined,
+            child: SortableHeader(
+              'Requested',
+              columnIndex: 4,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Decision',
-            columnIndex: 5,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.rule_outlined,
+            child: SortableHeader(
+              'Decision',
+              columnIndex: 5,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Doc Fee (RM)',
-            columnIndex: 6,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.payments_outlined,
+            child: SortableHeader(
+              'Doc Fee (RM)',
+              columnIndex: 6,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 130,
           numeric: true,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Closing',
-            columnIndex: 7,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.event_busy_outlined,
+            child: SortableHeader(
+              'Closing',
+              columnIndex: 7,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Bid Amount (RM)',
-            columnIndex: 8,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.payments_outlined,
+            child: SortableHeader(
+              'Bid Amount (RM)',
+              columnIndex: 8,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 150,
           numeric: true,
@@ -227,9 +264,18 @@ class _SupplierReportTableState extends State<SupplierReportTable> {
         ),
         // 'Participation Requested' is the longest status; below this the
         // chip was ellipsised on every requested row.
-        const DataColumn2(label: Text('Current Status'), fixedWidth: 190),
+        DataColumn2(
+          label: TableHeading.label(Icons.flag_outlined, 'Current Status'),
+          fixedWidth: 190,
+        ),
         // Room for the schedule icon beside a three-digit count.
-        const DataColumn2(label: Text('Days to Close'), fixedWidth: 152),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.hourglass_empty_outlined,
+            'Days to Close',
+          ),
+          fixedWidth: 152,
+        ),
       ],
       rows: _sortedRecords.map(_buildRecordRow).toList(),
     );

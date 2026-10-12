@@ -7,6 +7,7 @@ import 'package:etender_reports/reports/models/status/tender_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/reports/widgets/shared/table_heading.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
@@ -137,64 +138,115 @@ class _TenderDataTableState extends State<TenderDataTable> {
       // Only value and date columns are sortable; the rest are
       // plain labels so nothing looks tappable when it is not.
       columns: [
-        const DataColumn2(label: Text('Tender/Quotation No'), fixedWidth: 155),
-        // 'Distribution Transformer Supply (Lahad Datu)' is the longest.
-        const DataColumn2(label: Text('Title'), fixedWidth: 300),
-        const DataColumn2(label: Text('Ref No'), fixedWidth: 100),
-        const DataColumn2(label: Text('Category'), fixedWidth: 130),
-        const DataColumn2(label: Text('Division'), fixedWidth: 135),
-        const DataColumn2(label: Text('Department'), fixedWidth: 162),
         DataColumn2(
-          label: SortableHeader(
-            'Estimated Value (RM)',
-            columnIndex: 6,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading.label(
+            Icons.numbers_outlined,
+            'Tender/Quotation No',
+          ),
+          fixedWidth: 155,
+        ),
+        // 'Distribution Transformer Supply (Lahad Datu)' is the longest.
+        DataColumn2(
+          label: TableHeading.label(Icons.article_outlined, 'Title'),
+          fixedWidth: 300,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.tag_outlined, 'Ref No'),
+          fixedWidth: 100,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.category_outlined, 'Category'),
+          fixedWidth: 130,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.account_tree_outlined, 'Division'),
+          fixedWidth: 135,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.apartment_outlined, 'Department'),
+          fixedWidth: 162,
+        ),
+        DataColumn2(
+          label: TableHeading(
+            icon: Icons.payments_outlined,
+            child: SortableHeader(
+              'Estimated Value (RM)',
+              columnIndex: 6,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 178,
           numeric: true,
           onSort: _handleSort,
         ),
-        const DataColumn2(label: Text('Mode of Procurement'), fixedWidth: 250),
-        const DataColumn2(label: Text('Envelope'), fixedWidth: 90),
-        const DataColumn2(label: Text('Item Type'), fixedWidth: 112),
         DataColumn2(
-          label: SortableHeader(
-            'RFC Endorsed Date',
-            columnIndex: 10,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading.label(
+            Icons.gavel_outlined,
+            'Mode of Procurement',
+          ),
+          fixedWidth: 250,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.mail_outline, 'Envelope'),
+          fixedWidth: 90,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.category_outlined, 'Item Type'),
+          fixedWidth: 112,
+        ),
+        DataColumn2(
+          label: TableHeading(
+            icon: Icons.verified_outlined,
+            child: SortableHeader(
+              'RFC Endorsed Date',
+              columnIndex: 10,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 156,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Published Date',
-            columnIndex: 11,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.campaign_outlined,
+            child: SortableHeader(
+              'Published Date',
+              columnIndex: 11,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 150,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Tender Opening Date',
-            columnIndex: 12,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.calendar_today_outlined,
+            child: SortableHeader(
+              'Tender Opening Date',
+              columnIndex: 12,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 175,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Tender Closing Date',
-            columnIndex: 13,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.event_busy_outlined,
+            child: SortableHeader(
+              'Tender Closing Date',
+              columnIndex: 13,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 170,
           onSort: _handleSort,
         ),
-        const DataColumn2(
-          label: Text('Tender Overall Status'),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.flag_outlined,
+            'Tender Overall Status',
+          ),
           fixedWidth: 190,
         ),
       ],

@@ -8,6 +8,7 @@ import 'package:etender_reports/reports/models/status/erfc_status.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:etender_reports/reports/widgets/shared/sortable_header.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
+import 'package:etender_reports/reports/widgets/shared/table_heading.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
@@ -189,69 +190,105 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
       // Only value and date columns are sortable; the rest are
       // plain labels so nothing looks tappable when it is not.
       columns: [
-        const DataColumn2(label: Text('RFC Number'), fixedWidth: 175),
+        DataColumn2(
+          label: TableHeading.label(Icons.numbers_outlined, 'RFC Number'),
+          fixedWidth: 175,
+        ),
         // The three text columns are flexible, so spare window width is
         // shared between them rather than left dead past the last column.
         // Splitting it three ways keeps any one of them from ballooning the
         // way a single flexible column does. Proportional sizing keeps
         // each still clears its longest value: 296 for Division / Dept (43
         // characters), 247 for Mode of Procurement (36), 247 for Unit (21).
-        const DataColumn2(label: Text('Subject'), fixedWidth: 300),
-        const DataColumn2(label: Text('Division'), fixedWidth: 160),
-        const DataColumn2(label: Text('Department'), fixedWidth: 190),
-        const DataColumn2(label: Text('Mode of Procurement'), fixedWidth: 250),
         DataColumn2(
-          label: SortableHeader(
-            'Estimated Value (RM)',
-            columnIndex: 5,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading.label(Icons.article_outlined, 'Subject'),
+          fixedWidth: 300,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.account_tree_outlined, 'Division'),
+          fixedWidth: 160,
+        ),
+        DataColumn2(
+          label: TableHeading.label(Icons.apartment_outlined, 'Department'),
+          fixedWidth: 190,
+        ),
+        DataColumn2(
+          label: TableHeading.label(
+            Icons.gavel_outlined,
+            'Mode of Procurement',
+          ),
+          fixedWidth: 250,
+        ),
+        DataColumn2(
+          label: TableHeading(
+            icon: Icons.payments_outlined,
+            child: SortableHeader(
+              'Estimated Value (RM)',
+              columnIndex: 5,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 178,
           numeric: true,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Submitted',
-            columnIndex: 6,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.upload_file_outlined,
+            child: SortableHeader(
+              'Submitted',
+              columnIndex: 6,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Verified 1',
-            columnIndex: 7,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.fact_check_outlined,
+            child: SortableHeader(
+              'Verified 1',
+              columnIndex: 7,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Verified 2',
-            columnIndex: 8,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.fact_check_outlined,
+            child: SortableHeader(
+              'Verified 2',
+              columnIndex: 8,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         DataColumn2(
-          label: SortableHeader(
-            'Endorsed',
-            columnIndex: 9,
-            activeIndex: _sortColumnIndex,
+          label: TableHeading(
+            icon: Icons.verified_outlined,
+            child: SortableHeader(
+              'Endorsed',
+              columnIndex: 9,
+              activeIndex: _sortColumnIndex,
+            ),
           ),
           fixedWidth: 112,
           onSort: _handleSort,
         ),
         // 'System Cancelled' is the longest status; at 122 the chip was
         // ellipsised on every cancelled row.
-        const DataColumn2(label: Text('eRFC Status'), fixedWidth: 190),
+        DataColumn2(
+          label: TableHeading.label(Icons.flag_outlined, 'eRFC Status'),
+          fixedWidth: 190,
+        ),
         // Room for the overdue warning icon beside a three-digit count.
-        const DataColumn2(
-          label: Text('Aging'),
+        DataColumn2(
+          label: TableHeading.label(Icons.hourglass_empty_outlined, 'Aging'),
           fixedWidth: 171,
           tooltip:
               'Days from Submitted to Endorsed, counting to today '
