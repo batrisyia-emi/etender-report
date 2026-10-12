@@ -11,9 +11,9 @@ import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
 import 'package:etender_reports/shared/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
-/// One row per RFC: RFC Number, Division/Dept, Unit, Mode of Procurement,
-/// Value (RM), Submission Date, Verified 1, Verified 2, Endorsed Date,
-/// Current Status, Aging (days).
+/// One row per RFC: RFC Number, Subject, Division, Department, Mode of
+/// Procurement, Estimated Value, Submitted, Verified 1, Verified 2,
+/// Endorsed, eRFC Status, Aging (days from Submitted to Endorsed).
 ///
 /// Sorting is held here rather than in the bloc: tap a header to sort, tap
 /// again to reverse. Nothing outside this widget needs wiring.
@@ -97,8 +97,9 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
     null => ChipPalette.grey,
   };
 
-  /// Grey once the RFC is finished, amber while it is still in flight, red
-  /// with a warning icon once it is past the overdue threshold.
+  /// Grey once endorsed, amber while the RFC is still waiting, red with a
+  /// warning icon once the wait is past the overdue threshold. A dash
+  /// where there is no endorsement to measure to.
   Widget _buildAgingCell(Map<String, dynamic> record) {
     final aging = erfcAgingDays(record);
     if (aging == null) return const Text('—');
@@ -249,7 +250,13 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         // ellipsised on every cancelled row.
         const DataColumn2(label: Text('eRFC Status'), fixedWidth: 190),
         // Room for the overdue warning icon beside a three-digit count.
-        const DataColumn2(label: Text('Aging'), fixedWidth: 171),
+        const DataColumn2(
+          label: Text('Aging'),
+          fixedWidth: 171,
+          tooltip:
+              'Days from Submitted to Endorsed, counting to today '
+              'while the RFC is still waiting',
+        ),
       ],
       rows: _sortedRecords.map(_buildRecordRow).toList(),
     );

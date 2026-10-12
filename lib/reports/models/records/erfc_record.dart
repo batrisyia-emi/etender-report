@@ -78,9 +78,6 @@ class ErfcRecord extends Equatable {
 
   final DateTime? endorsedDate;
 
-  /// The latest verification the RFC actually reached.
-  DateTime? get verifiedDate => verified2Date ?? verified1Date;
-
   final String status;
   final String createdBy;
 
@@ -111,19 +108,18 @@ class ErfcRecord extends Equatable {
 
   bool get isRejected => kErfcRejectedStatuses.contains(status);
 
-  /// Days since submission.
+  /// Submission date to endorsed date. Mirrors erfcAgingDays, which is
+  /// what the report calls.
   ///
-  /// Still moving for an in-flight RFC. For a finished one it freezes at
-  /// the endorsement date, or at the latest verification reached when the
-  /// RFC was rejected, declined or cancelled before endorsement — so a
-  /// rejection after the second gate freezes at that date, not the first.
+  /// Frozen at the endorsed date once endorsed, running to today while in
+  /// flight, and null for an RFC that was rejected, declined or cancelled
+  /// — it has no endorsed date to measure to.
   int? agingDays({DateTime? asOf}) {
     final submitted = submissionDate;
     if (submitted == null) return null;
+    if (endorsedDate == null && isTerminal) return null;
 
-    final frozenAt = endorsedDate ?? (isTerminal ? verifiedDate : null);
-    final end = frozenAt ?? asOf ?? DateTime.now();
-
+    final end = endorsedDate ?? asOf ?? DateTime.now();
     final days = end.difference(submitted).inDays;
     return days < 0 ? 0 : days;
   }

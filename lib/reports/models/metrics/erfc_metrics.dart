@@ -24,24 +24,22 @@ final Set<String> kErfcTerminalStatuses = ErfcStatus.wiresOf(
 bool erfcIsTerminal(Map<String, dynamic> record) =>
     kErfcTerminalStatuses.contains(record['status']?.toString());
 
-/// Days since submission.
+/// Submission date to endorsed date — how long the RFC took to be
+/// endorsed, or has been waiting to be.
 ///
-/// Still moving for an in-flight RFC. For a finished one it freezes at the
-/// endorsement date, or at the verified date when the RFC was rejected,
-/// declined or cancelled before endorsement.
+/// Endorsed, it freezes at the endorsed date. Still in flight, it counts
+/// to today, because the wait is still running. Rejected, declined or
+/// cancelled, there is no endorsed date and there never will be, so the
+/// measure has no end and the report shows a dash rather than a number
+/// that would keep climbing for an RFC nobody is waiting on.
 int? erfcAgingDays(Map<String, dynamic> record, {DateTime? asOf}) {
   final submitted = parseRecordDate(record['submissionDate']);
   if (submitted == null) return null;
 
   final endorsed = parseRecordDate(record['endorsedDate']);
-  // The latest verification reached, so a rejection after 2nd Verified
-  // freezes at the later date rather than the first.
-  final verified =
-      parseRecordDate(record['verified2Date']) ??
-      parseRecordDate(record['verified1Date']);
-  final frozenAt = endorsed ?? (erfcIsTerminal(record) ? verified : null);
-  final end = frozenAt ?? asOf ?? DateTime.now();
+  if (endorsed == null && erfcIsTerminal(record)) return null;
 
+  final end = endorsed ?? asOf ?? DateTime.now();
   final days = end.difference(submitted).inDays;
   return days < 0 ? 0 : days;
 }

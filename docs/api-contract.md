@@ -141,9 +141,11 @@ The eRFC lifecycle. → `ErfcRecord`
 
 - The two verification dates are **separate gates**, in order. A rejection
   at the first leaves `verified2Date` null.
-- Aging freezes at `endorsedDate`, or at the **latest verification reached**
-  (`verified2Date ?? verified1Date`) when the RFC was rejected, declined or
-  cancelled before endorsement. An in-flight RFC keeps ageing.
+- Aging is measured between exactly two dates: `submissionDate` and
+  `endorsedDate`. It freezes at `endorsedDate` once endorsed, counts to
+  today while the RFC is in flight, and is **null** for one that was
+  rejected, declined or cancelled — there is no endorsement to measure to.
+  The verification dates do not enter into it.
 - An RFC is **overdue** when it is still in flight and has aged past 14 days
   (`kErfcOverdueDays`).
 
