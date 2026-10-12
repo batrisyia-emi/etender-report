@@ -101,11 +101,9 @@ extension VendorFilterCriteria on VendorFilters {
     _fromText('Search', searchQuery),
     _fromOption('Open to', openTo),
     _fromSet('Certification', certificationTypes),
-    _fromOption('Invitation', invitationStatus),
     _fromOption('Document purchase', purchaseOption),
-    _fromOption('Participation', participationStatus),
-    _fromSet('Submission', submissionStatuses),
-    _fromRange('Submitted', submissionDateRange),
+    _fromOption('Respond status', submissionStatus),
+    _fromRange('Requested', requestedDateRange),
   ]);
 }
 

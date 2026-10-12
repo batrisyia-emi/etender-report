@@ -106,7 +106,6 @@ class _ErfcReportViewState extends State<ErfcReportView> {
             ),
             SizedBox(height: spacing),
             ReportTimelineFilter(
-              label: 'Submission date',
               selectedRange: filters.submissionDateRange,
               onChanged: (range) => bloc.add(ErfcSubmissionDateChanged(range)),
             ),

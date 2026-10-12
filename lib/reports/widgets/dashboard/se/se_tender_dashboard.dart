@@ -265,11 +265,7 @@ class _ResponseFlow extends StatelessWidget {
         .length;
     final purchased = requests.where((r) => r['documentPurchased'] == true);
     final submitted = requests
-        .where(
-          (r) =>
-              r['submissionStatus'] == 'Submitted' ||
-              r['submissionStatus'] == 'Late',
-        )
+        .where((r) => r['submissionStatus'] == 'Submitted')
         .length;
 
     // The dataset has no VTM approval trail, so those counts stay blank.

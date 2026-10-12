@@ -88,7 +88,7 @@ exist and parsing a reference format is not a contract.
 | `invitationStatus` | string | `Sent` · `Not Sent` |
 | `documentPurchased` | boolean | |
 | `participationStatus` | string | `Participated` · `Not Participated` — two values only |
-| `submissionStatus` | string | `Submitted` · `Late` · `Not Submitted` |
+| `submissionStatus` | string | the vendor's respond status — one of nine, in order: `Participation Requested` · `Request Rejected` · `Request Approved` · `Pending Payment` · `Paid` · `Participated` · `Not Participate` · `Save` · `Submitted`. Shown as *Tender Respond Status*; the field name still says submission |
 | `requestedDate` | date? | when the vendor asked to take part; null when never invited |
 | `submissionDateTime` | date? | null unless submitted |
 | `openTo` | string | see *Open to* |
@@ -124,6 +124,7 @@ The eRFC lifecycle. → `ErfcRecord`
 | Field | Type | Notes |
 |---|---|---|
 | `rfcNumber` | string | e.g. `ERFC/2026/00009021` |
+| `subject` | string | what is being requested, in one line; a tender raised from this eRFC carries the same words as its `title` |
 | `division` | string | |
 | `department` | string | |
 | `unit` | string | |

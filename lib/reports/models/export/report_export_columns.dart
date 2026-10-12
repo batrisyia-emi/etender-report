@@ -55,7 +55,7 @@ final List<ExportColumn> vendorExportColumns = [
     (r) => r['documentPurchased'] == true ? 'Yes' : 'No',
   ),
   ExportColumn('Participation', (r) => _text(r, 'participationStatus')),
-  ExportColumn('Submission Status', (r) => _text(r, 'submissionStatus')),
+  ExportColumn('Tender Respond Status', (r) => _text(r, 'submissionStatus')),
   ExportColumn(
     'Submission Date & Time',
     (r) => formatLastUpdate(r['submissionDateTime']),

@@ -91,46 +91,30 @@ class _VendorParticipationViewState extends State<VendorParticipationView> {
             ),
             SizedBox(height: spacing),
             ReportTimelineFilter(
-              label: 'Submission date',
-              selectedRange: filters.submissionDateRange,
-              onChanged: (range) =>
-                  bloc.add(VendorSubmissionDateChanged(range)),
+              label: 'Requested date',
+              selectedRange: filters.requestedDateRange,
+              onChanged: (range) => bloc.add(VendorRequestedDateChanged(range)),
             ),
             SizedBox(height: spacing),
             VendorFilterPanel(
               searchController: _searchController,
               onSearchChanged: (value) => bloc.add(VendorSearchChanged(value)),
               // Appendix A 8.1, the tender's eligibility rule. Distinct
-              // from participationStatus below, which is whether the vendor
-              // took the invitation up.
               openToOptions: state.openToOptions,
               selectedOpenTo: filters.openTo,
-              onOpenToChanged: (value) =>
-                  bloc.add(VendorParticipationTypeChanged(value)),
+              onOpenToChanged: (value) => bloc.add(VendorOpenToChanged(value)),
               certificationTypes: VendorParticipationState.certificationTypes,
               selectedCertificationTypes: filters.certificationTypes,
               onCertificationTypesChanged: (values) =>
                   bloc.add(VendorCertificationTypesChanged(values)),
-              invitationStatuses: VendorParticipationState.invitationStatuses,
-              selectedInvitationStatus: filters.invitationStatus,
-              onInvitationStatusChanged: (value) =>
-                  bloc.add(VendorInvitationStatusChanged(value)),
               purchaseOptions: VendorParticipationState.purchaseOptions,
               selectedPurchaseOption: filters.purchaseOption,
               onPurchaseOptionChanged: (value) =>
                   bloc.add(VendorPurchaseOptionChanged(value)),
-              participationStatuses:
-                  VendorParticipationState.participationStatuses,
-              selectedParticipationStatus: filters.participationStatus,
-              onParticipationStatusChanged: (value) =>
-                  bloc.add(VendorParticipationStatusChanged(value)),
-              submissionStatuses: VendorParticipationState.submissionStatuses,
-              selectedSubmissionStatuses: filters.submissionStatuses,
-              onSubmissionStatusesChanged: (values) =>
-                  bloc.add(VendorSubmissionStatusesChanged(values)),
-              submissionDateFilter: filters.submissionDateRange,
-              onSubmissionDateChanged: (range) =>
-                  bloc.add(VendorSubmissionDateChanged(range)),
+              respondStatuses: VendorParticipationState.respondStatuses,
+              selectedRespondStatus: filters.submissionStatus,
+              onRespondStatusChanged: (value) =>
+                  bloc.add(VendorSubmissionStatusChanged(value)),
               onFiltersReset: () => bloc.add(const VendorFiltersCleared()),
             ),
             SizedBox(height: spacing),

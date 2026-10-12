@@ -90,13 +90,10 @@ class VendorParticipationRecord extends Equatable {
   };
 
   /// Late bids still count as a submission: the vendor did bid.
-  bool get hasSubmitted =>
-      submissionStatus == 'Submitted' || submissionStatus == 'Late';
+  bool get hasSubmitted => submissionStatus == 'Submitted';
 
   /// Took the invitation up, as opposed to turning it down.
   bool get hasParticipated => participationStatus == 'Participated';
-
-  bool get wasLate => submissionStatus == 'Late';
 
   /// For display and for the Yes / No filter.
   String get purchaseLabel => documentPurchased ? 'Yes' : 'No';

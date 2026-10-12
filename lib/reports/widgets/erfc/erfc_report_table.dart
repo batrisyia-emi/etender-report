@@ -35,9 +35,16 @@ class ErfcReportTable extends StatefulWidget {
   final ValueChanged<ExportFormat>? onExport;
   final bool isExporting;
 
-  /// The eleven columns plus their ten 16px gaps and the table's own
-  /// margins. Below this Division / Dept and the status chip ellipsise.
-  static const double minTableWidth = 2021;
+  /// The horizontal scroll extent: the twelve column widths, their eleven
+  /// 16px gaps and the table's own 12px side margins.
+  ///
+  /// Arithmetic rather than a literal so it cannot drift from the columns:
+  /// under the real total, data_table_2 clips the table instead of
+  /// scrolling it.
+  static const double minTableWidth = _columnWidthTotal + 11 * 16 + 2 * 12;
+
+  /// 175 + 300 + 160 + 190 + 250 + 178 + 112 + 112 + 112 + 112 + 190 + 171
+  static const double _columnWidthTotal = 2062;
 
   @override
   State<ErfcReportTable> createState() => _ErfcReportTableState();
@@ -143,8 +150,17 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
             ),
           ),
         ),
-        cell(department.isEmpty ? division : '$division / $department'),
-        cell(record['unit']),
+        DataCell(
+          Tooltip(
+            message: record['subject'] ?? '',
+            child: Text(
+              record['subject'] ?? '',
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        cell(division),
+        cell(department),
         cell(record['modeOfProcurement']),
         DataCell(Text(formatValue(record['value']))),
         cell(formatDateOnly(record['submissionDate'])),
@@ -179,13 +195,14 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         // way a single flexible column does. Proportional sizing keeps
         // each still clears its longest value: 296 for Division / Dept (43
         // characters), 247 for Mode of Procurement (36), 247 for Unit (21).
-        const DataColumn2(label: Text('Division / Dept'), fixedWidth: 260),
-        const DataColumn2(label: Text('Unit'), fixedWidth: 165),
+        const DataColumn2(label: Text('Subject'), fixedWidth: 300),
+        const DataColumn2(label: Text('Division'), fixedWidth: 160),
+        const DataColumn2(label: Text('Department'), fixedWidth: 190),
         const DataColumn2(label: Text('Mode of Procurement'), fixedWidth: 250),
         DataColumn2(
           label: SortableHeader(
             'Estimated Value (RM)',
-            columnIndex: 4,
+            columnIndex: 5,
             activeIndex: _sortColumnIndex,
           ),
           fixedWidth: 178,
@@ -195,15 +212,6 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         DataColumn2(
           label: SortableHeader(
             'Submitted',
-            columnIndex: 5,
-            activeIndex: _sortColumnIndex,
-          ),
-          fixedWidth: 112,
-          onSort: _handleSort,
-        ),
-        DataColumn2(
-          label: SortableHeader(
-            'Verified 1',
             columnIndex: 6,
             activeIndex: _sortColumnIndex,
           ),
@@ -212,7 +220,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         ),
         DataColumn2(
           label: SortableHeader(
-            'Verified 2',
+            'Verified 1',
             columnIndex: 7,
             activeIndex: _sortColumnIndex,
           ),
@@ -221,8 +229,17 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         ),
         DataColumn2(
           label: SortableHeader(
-            'Endorsed',
+            'Verified 2',
             columnIndex: 8,
+            activeIndex: _sortColumnIndex,
+          ),
+          fixedWidth: 112,
+          onSort: _handleSort,
+        ),
+        DataColumn2(
+          label: SortableHeader(
+            'Endorsed',
+            columnIndex: 9,
             activeIndex: _sortColumnIndex,
           ),
           fixedWidth: 112,
@@ -230,7 +247,7 @@ class _ErfcReportTableState extends State<ErfcReportTable> {
         ),
         // 'System Cancelled' is the longest status; at 122 the chip was
         // ellipsised on every cancelled row.
-        const DataColumn2(label: Text('Current Status'), fixedWidth: 190),
+        const DataColumn2(label: Text('eRFC Status'), fixedWidth: 190),
         // Room for the overdue warning icon beside a three-digit count.
         const DataColumn2(label: Text('Aging'), fixedWidth: 171),
       ],

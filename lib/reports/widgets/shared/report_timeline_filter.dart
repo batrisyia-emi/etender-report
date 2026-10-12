@@ -46,15 +46,16 @@ bool _sameDay(DateTime a, DateTime b) =>
 class ReportTimelineFilter extends StatelessWidget {
   const ReportTimelineFilter({
     super.key,
-    required this.label,
+    this.label,
     required this.selectedRange,
     required this.onChanged,
     this.asOf,
   });
 
   /// Which date the periods apply to, e.g. 'Closing date'. Named because
-  /// every report filters on a different one.
-  final String label;
+  /// every report filters on a different one — null where the report would
+  /// rather say it elsewhere.
+  final String? label;
 
   final DateTimeRange? selectedRange;
 
@@ -74,14 +75,15 @@ class ReportTimelineFilter extends StatelessWidget {
       spacing: 12,
       runSpacing: 8,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11.5,
-            fontWeight: FontWeight.w600,
-            color: AppColors.muted,
+        if (label case final text?)
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: AppColors.muted,
+            ),
           ),
-        ),
         Container(
           padding: const EdgeInsets.all(3),
           decoration: BoxDecoration(

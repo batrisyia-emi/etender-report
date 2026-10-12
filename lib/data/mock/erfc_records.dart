@@ -5,6 +5,7 @@
 const List<Map<String, dynamic>> kErfcRecords = [
   {
     'rfcNumber': 'ERFC/2026/00009021',
+    'subject': 'Substation Maintenance Sabah West',
     'division': 'Distribution',
     'department': 'Asset Management',
     'unit': 'Substation Unit',
@@ -19,6 +20,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009104',
+    'subject': 'HQ Server Room Cooling System Upgrade',
     'division': 'Corporate Services',
     'department': 'Information Technology',
     'unit': 'Infrastructure Unit',
@@ -33,6 +35,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00008843',
+    'subject': 'Supply of High-Voltage Cables (Sandakan)',
     'division': 'Transmission',
     'department': 'Network Planning',
     'unit': 'Materials Unit',
@@ -47,6 +50,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00008790',
+    'subject': 'Gas Turbine Overhaul (Patau-Patau)',
     'division': 'Generation',
     'department': 'Plant Maintenance',
     'unit': 'Mechanical Unit',
@@ -61,6 +65,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00008812',
+    'subject': 'Rural Electrification Works (Pitas)',
     'division': 'Distribution',
     'department': 'Project Delivery',
     'unit': 'Rural Unit',
@@ -75,6 +80,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00008901',
+    'subject': 'SCADA System Upgrade Phase 2',
     'division': 'Transmission',
     'department': 'Network Planning',
     'unit': 'Control Systems Unit',
@@ -89,6 +95,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009152',
+    'subject': 'Protection Relay Testing Services',
     'division': 'Transmission',
     'department': 'Substation Projects',
     'unit': 'Protection Unit',
@@ -103,6 +110,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009188',
+    'subject': 'Meter Reading Services (Tawau District)',
     'division': 'Distribution',
     'department': 'Customer Service',
     'unit': 'Metering Unit',
@@ -117,6 +125,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009196',
+    'subject': 'Vegetation Management (Beaufort Line)',
     'division': 'Distribution',
     'department': 'Network Operations',
     'unit': 'Line Maintenance Unit',
@@ -131,6 +140,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009203',
+    'subject': 'Overhead Line Refurbishment (Keningau)',
     'division': 'Distribution',
     'department': 'Network Operations',
     'unit': 'Line Maintenance Unit',
@@ -145,6 +155,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009231',
+    'subject': 'Office Furniture Supply (Kota Kinabalu HQ)',
     'division': 'Corporate Services',
     'department': 'Administration',
     'unit': 'Facilities Unit',
@@ -159,6 +170,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009248',
+    'subject': 'Emergency Generator Fuel Supply',
     'division': 'Generation',
     'department': 'Plant Operations',
     'unit': 'Fuel Unit',
@@ -173,6 +185,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009240',
+    'subject': 'Distribution Transformer Supply (Lahad Datu)',
     'division': 'Distribution',
     'department': 'Asset Management',
     'unit': 'Substation Unit',
@@ -187,6 +200,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009219',
+    'subject': 'Fire Extinguisher Servicing (All Districts)',
     'division': 'Corporate Services',
     'department': 'Safety & Health',
     'unit': 'HSE Unit',
@@ -201,6 +215,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009255',
+    'subject': 'Boiler Feed Pump Overhaul (Sepanggar)',
     'division': 'Generation',
     'department': 'Plant Maintenance',
     'unit': 'Mechanical Unit',
@@ -215,6 +230,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009262',
+    'subject': 'Transmission Line Protection Relay Replacement',
     'division': 'Transmission',
     'department': 'Substation Projects',
     'unit': 'Protection Unit',
@@ -229,6 +245,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009270',
+    'subject': 'Smart Meter Replacement Programme (Phase 1)',
     'division': 'Distribution',
     'department': 'Customer Service',
     'unit': 'Metering Unit',
@@ -243,6 +260,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009276',
+    'subject': 'Treasury Reconciliation System Licence Renewal',
     'division': 'Corporate Services',
     'department': 'Finance',
     'unit': 'Treasury Unit',
@@ -257,6 +275,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009281',
+    'subject': 'Annual Diesel Fuel Supply (Generation Plants)',
     'division': 'Generation',
     'department': 'Plant Operations',
     'unit': 'Fuel Unit',
@@ -271,6 +290,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009284',
+    'subject': 'Rural Feeder Line Reinforcement (Beluran)',
     'division': 'Distribution',
     'department': 'Project Delivery',
     'unit': 'Rural Unit',
@@ -285,6 +305,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009150',
+    'subject': 'Protection Panel Spares (Kota Kinabalu)',
     'division': 'Transmission',
     'department': 'Substation Projects',
     'unit': 'Protection Unit',
@@ -299,6 +320,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009165',
+    'subject': 'Substation Earthing Rectification Works',
     'division': 'Distribution',
     'department': 'Asset Management',
     'unit': 'Substation Unit',
@@ -313,6 +335,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009241',
+    'subject': 'Office Network Switch Refresh (HQ)',
     'division': 'Corporate Services',
     'department': 'Information Technology',
     'unit': 'Infrastructure Unit',
@@ -330,6 +353,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   // not. Declined rather than rejected — it was not sent back to be fixed.
   {
     'rfcNumber': 'ERFC/2026/00009263',
+    'subject': 'Transmission Tower Hardware Supply',
     'division': 'Transmission',
     'department': 'Network Planning',
     'unit': 'Materials Unit',
@@ -346,6 +370,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   // Refused at the last gate, with both verifications already behind it.
   {
     'rfcNumber': 'ERFC/2026/00009271',
+    'subject': 'Rural Street Lighting Installation (Kudat)',
     'division': 'Distribution',
     'department': 'Project Delivery',
     'unit': 'Rural Unit',
@@ -360,6 +385,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009174',
+    'subject': 'Turbine Lubrication System Spares',
     'division': 'Generation',
     'department': 'Plant Maintenance',
     'unit': 'Mechanical Unit',
@@ -374,6 +400,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009186',
+    'subject': 'Metering CT/VT Supply (Tawau)',
     'division': 'Distribution',
     'department': 'Customer Service',
     'unit': 'Metering Unit',
@@ -388,6 +415,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009141',
+    'subject': 'Switchgear Replacement (Ranau)',
     'division': 'Distribution',
     'department': 'Asset Management',
     'unit': 'Substation Unit',
@@ -402,6 +430,7 @@ const List<Map<String, dynamic>> kErfcRecords = [
   },
   {
     'rfcNumber': 'ERFC/2026/00009225',
+    'subject': 'Uniform Supply (Field Crew)',
     'division': 'Corporate Services',
     'department': 'Administration',
     'unit': 'Facilities Unit',

@@ -22,6 +22,7 @@ export 'package:etender_reports/reports/models/metrics/erfc_metrics.dart'
 class ErfcRecord extends Equatable {
   const ErfcRecord({
     required this.rfcNumber,
+    required this.subject,
     required this.division,
     required this.department,
     required this.unit,
@@ -37,6 +38,7 @@ class ErfcRecord extends Equatable {
 
   factory ErfcRecord.fromJson(Map<String, dynamic> json) => ErfcRecord(
     rfcNumber: asString(json['rfcNumber']),
+    subject: asString(json['subject']),
     division: asString(json['division']),
     department: asString(json['department']),
     unit: asString(json['unit']),
@@ -51,6 +53,14 @@ class ErfcRecord extends Equatable {
   );
 
   final String rfcNumber;
+
+  /// What is being requested, in one line.
+  ///
+  /// Called the subject here and the title on the tender and vendor
+  /// records — the same words, since a tender raised from an eRFC
+  /// carries its subject forward as the tender title.
+  final String subject;
+
   final String division;
   final String department;
   final String unit;
@@ -76,6 +86,7 @@ class ErfcRecord extends Equatable {
 
   Map<String, dynamic> toJson() => {
     'rfcNumber': rfcNumber,
+    'subject': subject,
     'division': division,
     'department': department,
     'unit': unit,

@@ -22,20 +22,23 @@ class VendorParticipationState extends Equatable {
   /// page happens to contain, so an option with no matching row would
   /// vanish instead of returning an honest empty result.
   static const List<String> certificationTypes = kCertificationTypes;
-  static const List<String> invitationStatuses = ['Sent', 'Not Sent'];
   static const List<String> purchaseOptions = ['Yes', 'No'];
 
-  /// Whether the vendor took the invitation up, separate from whether a bid
-  /// arrived and whether it was on time.
-  static const List<String> participationStatuses = [
+  /// Where a vendor has got to with one tender, in order.
+  ///
+  /// The same nine states the supplier sees on its own report —
+  /// this is that journey from SE's side. Declared rather than
+  /// derived, so a state no row holds today stays selectable.
+  static const List<String> respondStatuses = [
+    'Participation Requested',
+    'Request Rejected',
+    'Request Approved',
+    'Pending Payment',
+    'Paid',
     'Participated',
-    'Not Participated',
-  ];
-
-  static const List<String> submissionStatuses = [
+    'Not Participate',
+    'Save',
     'Submitted',
-    'Not Submitted',
-    'Late',
   ];
 
   /// Appendix A section 8.1 — the tender's eligibility rule. The display

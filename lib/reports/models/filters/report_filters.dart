@@ -186,11 +186,9 @@ class VendorFilters extends Equatable {
     this.searchQuery = '',
     this.openTo,
     this.certificationTypes = const {},
-    this.invitationStatus,
     this.purchaseOption,
-    this.participationStatus,
-    this.submissionStatuses = const {},
-    this.submissionDateRange,
+    this.submissionStatus,
+    this.requestedDateRange,
   });
 
   final String searchQuery;
@@ -199,15 +197,17 @@ class VendorFilters extends Equatable {
   final String? openTo;
   final Set<String> certificationTypes;
 
-  /// Binary, so a single select: picking both would mean picking neither.
-  final String? invitationStatus;
   final String? purchaseOption;
 
-  /// Participated or Rejected: whether the vendor took up the invitation.
-  final String? participationStatus;
+  /// Single-select, like the other status filters: a vendor is in
+  /// one respond state, so a multi-select offered combinations the
+  /// data cannot produce.
+  final String? submissionStatus;
 
-  final Set<String> submissionStatuses;
-  final DateTimeRange? submissionDateRange;
+  /// The table shows the requested date, so the timeline filters on
+  /// it too. Filtering a submission timestamp that has no column
+  /// left a reader no way to see why rows disappeared.
+  final DateTimeRange? requestedDateRange;
 
   static const List<String> searchKeys = [
     'vendorName',
@@ -224,66 +224,35 @@ class VendorFilters extends Equatable {
     return matchesQuery(record, searchKeys, searchQuery) &&
         matchesOptional(openTo, record['openTo']) &&
         matchesAnyOf(certificationTypes, record['certificationType']) &&
-        matchesOptional(invitationStatus, record['invitationStatus']) &&
         matchesOptional(purchaseOption, purchaseLabel) &&
-        matchesOptional(participationStatus, record['participationStatus']) &&
-        matchesAnyOf(submissionStatuses, record['submissionStatus']) &&
+        matchesOptional(submissionStatus, record['submissionStatus']) &&
         matchesDateRange(
-          parseRecordDate(record['submissionDateTime']),
-          submissionDateRange,
+          parseRecordDate(record['requestedDate']),
+          requestedDateRange,
         );
   }
-
-  bool hasExactSubmissionStatuses(Set<String> candidate) =>
-      submissionStatuses.length == candidate.length &&
-      submissionStatuses.containsAll(candidate);
-
-  /// Each overview card applies its own slice of the funnel, or clears it
-  /// when that slice is already the selection.
-  VendorFilters toggleInvitationStatus(String candidate) => copyWith(
-    invitationStatus: invitationStatus == candidate ? null : candidate,
-  );
-
-  VendorFilters toggleParticipationStatus(String candidate) => copyWith(
-    participationStatus: participationStatus == candidate ? null : candidate,
-  );
-
-  VendorFilters togglePurchaseOption(String candidate) =>
-      copyWith(purchaseOption: purchaseOption == candidate ? null : candidate);
-
-  VendorFilters toggleSubmissionStatuses(Set<String> candidate) => copyWith(
-    submissionStatuses: hasExactSubmissionStatuses(candidate)
-        ? const <String>{}
-        : candidate,
-  );
 
   VendorFilters copyWith({
     String? searchQuery,
     Object? openTo = _unset,
     Set<String>? certificationTypes,
-    Object? invitationStatus = _unset,
     Object? purchaseOption = _unset,
-    Object? participationStatus = _unset,
-    Set<String>? submissionStatuses,
-    Object? submissionDateRange = _unset,
+    Object? submissionStatus = _unset,
+    Object? requestedDateRange = _unset,
   }) {
     return VendorFilters(
       searchQuery: searchQuery ?? this.searchQuery,
       openTo: identical(openTo, _unset) ? this.openTo : openTo as String?,
       certificationTypes: certificationTypes ?? this.certificationTypes,
-      invitationStatus: identical(invitationStatus, _unset)
-          ? this.invitationStatus
-          : invitationStatus as String?,
       purchaseOption: identical(purchaseOption, _unset)
           ? this.purchaseOption
           : purchaseOption as String?,
-      participationStatus: identical(participationStatus, _unset)
-          ? this.participationStatus
-          : participationStatus as String?,
-      submissionStatuses: submissionStatuses ?? this.submissionStatuses,
-      submissionDateRange: identical(submissionDateRange, _unset)
-          ? this.submissionDateRange
-          : submissionDateRange as DateTimeRange?,
+      submissionStatus: identical(submissionStatus, _unset)
+          ? this.submissionStatus
+          : submissionStatus as String?,
+      requestedDateRange: identical(requestedDateRange, _unset)
+          ? this.requestedDateRange
+          : requestedDateRange as DateTimeRange?,
     );
   }
 
@@ -292,11 +261,9 @@ class VendorFilters extends Equatable {
     searchQuery,
     openTo,
     certificationTypes,
-    invitationStatus,
     purchaseOption,
-    participationStatus,
-    submissionStatuses,
-    submissionDateRange,
+    submissionStatus,
+    requestedDateRange,
   ];
 }
 

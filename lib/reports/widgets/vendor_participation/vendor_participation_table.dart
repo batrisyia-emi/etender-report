@@ -37,10 +37,15 @@ class VendorParticipationTable extends StatefulWidget {
   /// The nine columns plus their eight 16px gaps and the table's own
   /// margins. Below this the certification type ellipsises.
   ///
-  /// Tender Description replaced Invitation Status and is twice as wide;
-  /// Requested Date then replaced the submission timestamp, which was
-  /// wider, and the respond status needed 25 more for its longer label.
-  static const double minTableWidth = 1961;
+  /// The nine columns plus their eight 16px gaps and the table's own
+  /// margins. Below this the certification type ellipsises.
+  ///
+  /// Written as arithmetic so it cannot drift from the columns: under the
+  /// real total, data_table_2 clips the table instead of scrolling it.
+  static const double minTableWidth = _columnWidthTotal + 8 * 16 + 2 * 12;
+
+  /// 165 + 300 + 210 + 170 + 190 + 150 + 150 + 174 + 300
+  static const double _columnWidthTotal = 1809;
 
   @override
   State<VendorParticipationTable> createState() =>
@@ -65,12 +70,18 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
     ascending: _sortAscending,
   );
 
-  ChipColors _participationColors(String value) =>
-      value == 'Participated' ? ChipPalette.green : ChipPalette.red;
-
-  ChipColors _submissionColors(String value) => switch (value) {
+  /// Grey while nothing is decided, amber where the vendor owes the next
+  /// move, red where the request was turned back or declined, green once
+  /// the bid is in.
+  ChipColors _respondColors(String value) => switch (value) {
     'Submitted' => ChipPalette.green,
-    'Late' => ChipPalette.orange,
+    'Paid' => ChipPalette.green,
+    'Request Approved' => ChipPalette.blue,
+    'Participated' => ChipPalette.blue,
+    'Pending Payment' => ChipPalette.orange,
+    'Save' => ChipPalette.orange,
+    'Request Rejected' => ChipPalette.red,
+    'Not Participate' => ChipPalette.red,
     _ => ChipPalette.grey,
   };
 
@@ -81,13 +92,12 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
   };
 
   DataRow _buildRecordRow(Map<String, dynamic> record) {
-    final participationStatus =
-        record['participationStatus'] as String? ?? 'Unknown';
-    final submissionStatus = record['submissionStatus'] as String? ?? 'Unknown';
+    final respondStatus = record['submissionStatus'] as String? ?? 'Unknown';
     final openTo = record['openTo'] as String? ?? 'Unknown';
     final openToLabel = OpenTo.labelFor(openTo);
     final purchased = record['documentPurchased'] == true;
     final requestedDate = formatDateOnly(record['requestedDate']);
+    final submissionDate = formatDateOnly(record['submissionDateTime']);
 
     return DataRow(
       cells: [
@@ -122,17 +132,12 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
         ),
         DataCell(
           StatusChip(
-            label: participationStatus,
-            colors: _participationColors(participationStatus),
-          ),
-        ),
-        DataCell(
-          StatusChip(
-            label: submissionStatus,
-            colors: _submissionColors(submissionStatus),
+            label: respondStatus,
+            colors: _respondColors(respondStatus),
           ),
         ),
         DataCell(Text(requestedDate)),
+        DataCell(Text(submissionDate)),
         DataCell(
           // The blueprint wording is ~95 characters; the chip shows the
           // short form and the full sentence on hover.
@@ -177,7 +182,6 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
         const DataColumn2(label: Text('Tender Description'), fixedWidth: 300),
         const DataColumn2(label: Text('Vendor Name'), fixedWidth: 210),
         const DataColumn2(label: Text('Document Purchased'), fixedWidth: 170),
-        const DataColumn2(label: Text('Participation'), fixedWidth: 150),
         const DataColumn2(
           label: Text('Tender Respond Status'),
           fixedWidth: 190,
@@ -185,6 +189,15 @@ class _VendorParticipationTableState extends State<VendorParticipationTable> {
         DataColumn2(
           label: SortableHeader(
             'Requested Date',
+            columnIndex: 5,
+            activeIndex: _sortColumnIndex,
+          ),
+          fixedWidth: 150,
+          onSort: _handleSort,
+        ),
+        DataColumn2(
+          label: SortableHeader(
+            'Submission Date',
             columnIndex: 6,
             activeIndex: _sortColumnIndex,
           ),

@@ -22,13 +22,13 @@ final class VendorSearchChanged extends VendorParticipationEvent {
   List<Object?> get props => [query];
 }
 
-final class VendorParticipationTypeChanged extends VendorParticipationEvent {
-  const VendorParticipationTypeChanged(this.participationType);
+final class VendorOpenToChanged extends VendorParticipationEvent {
+  const VendorOpenToChanged(this.openTo);
 
-  final String? participationType;
+  final String? openTo;
 
   @override
-  List<Object?> get props => [participationType];
+  List<Object?> get props => [openTo];
 }
 
 final class VendorCertificationTypesChanged extends VendorParticipationEvent {
@@ -42,51 +42,6 @@ final class VendorCertificationTypesChanged extends VendorParticipationEvent {
 
 /// Sent by the overview cards, each of which applies its slice of the
 /// funnel or clears it when already selected.
-final class VendorInvitationFilterToggled extends VendorParticipationEvent {
-  const VendorInvitationFilterToggled(this.invitationStatus);
-
-  final String invitationStatus;
-
-  @override
-  List<Object?> get props => [invitationStatus];
-}
-
-final class VendorParticipationFilterToggled extends VendorParticipationEvent {
-  const VendorParticipationFilterToggled(this.participationStatus);
-
-  final String participationStatus;
-
-  @override
-  List<Object?> get props => [participationStatus];
-}
-
-final class VendorPurchaseFilterToggled extends VendorParticipationEvent {
-  const VendorPurchaseFilterToggled(this.purchaseOption);
-
-  final String purchaseOption;
-
-  @override
-  List<Object?> get props => [purchaseOption];
-}
-
-final class VendorSubmissionFilterToggled extends VendorParticipationEvent {
-  const VendorSubmissionFilterToggled(this.submissionStatuses);
-
-  final Set<String> submissionStatuses;
-
-  @override
-  List<Object?> get props => [submissionStatuses];
-}
-
-final class VendorInvitationStatusChanged extends VendorParticipationEvent {
-  const VendorInvitationStatusChanged(this.invitationStatus);
-
-  final String? invitationStatus;
-
-  @override
-  List<Object?> get props => [invitationStatus];
-}
-
 final class VendorPurchaseOptionChanged extends VendorParticipationEvent {
   const VendorPurchaseOptionChanged(this.purchaseOption);
 
@@ -96,26 +51,18 @@ final class VendorPurchaseOptionChanged extends VendorParticipationEvent {
   List<Object?> get props => [purchaseOption];
 }
 
-final class VendorParticipationStatusChanged extends VendorParticipationEvent {
-  const VendorParticipationStatusChanged(this.participationStatus);
+final class VendorSubmissionStatusChanged extends VendorParticipationEvent {
+  const VendorSubmissionStatusChanged(this.status);
 
-  final String? participationStatus;
-
-  @override
-  List<Object?> get props => [participationStatus];
-}
-
-final class VendorSubmissionStatusesChanged extends VendorParticipationEvent {
-  const VendorSubmissionStatusesChanged(this.submissionStatuses);
-
-  final Set<String> submissionStatuses;
+  /// Null clears the filter back to every respond status.
+  final String? status;
 
   @override
-  List<Object?> get props => [submissionStatuses];
+  List<Object?> get props => [status];
 }
 
-final class VendorSubmissionDateChanged extends VendorParticipationEvent {
-  const VendorSubmissionDateChanged(this.range);
+final class VendorRequestedDateChanged extends VendorParticipationEvent {
+  const VendorRequestedDateChanged(this.range);
 
   final DateTimeRange? range;
 

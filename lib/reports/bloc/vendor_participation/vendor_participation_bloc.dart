@@ -20,9 +20,8 @@ class VendorParticipationBloc
     on<VendorSearchChanged>(
       (event, emit) => _emit(emit, (f) => f.copyWith(searchQuery: event.query)),
     );
-    on<VendorParticipationTypeChanged>(
-      (event, emit) =>
-          _emit(emit, (f) => f.copyWith(openTo: event.participationType)),
+    on<VendorOpenToChanged>(
+      (event, emit) => _emit(emit, (f) => f.copyWith(openTo: event.openTo)),
     );
     on<VendorCertificationTypesChanged>(
       (event, emit) => _emit(
@@ -30,51 +29,17 @@ class VendorParticipationBloc
         (f) => f.copyWith(certificationTypes: event.certificationTypes),
       ),
     );
-    on<VendorInvitationFilterToggled>(
-      (event, emit) =>
-          _emit(emit, (f) => f.toggleInvitationStatus(event.invitationStatus)),
-    );
-    on<VendorParticipationFilterToggled>(
-      (event, emit) => _emit(
-        emit,
-        (f) => f.toggleParticipationStatus(event.participationStatus),
-      ),
-    );
-    on<VendorPurchaseFilterToggled>(
-      (event, emit) =>
-          _emit(emit, (f) => f.togglePurchaseOption(event.purchaseOption)),
-    );
-    on<VendorSubmissionFilterToggled>(
-      (event, emit) => _emit(
-        emit,
-        (f) => f.toggleSubmissionStatuses(event.submissionStatuses),
-      ),
-    );
-    on<VendorInvitationStatusChanged>(
-      (event, emit) => _emit(
-        emit,
-        (f) => f.copyWith(invitationStatus: event.invitationStatus),
-      ),
-    );
     on<VendorPurchaseOptionChanged>(
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(purchaseOption: event.purchaseOption)),
     );
-    on<VendorParticipationStatusChanged>(
-      (event, emit) => _emit(
-        emit,
-        (f) => f.copyWith(participationStatus: event.participationStatus),
-      ),
-    );
-    on<VendorSubmissionStatusesChanged>(
-      (event, emit) => _emit(
-        emit,
-        (f) => f.copyWith(submissionStatuses: event.submissionStatuses),
-      ),
-    );
-    on<VendorSubmissionDateChanged>(
+    on<VendorSubmissionStatusChanged>(
       (event, emit) =>
-          _emit(emit, (f) => f.copyWith(submissionDateRange: event.range)),
+          _emit(emit, (f) => f.copyWith(submissionStatus: event.status)),
+    );
+    on<VendorRequestedDateChanged>(
+      (event, emit) =>
+          _emit(emit, (f) => f.copyWith(requestedDateRange: event.range)),
     );
     on<VendorFiltersCleared>(
       (event, emit) => _emit(emit, (_) => const VendorFilters()),

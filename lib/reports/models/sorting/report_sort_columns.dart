@@ -26,21 +26,21 @@ final List<SortableColumn?> tenderSortColumns = [
   null, // 14 Tender Overall Status
 ];
 
-/// Vendor participation — 9 columns, 1 sortable. The only value or date
+/// Vendor participation — 9 columns, 2 sortable. The only value or date
 /// column on this report is the submission timestamp.
 final List<SortableColumn?> vendorSortColumns = [
   null, // 0 Tender/Quotation ID
   null, // 1 Tender Description
   null, // 2 Vendor Name
   null, // 3 Document Purchased
-  null, // 4 Participation
-  null, // 5 Tender Respond Status
-  SortableColumn.date('requestedDate'), // 6 Requested Date
+  null, // 4 Tender Respond Status
+  SortableColumn.date('requestedDate'), // 5 Requested Date
+  SortableColumn.date('submissionDateTime'), // 6 Submission Date
   null, // 7 Open To
   null, // 8 Vendor Certification Type
 ];
 
-/// eRFC lifecycle — 11 columns, 5 sortable.
+/// eRFC lifecycle — 12 columns, 5 sortable.
 ///
 /// Aging is left off to match "value and date columns only". It is derived
 /// from the submission date, so if you want it sortable later, swap the last
@@ -52,16 +52,17 @@ final List<SortableColumn?> vendorSortColumns = [
 /// erfc_report_table.dart.
 final List<SortableColumn?> erfcSortColumns = [
   null, // 0 RFC Number
-  null, // 1 Division / Dept
-  null, // 2 Unit
-  null, // 3 Mode of Procurement
-  SortableColumn.number('value'), // 4
-  SortableColumn.date('submissionDate'), // 5
-  SortableColumn.date('verified1Date'), // 6
-  SortableColumn.date('verified2Date'), // 7
-  SortableColumn.date('endorsedDate'), // 8
-  null, // 9  Current Status
-  null, // 10 Aging
+  null, // 1 Subject
+  null, // 2 Division
+  null, // 3 Department
+  null, // 4 Mode of Procurement
+  SortableColumn.number('value'), // 5
+  SortableColumn.date('submissionDate'), // 6
+  SortableColumn.date('verified1Date'), // 7
+  SortableColumn.date('verified2Date'), // 8
+  SortableColumn.date('endorsedDate'), // 9
+  null, // 10 eRFC Status
+  null, // 11 Aging
 ];
 
 /// Supplier view - 11 columns, 6 sortable. Same rule as the others: only

@@ -17,20 +17,12 @@ class VendorFilterPanel extends StatelessWidget {
     required this.certificationTypes,
     required this.selectedCertificationTypes,
     required this.onCertificationTypesChanged,
-    required this.invitationStatuses,
-    required this.selectedInvitationStatus,
-    required this.onInvitationStatusChanged,
     required this.purchaseOptions,
     required this.selectedPurchaseOption,
     required this.onPurchaseOptionChanged,
-    required this.participationStatuses,
-    required this.selectedParticipationStatus,
-    required this.onParticipationStatusChanged,
-    required this.submissionStatuses,
-    required this.selectedSubmissionStatuses,
-    required this.onSubmissionStatusesChanged,
-    required this.submissionDateFilter,
-    required this.onSubmissionDateChanged,
+    required this.respondStatuses,
+    required this.selectedRespondStatus,
+    required this.onRespondStatusChanged,
     required this.onFiltersReset,
   });
 
@@ -45,24 +37,13 @@ class VendorFilterPanel extends StatelessWidget {
   final Set<String> selectedCertificationTypes;
   final ValueChanged<Set<String>> onCertificationTypesChanged;
 
-  final List<String> invitationStatuses;
-  final String? selectedInvitationStatus;
-  final ValueChanged<String?> onInvitationStatusChanged;
-
   final List<String> purchaseOptions;
   final String? selectedPurchaseOption;
   final ValueChanged<String?> onPurchaseOptionChanged;
 
-  final List<String> participationStatuses;
-  final String? selectedParticipationStatus;
-  final ValueChanged<String?> onParticipationStatusChanged;
-
-  final List<String> submissionStatuses;
-  final Set<String> selectedSubmissionStatuses;
-  final ValueChanged<Set<String>> onSubmissionStatusesChanged;
-
-  final DateTimeRange? submissionDateFilter;
-  final ValueChanged<DateTimeRange?> onSubmissionDateChanged;
+  final List<String> respondStatuses;
+  final String? selectedRespondStatus;
+  final ValueChanged<String?> onRespondStatusChanged;
 
   final VoidCallback onFiltersReset;
 
@@ -78,20 +59,11 @@ class VendorFilterPanel extends StatelessWidget {
     Icons.verified_outlined,
     size: 18,
   );
-  static const Icon _invitationIcon = Icon(
-    Icons.mark_email_read_outlined,
-    size: 18,
-  );
   static const Icon _purchaseIcon = Icon(
     Icons.shopping_cart_outlined,
     size: 18,
   );
-  static const Icon _participationIcon = Icon(
-    Icons.how_to_reg_outlined,
-    size: 18,
-  );
   static const Icon _submissionIcon = Icon(Icons.inbox_outlined, size: 18);
-  static const Icon _submissionDateIcon = Icon(Icons.schedule, size: 18);
 
   @override
   Widget build(BuildContext context) {
@@ -146,34 +118,16 @@ class VendorFilterPanel extends StatelessWidget {
                   onChanged: onOpenToChanged,
                   width: width,
                 ),
-                (width) => FilterDropdownField(
-                  icon: _invitationIcon,
-                  label: 'Invitation Status',
-                  placeholder: 'All invitations',
-                  options: invitationStatuses,
-                  value: selectedInvitationStatus,
-                  onChanged: onInvitationStatusChanged,
-                  width: width,
-                ),
               ],
             ),
             const SizedBox(height: kFilterRowSpacing),
 
-            // Row two is what they did with it: whether they took it up,
-            // bought the documents, bid, and when.
+            // Row two is what they did with it: bought the documents,
+            // responded, and when they asked.
             FilterFieldRow(
               useRow: layout.availableWidth >= _rowBreakpoint,
               layout: layout,
               fieldBuilders: [
-                (width) => FilterDropdownField(
-                  icon: _participationIcon,
-                  label: 'Participation',
-                  placeholder: 'All vendors',
-                  options: participationStatuses,
-                  value: selectedParticipationStatus,
-                  onChanged: onParticipationStatusChanged,
-                  width: width,
-                ),
                 (width) => FilterDropdownField(
                   icon: _purchaseIcon,
                   label: 'Document Purchased',
@@ -183,20 +137,13 @@ class VendorFilterPanel extends StatelessWidget {
                   onChanged: onPurchaseOptionChanged,
                   width: width,
                 ),
-                (width) => FilterMultiSelectField(
+                (width) => FilterDropdownField(
                   icon: _submissionIcon,
-                  label: 'Submission Status',
-                  placeholder: 'All submissions',
-                  options: submissionStatuses,
-                  selectedValues: selectedSubmissionStatuses,
-                  onChanged: onSubmissionStatusesChanged,
-                  width: width,
-                ),
-                (width) => FilterDateField(
-                  icon: _submissionDateIcon,
-                  label: 'Submission Date',
-                  selectedRange: submissionDateFilter,
-                  onChanged: onSubmissionDateChanged,
+                  label: 'Tender Respond Status',
+                  placeholder: 'All respond statuses',
+                  options: respondStatuses,
+                  value: selectedRespondStatus,
+                  onChanged: onRespondStatusChanged,
                   width: width,
                 ),
               ],

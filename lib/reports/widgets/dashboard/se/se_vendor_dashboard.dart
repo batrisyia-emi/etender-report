@@ -56,9 +56,11 @@ class _SeVendorDashboardState extends State<SeVendorDashboard> {
       (r) => r['participationStatus'] == 'Not Participated',
     );
     final purchased = count((r) => r['documentPurchased'] == true);
-    final onTime = count((r) => r['submissionStatus'] == 'Submitted');
-    final late = count((r) => r['submissionStatus'] == 'Late');
-    final notSubmitted = count((r) => r['submissionStatus'] == 'Not Submitted');
+    final submitted = count((r) => r['submissionStatus'] == 'Submitted');
+    // Everything short of a bid. The respond status no longer separates a
+    // late submission from an on-time one, so this is the whole remainder
+    // rather than a 'Not Submitted' value.
+    final notSubmitted = records.length - submitted;
 
     final steps = [
       SeFlowStep(
@@ -90,8 +92,7 @@ class _SeVendorDashboardState extends State<SeVendorDashboard> {
         flow: 'Submission',
         title: 'Bid Submission',
         lines: [
-          ('Submitted', onTime, DashTheme.success),
-          ('Late', late, DashTheme.warning),
+          ('Submitted', submitted, DashTheme.success),
           ('Not Submitted', notSubmitted, DashTheme.danger),
         ],
       ),
@@ -147,9 +148,9 @@ class _SeVendorDashboardState extends State<SeVendorDashboard> {
             ),
             SeOverviewMetric(
               label: 'Submitted a Bid',
-              value: onTime + late,
+              value: submitted,
               total: total,
-              subtext: late > 0 ? '$late of them late' : 'None submitted late',
+              subtext: '$notSubmitted have not bid',
               accent: DashTheme.success,
               icon: Icons.inbox_outlined,
             ),
