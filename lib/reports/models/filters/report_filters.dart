@@ -273,7 +273,7 @@ class ErfcFilters extends Equatable {
   const ErfcFilters({
     this.searchQuery = '',
     this.divisions = const {},
-    this.units = const {},
+    this.departments = const {},
     this.procurementModes = const {},
     this.statuses = const {},
     this.submissionDateRange,
@@ -282,7 +282,7 @@ class ErfcFilters extends Equatable {
 
   final String searchQuery;
   final Set<String> divisions;
-  final Set<String> units;
+  final Set<String> departments;
 
   /// Empty means every mode, the same convention the other multi-selects use.
   final Set<String> procurementModes;
@@ -303,7 +303,7 @@ class ErfcFilters extends Equatable {
   bool matches(Map<String, dynamic> record) {
     return matchesQuery(record, searchKeys, searchQuery) &&
         matchesAnyOf(divisions, record['division']) &&
-        matchesAnyOf(units, record['unit']) &&
+        matchesAnyOf(departments, record['department']) &&
         matchesAnyOf(procurementModes, record['modeOfProcurement']) &&
         matchesAnyOf(statuses, record['status']) &&
         matchesDateRange(
@@ -328,7 +328,7 @@ class ErfcFilters extends Equatable {
   ErfcFilters copyWith({
     String? searchQuery,
     Set<String>? divisions,
-    Set<String>? units,
+    Set<String>? departments,
     Set<String>? procurementModes,
     Set<String>? statuses,
     Object? submissionDateRange = _unset,
@@ -337,7 +337,7 @@ class ErfcFilters extends Equatable {
     return ErfcFilters(
       searchQuery: searchQuery ?? this.searchQuery,
       divisions: divisions ?? this.divisions,
-      units: units ?? this.units,
+      departments: departments ?? this.departments,
       procurementModes: procurementModes ?? this.procurementModes,
       statuses: statuses ?? this.statuses,
       submissionDateRange: identical(submissionDateRange, _unset)
@@ -351,7 +351,7 @@ class ErfcFilters extends Equatable {
   List<Object?> get props => [
     searchQuery,
     divisions,
-    units,
+    departments,
     procurementModes,
     statuses,
     submissionDateRange,

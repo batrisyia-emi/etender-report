@@ -32,13 +32,13 @@ final class ErfcDivisionsChanged extends ErfcEvent {
 }
 
 /// Report spec 6.2: RFC Status Report by Division, Department, Unit.
-final class ErfcUnitsChanged extends ErfcEvent {
-  const ErfcUnitsChanged(this.units);
+final class ErfcDepartmentsChanged extends ErfcEvent {
+  const ErfcDepartmentsChanged(this.departments);
 
-  final Set<String> units;
+  final Set<String> departments;
 
   @override
-  List<Object?> get props => [units];
+  List<Object?> get props => [departments];
 }
 
 final class ErfcProcurementModesChanged extends ErfcEvent {

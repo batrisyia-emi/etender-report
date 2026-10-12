@@ -22,8 +22,9 @@ class ErfcBloc extends Bloc<ErfcEvent, ErfcState> {
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(divisions: event.divisions)),
     );
-    on<ErfcUnitsChanged>(
-      (event, emit) => _emit(emit, (f) => f.copyWith(units: event.units)),
+    on<ErfcDepartmentsChanged>(
+      (event, emit) =>
+          _emit(emit, (f) => f.copyWith(departments: event.departments)),
     );
     on<ErfcProcurementModesChanged>(
       (event, emit) =>

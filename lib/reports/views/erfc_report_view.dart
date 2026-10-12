@@ -117,9 +117,10 @@ class _ErfcReportViewState extends State<ErfcReportView> {
               selectedDivisions: filters.divisions,
               onDivisionsChanged: (values) =>
                   bloc.add(ErfcDivisionsChanged(values)),
-              units: state.unitOptions,
-              selectedUnits: filters.units,
-              onUnitsChanged: (values) => bloc.add(ErfcUnitsChanged(values)),
+              departments: state.departmentOptions,
+              selectedDepartments: filters.departments,
+              onDepartmentsChanged: (values) =>
+                  bloc.add(ErfcDepartmentsChanged(values)),
               procurementModes: state.procurementModeOptions,
               selectedProcurementModes: filters.procurementModes,
               onProcurementModesChanged: (values) =>

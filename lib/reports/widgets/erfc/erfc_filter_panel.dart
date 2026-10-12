@@ -12,9 +12,9 @@ class ErfcFilterPanel extends StatelessWidget {
     required this.divisions,
     required this.selectedDivisions,
     required this.onDivisionsChanged,
-    required this.units,
-    required this.selectedUnits,
-    required this.onUnitsChanged,
+    required this.departments,
+    required this.selectedDepartments,
+    required this.onDepartmentsChanged,
     required this.procurementModes,
     required this.selectedProcurementModes,
     required this.onProcurementModesChanged,
@@ -35,9 +35,9 @@ class ErfcFilterPanel extends StatelessWidget {
   final Set<String> selectedDivisions;
   final ValueChanged<Set<String>> onDivisionsChanged;
 
-  final List<String> units;
-  final Set<String> selectedUnits;
-  final ValueChanged<Set<String>> onUnitsChanged;
+  final List<String> departments;
+  final Set<String> selectedDepartments;
+  final ValueChanged<Set<String>> onDepartmentsChanged;
 
   final List<String> procurementModes;
   final Set<String> selectedProcurementModes;
@@ -60,7 +60,7 @@ class ErfcFilterPanel extends StatelessWidget {
   static const double _rowBreakpoint = 960;
 
   static const Icon _divisionIcon = Icon(Icons.account_tree_outlined, size: 18);
-  static const Icon _unitIcon = Icon(Icons.groups_outlined, size: 18);
+  static const Icon _departmentIcon = Icon(Icons.groups_outlined, size: 18);
   static const Icon _modeIcon = Icon(Icons.gavel_outlined, size: 18);
   static const Icon _statusIcon = Icon(Icons.flag_outlined, size: 18);
   static const Icon _submissionDateIcon = Icon(Icons.calendar_today, size: 18);
@@ -90,7 +90,7 @@ class ErfcFilterPanel extends StatelessWidget {
                 ),
                 (width) => FilterMultiSelectField(
                   icon: _statusIcon,
-                  label: 'Current Status',
+                  label: 'eRFC Status',
                   placeholder: 'All statuses',
                   options: statuses,
                   selectedValues: selectedStatuses,
@@ -130,12 +130,12 @@ class ErfcFilterPanel extends StatelessWidget {
                   width: width,
                 ),
                 (width) => FilterMultiSelectField(
-                  icon: _unitIcon,
-                  label: 'Units',
-                  placeholder: 'All units',
-                  options: units,
-                  selectedValues: selectedUnits,
-                  onChanged: onUnitsChanged,
+                  icon: _departmentIcon,
+                  label: 'Departments',
+                  placeholder: 'All departments',
+                  options: departments,
+                  selectedValues: selectedDepartments,
+                  onChanged: onDepartmentsChanged,
                   width: width,
                 ),
                 (width) => FilterDateField(

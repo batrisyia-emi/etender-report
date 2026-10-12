@@ -112,7 +112,7 @@ extension ErfcFilterCriteria on ErfcFilters {
     _fromText('Search', searchQuery),
     _fromSet('Status', statuses),
     _fromSet('Division', divisions),
-    _fromSet('Unit', units),
+    _fromSet('Department', departments),
     _fromSet('Procurement mode', procurementModes),
     _fromRange('Submitted', submissionDateRange),
     _fromFlag('Overdue', overdueOnly, 'overdue only'),

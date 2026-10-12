@@ -64,8 +64,8 @@ class TocReportTable extends StatefulWidget {
   static const double minTableWidth = _columnWidthTotal + 14 * 16 + 2 * 12;
 
   /// 170 + 240 + 90 + 140 + 130 + 130 + 122 + 200 + 118 + 175 + 110
-  /// + 205 + 195 + 168 + 85
-  static const double _columnWidthTotal = 2278;
+  /// + 230 + 210 + 168 + 85
+  static const double _columnWidthTotal = 2318;
 
   @override
   State<TocReportTable> createState() => _TocReportTableState();
@@ -97,8 +97,8 @@ class _TocReportTableState extends State<TocReportTable> {
         (r) => r.memoSentAt,
         (r) => r.openedAt,
         (r) => r.suppliersSubmittedCount,
-        (r) => r.appendixGSubmittedAt, // Chairman Acknowledged
-        (r) => r.appendixPSubmittedAt, // VTM Acknowledge Date
+        (r) => r.appendixGSubmittedAt, // Chairman Acknowledge (Appx G)
+        (r) => r.appendixPSubmittedAt, // VTM Acknowledge (Appx P)
         // Process order, not alphabetical: sorting by status should walk
         // the opening from Open to Opening Completed. An unrecognised
         // status sorts before all of them rather than crashing.
@@ -221,13 +221,38 @@ class _TocReportTableState extends State<TocReportTable> {
 
   /// Submitted-by over submitted-on, for the two appendix columns. Who and
   /// when only; the contents of either appendix never appear.
-  Widget _submissionCell(String? by, DateTime? at) {
+  /// The acknowledgement: when it happened above, who made it below.
+  ///
+  /// Two lines because the row is 40px and a third would be clipped — so
+  /// the date carries its time, and the name carries the role beside it
+  /// rather than on its own line.
+  Widget _acknowledgementCell(String? by, DateTime? at, {String? role}) {
     if (at == null) return const Text(_none);
+    final who = by == null || by.isEmpty ? 'Acknowledged' : by;
+
+    // VTM staff are named by role rather than by person, so the name may
+    // already be the designation the document type implies. Printing both
+    // would read "Executive Quotation · Exec. Quotation".
+    final saysItAlready =
+        role != null &&
+        who.toLowerCase().contains(role.split('. ').last.toLowerCase());
+
     return _stacked(
-      by == null || by.isEmpty ? 'Submitted' : by,
-      formatDateOnly(at),
+      formatLastUpdate(at),
+      role == null || role.isEmpty || saysItAlready ? who : '$who · $role',
     );
   }
+
+  /// Which executive signs this one off, from the document type.
+  ///
+  /// Null for a document type the app does not recognise, so the cell says
+  /// who acknowledged it without inventing a job title.
+  String? _execRole(TocOpeningRecord record) =>
+      switch (TocDocumentType.fromWire(record.documentType)) {
+        TocDocumentType.tender => 'Exec. Tender',
+        TocDocumentType.quotation => 'Exec. Quotation',
+        null => null,
+      };
 
   DataRow _buildRecordRow(TocOpeningRecord record) {
     DataCell text(String? value) => DataCell(
@@ -292,15 +317,16 @@ class _TocReportTableState extends State<TocReportTable> {
           ),
         ),
         DataCell(
-          _submissionCell(
+          _acknowledgementCell(
             record.appendixGSubmittedBy,
             record.appendixGSubmittedAt,
           ),
         ),
         DataCell(
-          _submissionCell(
+          _acknowledgementCell(
             record.appendixPSubmittedBy,
             record.appendixPSubmittedAt,
+            role: _execRole(record),
           ),
         ),
         DataCell(
@@ -352,18 +378,20 @@ class _TocReportTableState extends State<TocReportTable> {
       sortable('TOC Opening Date', 9, 175),
       sortable('Total Bid', 10, 110),
       sortable(
-        'Chairman Acknowledged',
+        'Chairman Acknowledge (Appx G)',
         11,
-        205,
+        230,
         tooltip:
-            'Appendix G — who acknowledged it and when, never what it '
-            'contained',
+            'When the chairman acknowledged Appendix G and who did it — '
+            'never what it contained',
       ),
       sortable(
-        'VTM Acknowledge Date',
+        'VTM Acknowledge (Appx P)',
         12,
-        195,
-        tooltip: 'Appendix P — the form that closes out the opening day',
+        210,
+        tooltip:
+            'When VTM acknowledged Appendix P, who did it, and which '
+            'executive signs this document type off',
       ),
       sortable('Status', 13, 168),
       sortable('Aging', 14, 85),
