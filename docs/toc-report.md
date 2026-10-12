@@ -179,10 +179,25 @@ The blueprint lists more fields than fit a grid. Laid out one per column
 they came to 3740px, so the table could not be read without scrolling
 sideways through most of it.
 
-Fifteen columns remain: Tender / Quotation No, Type, Project Title, eRFC
-No, Closing, Opening, Committee, Declarations, Memo Sent, Opened, Bids In,
-Appendix G, Appendix P, Status, Aging. That is 2333px, in line with the
-Tender Summary table.
+Eighteen columns remain: Tender / Quotation No, Project Title, Type, eRFC
+No, Closing, TOC Opening Date, TOC Opening Time, Envelope, Technical
+Committee, Committee, Memo Sent, Technical Opened, Commercial Opened,
+Total Bid, Chairman Acknowledge (Appx G), VTM Acknowledge (Appx P), TOC
+Status, Aging. That is 2853px of columns, 3149px of scroll extent — the
+widest table in the app, and the one with the most to say.
+
+Two pairs look redundant and are not:
+
+- **TOC Opening Date** and **TOC Opening Time** are one field,
+  `openingDateTime`, split across two columns. The date is what you scan a
+  column for; the time is what you check on a single row. Sorting lives on
+  the date column, since both read the same field.
+- **Technical Opened** and **Commercial Opened** are two different events.
+  A two-envelope tender opens its technical envelope first and holds the
+  commercial one sealed until the technical evaluation is done, so a row
+  can honestly be Yes and No at the same time. A one-envelope tender
+  carries the same timestamp in both, because the one envelope holds the
+  technical content and the price together — the cell says so on hover.
 
 **Nothing was dropped from the record or the endpoint.** Seven former
 columns moved into the cell they belong to:
@@ -190,11 +205,11 @@ columns moved into the cell they belong to:
 | Field | Where it is now |
 |---|---|
 | `isExtended` | marker beside the tender number |
-| the three committee members | Committee cell — chairman on screen, all three with staff IDs and signing state in its tooltip |
+| the three committee members | Committee cell — initials on screen, all three with staff IDs and signing state in its tooltip |
 | `appointedAt` | Committee tooltip |
 | `replacements` | Committee tooltip, with the mandatory remarks |
 | `memoRefNo` | Memo Sent tooltip |
-| `otpIssuedDates` | Opened tooltip, as a count |
+| `otpIssuedDates` | Technical Opened tooltip, as a count |
 
 If a detail view is built later, that is where these belong in full.
 

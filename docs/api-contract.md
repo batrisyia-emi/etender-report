@@ -170,13 +170,16 @@ derivation and the unanswered BA questions are in `docs/toc-report.md`.
 | `closingDateTime` | date? | |
 | `openingDateTime` | date? | defaults to 12:00 on the opening day, editable |
 | `isExtended` | bool | an extension after appointment clears the committee |
-| `committee` | array | empty or **exactly 3** members, see below |
+| `committee` | array | the opening committee: empty or **exactly 3** members, see below |
+| `technicalCommittee` | array | the technical evaluation committee: same `TocMember` shape, empty or **exactly 3**. Always empty on a `1 Envelope` tender, which has no technical envelope to evaluate |
 | `appointedAt` | date? | |
 | `replacements` | array | member swaps, see below; usually empty |
 | `memoRefNo` | string? | `SE/P/UVTM/{QTN\|TN}/FY{yy}/TOC{running no}` |
 | `memoSentAt` | date? | the email that replaces the paper Appendix F |
 | `otpIssuedDates` | date[] | one per opening day; a second if the opening runs over |
-| `openedAt` | date? | |
+| `openedAt` | date? | when the opening session started, whichever envelope it began with |
+| `technicalOpenedAt` | date? | when the technical envelope was opened |
+| `commercialOpenedAt` | date? | when the commercial envelope was opened. On a `2 Envelope` tender this stays null while the technical evaluation runs, so a row is routinely technical-yes and commercial-no. On a `1 Envelope` tender send the **same timestamp** as `technicalOpenedAt`: one envelope holds both |
 | `suppliersSubmittedCount` | number | how many bids were in the box |
 | `appendixGSubmittedBy` | string? | shown as *Chairman Acknowledged* |
 | `appendixGSubmittedAt` | date? | shown as *Chairman Acknowledged* |
@@ -208,6 +211,15 @@ derivation and the unanswered BA questions are in `docs/toc-report.md`.
 | `remarks` | string | **mandatory** per the blueprint |
 | `replacedAt` | date? | |
 | `replacedBy` | string | who made the change |
+
+### Rules
+
+- `commercialOpenedAt` without `technicalOpenedAt` is not a state this
+  process reaches. The report renders it rather than correcting it, but it
+  is a bug upstream.
+- `technicalCommittee` is a **different set of people** from `committee`.
+  The opening committee witnesses the envelopes being opened; the
+  technical committee judges what the technical envelope held.
 
 ### ⚠️ This endpoint must never carry bid data
 

@@ -38,6 +38,17 @@ String formatDate(dynamic value) {
   return '$day/$month/${parsed.year}';
 }
 
+/// Time of day without the date, for a column that carries the date in
+/// its own cell beside it. Em dash when there is nothing to show, so the
+/// pair of columns falls back together.
+String formatTime(dynamic value) {
+  final parsed = DateTime.tryParse(value?.toString() ?? '');
+  if (parsed == null) return '—';
+  final hour = parsed.hour.toString().padLeft(2, '0');
+  final minute = parsed.minute.toString().padLeft(2, '0');
+  return '$hour:$minute';
+}
+
 String formatDateRange(DateTimeRange? range) {
   if (range == null) return 'Any date range';
   return '${formatDate(range.start)} - ${formatDate(range.end)}';

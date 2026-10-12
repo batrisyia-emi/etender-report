@@ -157,12 +157,15 @@ class TocOpeningRecord extends Equatable {
     required this.openingDateTime,
     required this.isExtended,
     required this.committee,
+    required this.technicalCommittee,
     required this.appointedAt,
     required this.replacements,
     required this.memoRefNo,
     required this.memoSentAt,
     required this.otpIssuedDates,
     required this.openedAt,
+    required this.technicalOpenedAt,
+    required this.commercialOpenedAt,
     required this.suppliersSubmittedCount,
     required this.appendixGSubmittedBy,
     required this.appendixGSubmittedAt,
@@ -185,6 +188,10 @@ class TocOpeningRecord extends Equatable {
           for (final member in asList(json['committee']))
             TocMember.fromJson(member),
         ],
+        technicalCommittee: [
+          for (final member in asList(json['technicalCommittee']))
+            TocMember.fromJson(member),
+        ],
         appointedAt: asDateOrNull(json['appointedAt']),
         replacements: [
           for (final swap in asList(json['replacements']))
@@ -194,6 +201,8 @@ class TocOpeningRecord extends Equatable {
         memoSentAt: asDateOrNull(json['memoSentAt']),
         otpIssuedDates: asDateList(json['otpIssuedDates']),
         openedAt: asDateOrNull(json['openedAt']),
+        technicalOpenedAt: asDateOrNull(json['technicalOpenedAt']),
+        commercialOpenedAt: asDateOrNull(json['commercialOpenedAt']),
         suppliersSubmittedCount: asInt(json['suppliersSubmittedCount']),
         appendixGSubmittedBy: asStringOrNull(json['appendixGSubmittedBy']),
         appendixGSubmittedAt: asDateOrNull(json['appendixGSubmittedAt']),
@@ -231,6 +240,14 @@ class TocOpeningRecord extends Equatable {
   /// Empty or exactly three members.
   final List<TocMember> committee;
 
+  /// The committee that evaluates the technical envelope.
+  ///
+  /// A separate body from [committee], and a separate list of people: the
+  /// opening committee witnesses the envelopes, this one judges what was
+  /// in the technical one. Empty on a one-envelope tender, which has no
+  /// technical envelope to evaluate, and empty before it is appointed.
+  final List<TocMember> technicalCommittee;
+
   final DateTime? appointedAt;
   final List<TocReplacement> replacements;
 
@@ -242,7 +259,19 @@ class TocOpeningRecord extends Equatable {
   /// passwords themselves are never carried here.
   final List<DateTime> otpIssuedDates;
 
+  /// When the opening session started, whichever envelope it began with.
   final DateTime? openedAt;
+
+  /// When each envelope was actually opened.
+  ///
+  /// A two-envelope tender opens its technical envelope first and holds
+  /// the commercial one sealed until the technical evaluation is done, so
+  /// these are usually days apart and the second is often still null. A
+  /// one-envelope tender carries the same timestamp in both, because the
+  /// one envelope holds the technical content and the price together.
+  final DateTime? technicalOpenedAt;
+  final DateTime? commercialOpenedAt;
+
   final int suppliersSubmittedCount;
 
   /// Who submitted Appendix G and when — never what it contained.
@@ -265,6 +294,8 @@ class TocOpeningRecord extends Equatable {
 
   /// A committee is three seats; anything else is not yet appointed.
   bool get hasCommittee => committee.length == 3;
+
+  bool get hasTechnicalCommittee => technicalCommittee.length == 3;
 
   TocStatus? get statusValue => TocStatus.fromWire(status);
 
@@ -294,6 +325,9 @@ class TocOpeningRecord extends Equatable {
     'openingDateTime': openingDateTime?.toIso8601String(),
     'isExtended': isExtended,
     'committee': [for (final member in committee) member.toJson()],
+    'technicalCommittee': [
+      for (final member in technicalCommittee) member.toJson(),
+    ],
     'appointedAt': appointedAt?.toIso8601String(),
     'replacements': [for (final swap in replacements) swap.toJson()],
     'memoRefNo': memoRefNo,
@@ -302,6 +336,8 @@ class TocOpeningRecord extends Equatable {
       for (final date in otpIssuedDates) date.toIso8601String(),
     ],
     'openedAt': openedAt?.toIso8601String(),
+    'technicalOpenedAt': technicalOpenedAt?.toIso8601String(),
+    'commercialOpenedAt': commercialOpenedAt?.toIso8601String(),
     'suppliersSubmittedCount': suppliersSubmittedCount,
     'appendixGSubmittedBy': appendixGSubmittedBy,
     'appendixGSubmittedAt': appendixGSubmittedAt?.toIso8601String(),
@@ -321,12 +357,15 @@ class TocOpeningRecord extends Equatable {
     openingDateTime,
     isExtended,
     committee,
+    technicalCommittee,
     appointedAt,
     replacements,
     memoRefNo,
     memoSentAt,
     otpIssuedDates,
     openedAt,
+    technicalOpenedAt,
+    commercialOpenedAt,
     suppliersSubmittedCount,
     appendixGSubmittedBy,
     appendixGSubmittedAt,

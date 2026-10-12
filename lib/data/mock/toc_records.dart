@@ -24,6 +24,42 @@ String _at(DateTime base, int offset, int hour, int minute) => DateTime(
   minute,
 ).toIso8601String();
 
+/// A technical evaluation committee, in the same shape as the opening one.
+///
+/// Three engineers from the division that owns the work: they judge what
+/// was in the technical envelope, where the opening committee only
+/// witnesses it being opened. Nobody sits on both.
+///
+/// Built by a helper rather than spelled out per record, because the seats
+/// differ only by who fills them — three more eleven-line maps per record
+/// would have doubled this file for no extra meaning. Seniority follows
+/// the seat, the way the memo lists it.
+List<Map<String, dynamic>> _technicalCommittee(
+  DateTime base,
+  int appointedOffset,
+  String department,
+  List<List<String>> seats,
+) {
+  const roles = ['Chairman', 'Member 1', 'Member 2'];
+  const designations = ['Principal Engineer', 'Senior Engineer', 'Engineer'];
+  return [
+    for (var seat = 0; seat < seats.length; seat++)
+      {
+        'role': roles[seat],
+        'staffId': seats[seat][0],
+        'name': seats[seat][1],
+        'designation': designations[seat],
+        'department': department,
+        'division': '$department Division',
+        'email':
+            '${seats[seat][1].split(' ').last.toLowerCase()}@example.invalid',
+        'appendixIAckAt': _at(base, appointedOffset, 9, 30 + seat * 5),
+        'appendixJAckAt': _at(base, appointedOffset, 9, 35 + seat * 5),
+        'appendixGAckAt': null,
+      },
+  ];
+}
+
 /// The sample openings, dated relative to [asOf] — today, unless a test
 /// pins it.
 ///
@@ -90,12 +126,24 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': null,
         },
       ],
+      'technicalCommittee': _technicalCommittee(
+        base,
+        -2,
+        'Distribution',
+        const [
+          ['SE12044', 'Engineer Kilo'],
+          ['SE12187', 'Engineer Lima'],
+          ['SE12203', 'Engineer Mike'],
+        ],
+      ),
       'appointedAt': _at(base, -2, 15, 30),
       'replacements': [],
       'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0041',
       'memoSentAt': _at(base, -2, 15, 45),
       'otpIssuedDates': [],
       'openedAt': null,
+      'technicalOpenedAt': null,
+      'commercialOpenedAt': null,
       'suppliersSubmittedCount': 0,
       'appendixGSubmittedBy': null,
       'appendixGSubmittedAt': null,
@@ -156,6 +204,7 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': _at(base, -6, 14, 5),
         },
       ],
+      'technicalCommittee': [],
       'appointedAt': _at(base, -9, 10, 0),
       'replacements': [
         {
@@ -171,6 +220,8 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
       'memoSentAt': _at(base, -8, 16, 10),
       'otpIssuedDates': [_at(base, -6, 11, 55)],
       'openedAt': _at(base, -6, 12, 10),
+      'technicalOpenedAt': _at(base, -6, 12, 10),
+      'commercialOpenedAt': _at(base, -6, 12, 10),
       'suppliersSubmittedCount': 5,
       'appendixGSubmittedBy': 'Officer Echo',
       'appendixGSubmittedAt': _at(base, -6, 13, 50),
@@ -191,12 +242,15 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
       'openingDateTime': null,
       'isExtended': true,
       'committee': [],
+      'technicalCommittee': [],
       'appointedAt': null,
       'replacements': [],
       'memoRefNo': null,
       'memoSentAt': null,
       'otpIssuedDates': [],
       'openedAt': null,
+      'technicalOpenedAt': null,
+      'commercialOpenedAt': null,
       'suppliersSubmittedCount': 0,
       'appendixGSubmittedBy': null,
       'appendixGSubmittedAt': null,
@@ -255,12 +309,15 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': null,
         },
       ],
+      'technicalCommittee': [],
       'appointedAt': _at(base, -1, 14, 10),
       'replacements': [],
       'memoRefNo': null,
       'memoSentAt': null,
       'otpIssuedDates': [],
       'openedAt': null,
+      'technicalOpenedAt': null,
+      'commercialOpenedAt': null,
       'suppliersSubmittedCount': 0,
       'appendixGSubmittedBy': null,
       'appendixGSubmittedAt': null,
@@ -317,13 +374,25 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': null,
         },
       ],
+      'technicalCommittee': _technicalCommittee(
+        base,
+        -5,
+        'Distribution',
+        const [
+          ['SE12310', 'Engineer November'],
+          ['SE12355', 'Engineer Oscar'],
+          ['SE12402', 'Engineer Papa'],
+        ],
+      ),
       'appointedAt': _at(base, -5, 9, 30),
       'replacements': [],
       'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0042',
       'memoSentAt': _at(base, -5, 9, 45),
       'otpIssuedDates': [],
       'openedAt': _at(base, 0, 12, 10),
-      'suppliersSubmittedCount': 0,
+      'technicalOpenedAt': _at(base, 0, 12, 10),
+      'commercialOpenedAt': null,
+      'suppliersSubmittedCount': 6,
       'appendixGSubmittedBy': 'Officer Delta',
       'appendixGSubmittedAt': _at(base, 0, 13, 15),
       'appendixPSubmittedBy': null,
@@ -380,12 +449,15 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': null,
         },
       ],
+      'technicalCommittee': [],
       'appointedAt': _at(base, -8, 11, 0),
       'replacements': [],
       'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0039',
       'memoSentAt': _at(base, -8, 11, 20),
       'otpIssuedDates': [_at(base, -3, 11, 50), _at(base, -2, 9, 0)],
       'openedAt': _at(base, -3, 12, 5),
+      'technicalOpenedAt': _at(base, -3, 12, 5),
+      'commercialOpenedAt': _at(base, -3, 12, 5),
       'suppliersSubmittedCount': 11,
       'appendixGSubmittedBy': 'Officer Bravo',
       'appendixGSubmittedAt': _at(base, -3, 13, 30),
@@ -443,6 +515,11 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': _at(base, -5, 15, 20),
         },
       ],
+      'technicalCommittee': _technicalCommittee(base, -10, 'Facilities', const [
+        ['SE12488', 'Engineer Quebec'],
+        ['SE12519', 'Engineer Romeo'],
+        ['SE12570', 'Engineer Sierra'],
+      ]),
       'appointedAt': _at(base, -10, 10, 20),
       'replacements': [
         {
@@ -458,6 +535,8 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
       'memoSentAt': _at(base, -9, 9, 45),
       'otpIssuedDates': [_at(base, -5, 11, 58)],
       'openedAt': _at(base, -5, 12, 15),
+      'technicalOpenedAt': _at(base, -5, 12, 15),
+      'commercialOpenedAt': _at(base, -2, 10, 40),
       'suppliersSubmittedCount': 7,
       'appendixGSubmittedBy': 'Officer Alpha',
       'appendixGSubmittedAt': _at(base, -5, 15, 10),
@@ -517,12 +596,24 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
           'appendixGAckAt': _at(base, -7, 15, 40),
         },
       ],
+      'technicalCommittee': _technicalCommittee(
+        base,
+        -12,
+        'System Control',
+        const [
+          ['SE12633', 'Engineer Tango'],
+          ['SE12671', 'Engineer Uniform'],
+          ['SE12702', 'Engineer Victor'],
+        ],
+      ),
       'appointedAt': _at(base, -12, 10, 30),
       'replacements': [],
       'memoRefNo': 'SE/P/UVTM/TN/FY26/TOC0044',
       'memoSentAt': _at(base, -12, 10, 50),
       'otpIssuedDates': [_at(base, -7, 11, 50)],
       'openedAt': _at(base, -7, 12, 8),
+      'technicalOpenedAt': _at(base, -7, 12, 8),
+      'commercialOpenedAt': null,
       'suppliersSubmittedCount': 4,
       'appendixGSubmittedBy': 'Officer Golf',
       'appendixGSubmittedAt': _at(base, -7, 15, 30),
@@ -542,12 +633,15 @@ List<Map<String, dynamic>> buildTocRecords({DateTime? asOf}) {
       'openingDateTime': null,
       'isExtended': false,
       'committee': [],
+      'technicalCommittee': [],
       'appointedAt': null,
       'replacements': [],
       'memoRefNo': null,
       'memoSentAt': null,
       'otpIssuedDates': [],
       'openedAt': null,
+      'technicalOpenedAt': null,
+      'commercialOpenedAt': null,
       'suppliersSubmittedCount': 0,
       'appendixGSubmittedBy': null,
       'appendixGSubmittedAt': null,
