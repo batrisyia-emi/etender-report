@@ -63,9 +63,9 @@ class TocReportTable extends StatefulWidget {
   /// table, and the columns past the cut cannot be scrolled to at all.
   static const double minTableWidth = _columnWidthTotal + 14 * 16 + 2 * 12;
 
-  /// 170 + 240 + 90 + 140 + 130 + 130 + 122 + 200 + 118 + 175 + 110
+  /// 170 + 240 + 90 + 140 + 130 + 175 + 122 + 200 + 118 + 175 + 110
   /// + 230 + 210 + 168 + 85
-  static const double _columnWidthTotal = 2318;
+  static const double _columnWidthTotal = 2363;
 
   @override
   State<TocReportTable> createState() => _TocReportTableState();
@@ -91,11 +91,11 @@ class _TocReportTableState extends State<TocReportTable> {
         null, // Type
         null, // eRFC No
         (r) => r.closingDateTime,
-        (r) => r.openingDateTime,
+        (r) => r.openingDateTime, // Scheduled Opening
         null, // Envelope
         null, // Committee
         (r) => r.memoSentAt,
-        (r) => r.openedAt,
+        (r) => r.openedAt, // TOC Opening Date
         (r) => r.suppliersSubmittedCount,
         (r) => r.appendixGSubmittedAt, // Chairman Acknowledge (Appx G)
         (r) => r.appendixPSubmittedAt, // VTM Acknowledge (Appx P)
@@ -371,7 +371,14 @@ class _TocReportTableState extends State<TocReportTable> {
       plain('Type', 90),
       plain('eRFC No', 140),
       sortable('Closing', 4, 130),
-      sortable('Opening', 5, 130),
+      sortable(
+        'Scheduled Opening',
+        5,
+        175,
+        tooltip:
+            'When the opening is booked for — TOC Opening Date is '
+            'when it actually happened',
+      ),
       plain('Envelope', 122),
       plain('Committee', 200),
       sortable('Memo Sent', 8, 118),
