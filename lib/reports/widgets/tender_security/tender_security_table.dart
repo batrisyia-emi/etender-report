@@ -104,9 +104,8 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
     (r) => r.uniqueNo.toLowerCase(),
     (r) => r.amount,
     (r) => r.bankName.toLowerCase(),
-    null, // Instrument (payment type + reference)
+    null, // Payment Type (type + reference)
     null, // Scan copy
-    null, // Original copy received
     (r) => r.submittedToRevenueAssuranceDate,
     null, // Unsuccessful tenderer
     (r) => r.expiryDate,
@@ -346,22 +345,6 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
         DataCell(_instrumentCell(record)),
         DataCell(_scanCopyCell(record)),
         DataCell(
-          Tooltip(
-            message: 'Original copy received (Appendix F item m)',
-            child: Checkbox(
-              value: record.originalCopyReceived,
-              visualDensity: VisualDensity.compact,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged: _editable
-                  ? (next) => _edit(
-                      record,
-                      TenderSecurityEdit(originalCopyReceived: next ?? false),
-                    )
-                  : null,
-            ),
-          ),
-        ),
-        DataCell(
           _editableDateCell(
             value: record.submittedToRevenueAssuranceDate,
             setLabel: 'Record date',
@@ -425,27 +408,22 @@ class _TenderSecurityTableState extends State<TenderSecurityTable> {
       sortable('Amount', 3, 150, tooltip: 'Amount of Tender Security'),
       sortable('Bank Name', 4, 140),
       plain(
-        'Instrument',
+        'Payment Type',
         190,
         tooltip: "Cashier's Order, Bank Draft or Bank Guarantee number",
       ),
       plain('Scan Copy', 100),
-      plain(
-        'Original',
-        130,
-        tooltip: 'Original copy received — Appendix F item (m)',
-      ),
       sortable(
         'Submitted to RA/CSU',
-        8,
+        7,
         175,
         tooltip: 'Submitted to Revenue Assurance / Contract Services Unit',
       ),
       plain('Unsuccessful', 150, tooltip: 'Unsuccessful Tenderer'),
-      sortable('Expiry Date', 10, 150),
+      sortable('Expiry Date', 9, 150),
       sortable(
         'Date of Refund',
-        11,
+        10,
         130,
         tooltip: 'Date of Refund Tender Security',
       ),

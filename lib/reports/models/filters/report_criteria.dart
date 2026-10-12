@@ -148,9 +148,6 @@ extension TenderSecurityFilterCriteria on TenderSecurityFilters {
     _fromText('Tender/Quotation no.', tenderNoQuery),
     _fromText('Vendor', vendorQuery),
     _fromOption('Payment type', paymentType),
-    // The named view is a filter like any other, and the one most likely
-    // to explain a short report.
-    view == TenderSecurityView.all ? null : ReportCriterion('View', view.label),
   ]);
 }
 

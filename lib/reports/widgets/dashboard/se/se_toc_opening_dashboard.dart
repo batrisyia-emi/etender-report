@@ -136,7 +136,9 @@ class _SeTocOpeningDashboardState extends State<SeTocOpeningDashboard> {
                   label: 'Opened',
                   value: opened,
                   total: total,
-                  subtext: 'Technical/Commercial or Tender opened, pending Appendix P',
+                  subtext:
+                      'Technical/Commercial or Tender opened, pending VTM '
+                      'acknowledgement',
                   accent: DashTheme.accent,
                   icon: Icons.mail_outline,
                 ),
@@ -144,7 +146,7 @@ class _SeTocOpeningDashboardState extends State<SeTocOpeningDashboard> {
                   label: 'Opening Completed',
                   value: completed,
                   total: total,
-                  subtext: 'Appendix P filled, checklist e-signed',
+                  subtext: 'VTM acknowledged, checklist e-signed',
                   accent: DashTheme.success,
                   icon: Icons.check_circle_outline,
                 ),
@@ -284,7 +286,11 @@ const _lifecycleStages = [
   ('Open', _LifecycleKind.open, DashTheme.muted),
   ('Committee Appointed', _LifecycleKind.committeeAppointed, DashTheme.accent),
   ('Opening In Progress', _LifecycleKind.openingInProgress, DashTheme.warning),
-  ('Opened (pending Appendix P)', _LifecycleKind.opened, DashTheme.purple),
+  (
+    'Opened (pending VTM acknowledgement)',
+    _LifecycleKind.opened,
+    DashTheme.purple,
+  ),
   ('Opening Completed', _LifecycleKind.completed, DashTheme.success),
 ];
 
@@ -578,7 +584,7 @@ class _StatusFlow extends StatelessWidget {
         step: 'Complete',
         title: 'Opening Completed',
         statuses: [TocStatus.openingCompleted],
-        detail: 'VTM filed Appendix P · register finalised',
+        detail: 'VTM acknowledged · register finalised',
         envelopeLabel: 'Both',
         color: DashTheme.success,
       ),
@@ -1064,8 +1070,8 @@ String _nextAction(TocOpeningRecord record) => switch (record.statusValue) {
   TocStatus.openingInProgress => 'Committee performing the opening',
   TocStatus.technicalOpened ||
   TocStatus.commercialOpened ||
-  TocStatus.tenderOpened => 'Complete Appendix P',
+  TocStatus.tenderOpened => 'Record VTM acknowledgement',
   TocStatus.commercialSealed => 'Commercial envelope remains sealed',
-  TocStatus.openingCompleted => 'Complete Appendix P',
+  TocStatus.openingCompleted => 'Record VTM acknowledgement',
   null => 'Review opening status',
 };

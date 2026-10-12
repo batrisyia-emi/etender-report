@@ -28,12 +28,6 @@ class TenderSecurityBloc
       (event, emit) =>
           _emit(emit, (f) => f.copyWith(paymentType: event.paymentType)),
     );
-    on<TenderSecurityViewChanged>(
-      (event, emit) => _emit(emit, (f) => f.copyWith(view: event.view)),
-    );
-    on<TenderSecurityViewToggled>(
-      (event, emit) => _emit(emit, (f) => f.toggleView(event.view)),
-    );
     on<TenderSecurityFiltersCleared>(
       (event, emit) =>
           emit(state.copyWith(filters: const TenderSecurityFilters())),

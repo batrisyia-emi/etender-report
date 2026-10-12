@@ -80,7 +80,8 @@ class UnimplementedReportActions extends ReportActions {
   @override
   void fileTocAppendixP(String tenderNo) => _todo(
     'fileTocAppendixP("$tenderNo")',
-    'the Appendix P form belongs to another module; route to it here.',
+    'the VTM acknowledgement form (Appendix P) belongs to another '
+        'module; route to it here.',
   );
 
   @override

@@ -114,7 +114,7 @@ class _SeTenderDashboardState extends State<SeTenderDashboard> {
               label: 'Completed',
               value: _countStatus(records, TenderStatus.completed),
               total: total,
-              subtext: 'Appendix P completed by VTM Executive',
+              subtext: 'Acknowledged by the VTM Executive',
               accent: DashTheme.info,
               icon: Icons.check_circle_outline,
             ),

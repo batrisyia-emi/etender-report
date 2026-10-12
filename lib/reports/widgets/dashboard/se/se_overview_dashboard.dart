@@ -124,7 +124,7 @@ class _SeOverviewDashboardState extends State<SeOverviewDashboard> {
             _StatusTile(
               value: tenderCount(TenderStatus.completed),
               label: 'Completed',
-              note: 'Appendix P completed',
+              note: 'VTM acknowledged',
               color: DashTheme.info,
             ),
           ],

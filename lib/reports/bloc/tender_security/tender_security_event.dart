@@ -1,6 +1,5 @@
 // lib/reports/bloc/tender_security/tender_security_event.dart
 import 'package:equatable/equatable.dart';
-import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 
 sealed class TenderSecurityEvent extends Equatable {
   const TenderSecurityEvent();
@@ -39,26 +38,6 @@ final class TenderSecurityPaymentTypeChanged extends TenderSecurityEvent {
 
   @override
   List<Object?> get props => [paymentType];
-}
-
-final class TenderSecurityViewChanged extends TenderSecurityEvent {
-  const TenderSecurityViewChanged(this.view);
-
-  final TenderSecurityView view;
-
-  @override
-  List<Object?> get props => [view];
-}
-
-/// Applies a view, or returns to All when it is already the selection —
-/// what the summary cards do when tapped.
-final class TenderSecurityViewToggled extends TenderSecurityEvent {
-  const TenderSecurityViewToggled(this.view);
-
-  final TenderSecurityView view;
-
-  @override
-  List<Object?> get props => [view];
 }
 
 final class TenderSecurityFiltersCleared extends TenderSecurityEvent {

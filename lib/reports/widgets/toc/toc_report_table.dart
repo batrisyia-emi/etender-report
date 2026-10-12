@@ -63,9 +63,9 @@ class TocReportTable extends StatefulWidget {
   /// table, and the columns past the cut cannot be scrolled to at all.
   static const double minTableWidth = _columnWidthTotal + 14 * 16 + 2 * 12;
 
-  /// 170 + 90 + 240 + 140 + 130 + 130 + 200 + 122 + 118 + 130 + 95 + 145
-  /// + 145 + 168 + 85
-  static const double _columnWidthTotal = 2108;
+  /// 170 + 240 + 90 + 140 + 130 + 130 + 122 + 200 + 118 + 175 + 110
+  /// + 205 + 195 + 168 + 85
+  static const double _columnWidthTotal = 2278;
 
   @override
   State<TocReportTable> createState() => _TocReportTableState();
@@ -87,18 +87,18 @@ class _TocReportTableState extends State<TocReportTable> {
   static final List<Comparable<Object>? Function(TocOpeningRecord)?> _sortKeys =
       [
         (r) => r.tenderNo.toLowerCase(),
-        null, // Type
         null, // Project Title
+        null, // Type
         null, // eRFC No
         (r) => r.closingDateTime,
         (r) => r.openingDateTime,
-        null, // Committee
         null, // Envelope
+        null, // Committee
         (r) => r.memoSentAt,
         (r) => r.openedAt,
         (r) => r.suppliersSubmittedCount,
-        (r) => r.appendixGSubmittedAt,
-        (r) => r.appendixPSubmittedAt,
+        (r) => r.appendixGSubmittedAt, // Chairman Acknowledged
+        (r) => r.appendixPSubmittedAt, // VTM Acknowledge Date
         // Process order, not alphabetical: sorting by status should walk
         // the opening from Open to Opening Completed. An unrecognised
         // status sorts before all of them rather than crashing.
@@ -257,18 +257,18 @@ class _TocReportTableState extends State<TocReportTable> {
     return DataRow(
       cells: [
         DataCell(_tenderNoCell(record)),
-        text(record.documentType),
         DataCell(
           Tooltip(
             message: record.projectTitle,
             child: Text(record.projectTitle, overflow: TextOverflow.ellipsis),
           ),
         ),
+        text(record.documentType),
         text(record.erfcNo),
         dateTime(record.closingDateTime),
         dateTime(record.openingDateTime),
-        DataCell(_committeeCell(record)),
         text(record.envelopeType),
+        DataCell(_committeeCell(record)),
         dateWithDetail(record.memoSentAt, record.memoRefNo),
         // How many OTPs were issued, never the passwords themselves.
         DataCell(
@@ -323,30 +323,48 @@ class _TocReportTableState extends State<TocReportTable> {
     DataColumn2 plain(String label, double width) =>
         DataColumn2(label: Text(label), fixedWidth: width);
 
-    DataColumn2 sortable(String label, int index, double width) => DataColumn2(
+    DataColumn2 sortable(
+      String label,
+      int index,
+      double width, {
+      String? tooltip,
+    }) => DataColumn2(
       label: SortableHeader(
         label,
         columnIndex: index,
         activeIndex: _sortColumnIndex,
       ),
+      tooltip: tooltip,
       fixedWidth: width,
       onSort: _handleSort,
     );
 
     return [
       sortable('Tender / Quotation No', 0, 170),
-      plain('Type', 90),
       plain('Project Title', 240),
+      plain('Type', 90),
       plain('eRFC No', 140),
       sortable('Closing', 4, 130),
       sortable('Opening', 5, 130),
-      plain('Committee', 200),
       plain('Envelope', 122),
+      plain('Committee', 200),
       sortable('Memo Sent', 8, 118),
-      sortable('Opened', 9, 130),
-      sortable('Bids In', 10, 95),
-      sortable('Appendix G', 11, 145),
-      sortable('Appendix P', 12, 145),
+      sortable('TOC Opening Date', 9, 175),
+      sortable('Total Bid', 10, 110),
+      sortable(
+        'Chairman Acknowledged',
+        11,
+        205,
+        tooltip:
+            'Appendix G — who acknowledged it and when, never what it '
+            'contained',
+      ),
+      sortable(
+        'VTM Acknowledge Date',
+        12,
+        195,
+        tooltip: 'Appendix P — the form that closes out the opening day',
+      ),
       sortable('Status', 13, 168),
       sortable('Aging', 14, 85),
     ];

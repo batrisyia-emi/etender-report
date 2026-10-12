@@ -57,7 +57,6 @@ class TenderSecurityFilters {
     this.tenderNoQuery = '',
     this.vendorQuery = '',
     this.paymentType,
-    this.view = TenderSecurityView.all,
   });
 
   /// Free text over the tender / quotation number. The spec's only search,
@@ -70,36 +69,28 @@ class TenderSecurityFilters {
   /// A [PaymentType] wire value. Null means every type.
   final String? paymentType;
 
-  final TenderSecurityView view;
-
   bool matches(TenderSecurityRecord record, {DateTime? asOf}) {
     if (!_contains(record.tenderNo, tenderNoQuery)) return false;
     if (!_contains(record.vendorName, vendorQuery)) return false;
     if (paymentType != null && record.paymentType != paymentType) {
       return false;
     }
-    return view.matches(record, asOf: asOf);
+    return true;
   }
 
   static bool _contains(String value, String query) =>
       query.isEmpty || value.toLowerCase().contains(query.toLowerCase().trim());
 
-  /// Applies [candidate], or returns to [TenderSecurityView.all] when it is
-  /// already the selection — what the summary cards do when tapped.
-  TenderSecurityFilters toggleView(TenderSecurityView candidate) =>
-      copyWith(view: view == candidate ? TenderSecurityView.all : candidate);
-
   bool get isEmpty =>
       tenderNoQuery.isEmpty &&
       vendorQuery.isEmpty &&
       paymentType == null &&
-      view == TenderSecurityView.all;
+      true;
 
   TenderSecurityFilters copyWith({
     String? tenderNoQuery,
     String? vendorQuery,
     Object? paymentType = _unset,
-    TenderSecurityView? view,
   }) {
     return TenderSecurityFilters(
       tenderNoQuery: tenderNoQuery ?? this.tenderNoQuery,
@@ -107,7 +98,6 @@ class TenderSecurityFilters {
       paymentType: identical(paymentType, _unset)
           ? this.paymentType
           : paymentType as String?,
-      view: view ?? this.view,
     );
   }
 

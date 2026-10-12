@@ -1,5 +1,4 @@
 // lib/reports/widgets/tender_security/tender_security_filter_panel.dart
-import 'package:etender_reports/reports/models/filters/tender_security_filters.dart';
 import 'package:etender_reports/reports/widgets/shared/filter_fields.dart';
 import 'package:flutter/material.dart';
 
@@ -16,9 +15,6 @@ class TenderSecurityFilterPanel extends StatelessWidget {
     required this.paymentTypeLabels,
     required this.selectedPaymentType,
     required this.onPaymentTypeChanged,
-    required this.views,
-    required this.selectedView,
-    required this.onViewChanged,
     required this.onFiltersReset,
   });
 
@@ -36,16 +32,11 @@ class TenderSecurityFilterPanel extends StatelessWidget {
   final String? selectedPaymentType;
   final ValueChanged<String?> onPaymentTypeChanged;
 
-  final List<String> views;
-  final String selectedView;
-  final ValueChanged<String> onViewChanged;
-
   final VoidCallback onFiltersReset;
 
   /// 960 across every report's filter panel, so they all reflow together.
   static const double _rowBreakpoint = 960;
 
-  static const Icon _viewIcon = Icon(Icons.filter_alt_outlined, size: 18);
   static const Icon _instrumentIcon = Icon(Icons.payments_outlined, size: 18);
 
   @override
@@ -80,19 +71,6 @@ class TenderSecurityFilterPanel extends StatelessWidget {
               optionLabels: paymentTypeLabels,
               value: selectedPaymentType,
               onChanged: onPaymentTypeChanged,
-              width: width,
-            ),
-            // Not a multi-select: each view is a whole question about a
-            // row, and asking two at once ("expired" and "refunded") asks
-            // for nothing. "All" is the way back.
-            (width) => FilterDropdownField(
-              icon: _viewIcon,
-              label: 'Show',
-              placeholder: TenderSecurityView.all.label,
-              options: views,
-              value: selectedView,
-              onChanged: (value) =>
-                  onViewChanged(value ?? TenderSecurityView.all.label),
               width: width,
             ),
           ],

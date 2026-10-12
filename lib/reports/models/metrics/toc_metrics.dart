@@ -77,7 +77,7 @@ enum TocRemedy {
   openRecord(label: 'Open record'),
 
   /// File the Appendix P that closes out the opening day.
-  fileAppendixP(label: 'File Appendix P');
+  fileAppendixP(label: 'Record VTM Acknowledgement');
 
   const TocRemedy({required this.label});
 
@@ -211,10 +211,10 @@ List<TocExceptionFlag> tocExceptionFlags(
         flags.add(
           TocExceptionFlag(
             record: record,
-            label: 'Appendix P overdue',
+            label: 'VTM acknowledgement overdue',
             severity: TocFlagSeverity.medium,
             remedy: TocRemedy.fileAppendixP,
-            detail: 'Appendix G submitted ${_days(since)} ago',
+            detail: 'Chairman acknowledged ${_days(since)} ago',
           ),
         );
       }

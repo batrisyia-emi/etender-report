@@ -119,6 +119,26 @@ be the authority on who has signed.
 
 ---
 
+## The screens no longer say "Appendix"
+
+The columns read **Chairman Acknowledged** and **VTM Acknowledge Date**, and
+the Needs Attention panel, its buttons and the SE dashboards follow the same
+words. Nothing a user sees calls them Appendix G and P any more.
+
+The field names and the JSON keys still do — `appendixGSubmittedAt`,
+`appendixPSubmittedAt` and the rest — and deliberately so. They are the
+blueprint's names, which is how a backend developer finds the right form to
+read them from; renaming the wire contract would break that link for the
+sake of a heading. The two table columns carry a tooltip naming the appendix
+each one is, and the field tables in `docs/api-contract.md` say which column
+each maps to.
+
+If the business settles on the new wording as its own vocabulary rather than
+a friendlier label, the wire names should follow — but that is a decision
+for the contract, not for the screen.
+
+---
+
 ## Open questions for the BA
 
 These came with the report spec and are **still unanswered**. Each one is

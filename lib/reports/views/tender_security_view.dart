@@ -167,11 +167,6 @@ class _TenderSecurityReportViewState extends State<TenderSecurityReportView> {
               selectedPaymentType: filters.paymentType,
               onPaymentTypeChanged: (value) =>
                   bloc.add(TenderSecurityPaymentTypeChanged(value)),
-              views: TenderSecurityState.viewOptions,
-              selectedView: filters.view.label,
-              onViewChanged: (label) => bloc.add(
-                TenderSecurityViewChanged(TenderSecurityView.fromLabel(label)),
-              ),
               onFiltersReset: () =>
                   bloc.add(const TenderSecurityFiltersCleared()),
             ),

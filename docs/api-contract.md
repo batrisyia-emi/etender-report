@@ -176,10 +176,10 @@ derivation and the unanswered BA questions are in `docs/toc-report.md`.
 | `otpIssuedDates` | date[] | one per opening day; a second if the opening runs over |
 | `openedAt` | date? | |
 | `suppliersSubmittedCount` | number | how many bids were in the box |
-| `appendixGSubmittedBy` | string? | |
-| `appendixGSubmittedAt` | date? | |
-| `appendixPSubmittedBy` | string? | |
-| `appendixPSubmittedAt` | date? | closes the opening day |
+| `appendixGSubmittedBy` | string? | shown as *Chairman Acknowledged* |
+| `appendixGSubmittedAt` | date? | shown as *Chairman Acknowledged* |
+| `appendixPSubmittedBy` | string? | shown as *VTM Acknowledge Date* |
+| `appendixPSubmittedAt` | date? | closes the opening day; shown as *VTM Acknowledge Date* |
 
 **`committee[]`** → `TocMember`
 
