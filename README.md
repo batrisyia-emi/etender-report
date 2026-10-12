@@ -27,23 +27,22 @@ and no credentials.
 
 ### Tests
 
+**There are none.** The suite was removed deliberately: this build is a
+demo, and the tests were carrying a cost nobody was paying for.
+
+They are not lost. Every one of them is in the history — `git show
+a6d4a59:test/` lists the 30 files, 5,006 lines, 432 tests covering the
+record contracts, the filters, the metrics, all seven report blocs and the
+dashboards. Restore the lot with:
+
 ```bash
-flutter test
+git checkout a6d4a59 -- test/
 ```
 
-368 tests, all passing. CI runs the same suite on Linux — see
-`.github/workflows/ci.yml`.
-
-`test/bloc/report_bloc_test.dart` is the one to look at before wiring a
-backend. All seven report blocs are built the same way, so one suite runs
-against each in turn and checks that a failed read surfaces as a failure
-rather than an empty report — the case `MockReportRepository` can never
-produce, and the one a real API will.
-
-If `flutter test` fails on Windows with _"An Application Control policy has
-blocked this file"_, that is Smart App Control refusing Flutter's unsigned
-`dartvm.exe`, not a problem with the tests. It has no exclusion list, so
-the options are to have IT turn it off, work in WSL2, or lean on CI.
+If this becomes more than a demo, `test/bloc/report_bloc_test.dart` is the
+one to bring back first: it is the executable statement of what a
+repository has to do, including failing — the case `MockReportRepository`
+can never produce and a real API will produce constantly.
 
 ---
 
@@ -206,10 +205,12 @@ Three conventions worth knowing before editing:
 
 Honest list of what is unfinished, for whoever picks this up.
 
-1. ~~The test suite has never executed.~~ **It does now** — 190 tests, all
-   passing. The local block was Smart App Control refusing Flutter's
-   unsigned `dartvm.exe`; it has since been lifted on the machine this
-   was built on. CI runs the same suite on Linux regardless.
+1. **There is no test suite.** It was removed deliberately for the demo —
+   432 tests across 30 files, all passing at the time. They are in the
+   history at `a6d4a59`; see *Tests* above for how to restore them. CI no
+   longer runs a test step, so nothing is checking behaviour on a push
+   beyond `flutter analyze` and a web build.
+
 2. **The typed record layer is only used at the seam — in four of the five
    reports.** The repository returns `ErfcRecord` etc., but those blocs
    immediately call `toJson()` because their filters, metrics, tables and

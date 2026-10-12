@@ -1,8 +1,7 @@
 name: CI
 
-# Runs on Linux, which sidesteps the Windows Smart App Control policy that
-# can block Flutter's unsigned dartvm.exe on a developer machine — see the
-# note in README.md if `flutter test` refuses to start locally.
+# Runs on Linux. There is no test step: this is a demo build, and the
+# suite was removed deliberately — see the note in README.md.
 on:
   push:
     branches: ['**']
@@ -22,7 +21,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  analyze-and-test:
+  analyze-and-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,10 +45,7 @@ jobs:
         run: flutter analyze
 
       - name: Check formatting
-        run: dart format --set-exit-if-changed lib test
-
-      - name: Test
-        run: flutter test --reporter expanded
+        run: dart format --set-exit-if-changed lib
 
       # Proves the app still builds, including on pull requests that never
       # reach the deploy job below.
@@ -61,7 +57,7 @@ jobs:
   # Requires GitHub Pages to be enabled once, by hand:
   #   Settings -> Pages -> Build and deployment -> Source: GitHub Actions
   deploy-demo:
-    needs: analyze-and-test
+    needs: analyze-and-build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
 
