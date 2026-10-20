@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:etender_reports/reports/procurement_lead_time/bloc/lead_time_cubit.dart';
 import 'package:etender_reports/reports/procurement_lead_time/data/lead_time_repository.dart';
 import 'package:etender_reports/reports/procurement_lead_time/data/mock_lead_time_repository.dart';
+import 'package:etender_reports/reports/procurement_lead_time/lead_time_rules.dart';
 import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_query.dart';
 import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_record.dart';
 import 'package:etender_reports/reports/procurement_lead_time/procurement_lead_time_screen.dart';
@@ -268,6 +269,63 @@ void main() {
     expect(cubit.state.total, 10);
   });
 
+  testWidgets('shows the rating in the table and the result header', (
+    tester,
+  ) async {
+    final cubit = await _pump(tester);
+    await tester.pumpAndSettle();
+
+    // Last month, Tender: 8 of 10 within 3 working days, all within 7.
+    expect(cubit.state.summaries.single.rating, PerformanceRating.good);
+    expect(find.text('Performance Rating'), findsOneWidget);
+    expect(find.text('Rating: Good'), findsOneWidget);
+  });
+
+  testWidgets('explains the rating once, from the current thresholds', (
+    tester,
+  ) async {
+    await _pump(tester);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('How the performance rating is calculated'),
+      findsOneWidget,
+    );
+    final excellent = LeadTimeRules.excellentWithin3WorkingDaysPercent
+        .toStringAsFixed(0);
+    final good = LeadTimeRules.goodWithin7WorkingDaysPercent.toStringAsFixed(0);
+    expect(
+      find.textContaining(
+        'At least $excellent% of tenders are published '
+        'within 3 working days',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Fewer than $good% are published within 7'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('All rates each document type in the header', (tester) async {
+    final cubit = await _pump(tester);
+    await tester.pumpAndSettle();
+    unawaited(
+      cubit.search(
+        LeadTimeQuery(
+          publishedFrom: _allMockDates.publishedFrom,
+          publishedTo: _allMockDates.publishedTo,
+          type: DocumentTypeFilter.all,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Performance Rating'), findsNWidgets(2));
+    expect(find.text('Tender: Good'), findsOneWidget);
+    expect(find.text('Quotation: Good'), findsOneWidget);
+  });
+
   testWidgets('shows the Tender summary, cards and drill-down', (tester) async {
     final cubit = await _pump(tester);
     unawaited(cubit.search(_allMockDates));
@@ -289,7 +347,9 @@ void main() {
       ],
       [9, 5, 1],
     );
-    expect(find.text('Good'), findsOneWidget);
+    // The card's value, the summary table's rating row and the
+    // explanation's key.
+    expect(find.text('Good'), findsNWidgets(3));
     expect(
       find.text('Drill-down – 1–3 working days, 9 tenders'),
       findsOneWidget,

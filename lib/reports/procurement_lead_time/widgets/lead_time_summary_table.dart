@@ -2,11 +2,12 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:etender_reports/reports/procurement_lead_time/lead_time_rules.dart';
 import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_summary.dart';
+import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_rating_badge.dart';
 import 'package:etender_reports/reports/widgets/shared/report_table_panel.dart';
 import 'package:flutter/material.dart';
 
-/// Activities × bands: 'Published (Number)' and 'Published (%)' for one
-/// document type.
+/// Activities × bands: 'Published (Number)', 'Published (%)' and the
+/// 'Performance Rating' they earn, for one document type.
 /// Each band's count opens that band in the drill-down.
 class LeadTimeSummaryTable extends StatelessWidget {
   const LeadTimeSummaryTable({
@@ -25,7 +26,9 @@ class LeadTimeSummaryTable extends StatelessWidget {
 
   static const double _activityWidth = 150;
   static const double _bucketWidth = 170;
-  static const double _totalWidth = 100;
+
+  /// Wide enough for the 'Below Expectations' badge in the rating row.
+  static const double _totalWidth = 150;
 
   /// The five column widths, their four 16px gaps and the 12px side margins.
   static const double _minWidth =
@@ -85,6 +88,19 @@ class LeadTimeSummaryTable extends StatelessWidget {
             for (final bucket in LeadTimeRules.buckets)
               DataCell(Text(summary.percentIn(bucket).toStringAsFixed(2))),
             DataCell(Text(summary.totalPercent.toStringAsFixed(2))),
+          ],
+        ),
+        // The rating is for the whole row of bands, so it sits under Total;
+        // the band cells stay empty rather than repeating it.
+        DataRow(
+          cells: [
+            const DataCell(Text('Performance Rating')),
+            for (final _ in LeadTimeRules.buckets) const DataCell(SizedBox()),
+            DataCell(
+              summary.total == 0
+                  ? const Text('—')
+                  : LeadTimeRatingBadge(rating: summary.rating),
+            ),
           ],
         ),
       ],

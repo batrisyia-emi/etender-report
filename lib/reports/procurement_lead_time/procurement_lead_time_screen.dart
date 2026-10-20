@@ -16,6 +16,8 @@ import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_q
 import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_record.dart';
 import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_drilldown_table.dart';
 import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_filter_bar.dart';
+import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_rating_badge.dart';
+import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_rating_explanation.dart';
 import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_summary_section.dart';
 import 'package:etender_reports/reports/report_type.dart';
 import 'package:etender_reports/reports/widgets/shared/report_panel.dart';
@@ -184,6 +186,9 @@ class _ProcurementLeadTimeScreenState extends State<ProcurementLeadTimeScreen> {
           ),
           SizedBox(height: spacing),
         ],
+        // Once, after the sections it explains, and before the rows.
+        const LeadTimeRatingExplanation(),
+        SizedBox(height: spacing),
         LeadTimeDrilldownTable(
           title:
               'Drill-down – '
@@ -253,6 +258,17 @@ class _TitleBand extends StatelessWidget {
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
+                  // One per document type with anything to rate. Named by
+                  // type only when there are two, e.g. 'Tender: Good'.
+                  for (final summary in state.summaries)
+                    if (summary.total > 0)
+                      LeadTimeRatingBadge(
+                        rating: summary.rating,
+                        label: state.summaries.length > 1
+                            ? '${summary.documentType.label}: '
+                                  '${summary.rating.label}'
+                            : 'Rating: ${summary.rating.label}',
+                      ),
                   // A period still running will gain tenders yet.
                   if (query.preset.isToDate)
                     StatusChip(

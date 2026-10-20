@@ -1,6 +1,7 @@
 // lib/reports/procurement_lead_time/widgets/lead_time_kpi_cards.dart
 import 'package:etender_reports/reports/procurement_lead_time/lead_time_rules.dart';
 import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_summary.dart';
+import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_rating_badge.dart';
 import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
 import 'package:flutter/material.dart';
@@ -14,25 +15,6 @@ class LeadTimeKpiCards extends StatelessWidget {
 
   static const double _cardWidth = 220;
   static const double _cardSpacing = 12;
-
-  /// Badge colours, all from the theme's colour scheme.
-  static ChipColors ratingColors(
-    ColorScheme scheme,
-    PerformanceRating rating,
-  ) => switch (rating) {
-    PerformanceRating.excellent => (
-      text: scheme.onPrimary,
-      background: scheme.primary,
-    ),
-    PerformanceRating.good => (
-      text: scheme.onPrimaryContainer,
-      background: scheme.primaryContainer,
-    ),
-    PerformanceRating.belowExpectations => (
-      text: scheme.onErrorContainer,
-      background: scheme.errorContainer,
-    ),
-  };
 
   static String _target(PerformanceRating rating) {
     final excellent = LeadTimeRules.excellentWithin3WorkingDaysPercent
@@ -49,7 +31,7 @@ class LeadTimeKpiCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final rating = summary.rating;
-    final badge = ratingColors(scheme, rating);
+    final badge = LeadTimeRatingBadge.colorsFor(scheme, rating);
     final empty = summary.total == 0;
     final within3 = summary.countIn(LeadTimeRules.workingDays1To3);
     final within7 = within3 + summary.countIn(LeadTimeRules.workingDays4To7);
