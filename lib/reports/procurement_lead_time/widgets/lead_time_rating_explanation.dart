@@ -6,128 +6,187 @@ import 'package:flutter/material.dart';
 
 /// How a rating is reached, in words, beside the badge each rule earns.
 ///
-/// Every number comes from [LeadTimeRules], so a threshold SE changes is
-/// changed here too, and the page can never explain a rule it no longer
-/// applies.
+/// The rule text is SE's own wording, kept verbatim; see the note on
+/// `rules` in [build].
 class LeadTimeRatingExplanation extends StatelessWidget {
-  const LeadTimeRatingExplanation({super.key});
+  const LeadTimeRatingExplanation({
+    super.key,
+    this.framed = true,
+    this.stackRules,
+  });
 
-  static String _percent(double value) => '${value.toStringAsFixed(0)}%';
+  /// True on the page, in a titled panel. False inside [show]'s dialog,
+  /// whose own title says the same.
+  final bool framed;
+
+  /// Whether each rating badge sits above its rule rather than beside it.
+  /// Null measures the width and decides. A parent that sizes this box to
+  /// match its neighbour's height must decide instead: that sizing asks
+  /// for the box's height before laying it out, and a box that measures
+  /// itself first cannot answer.
+  final bool? stackRules;
+
+  /// Below this the rule beside its badge would be a sliver.
+  static const double _stackBelowWidth = 340;
+
+  static const String title = 'How the performance rating is calculated';
+
+  /// The same explanation in a dialog, for the link beside the rating in
+  /// the result header: on a laptop screen the panel starts below the
+  /// fold, inside a results area that scrolls on its own, and is easy to
+  /// miss.
+  static Future<void> show(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(title),
+        content: const SizedBox(
+          width: 680,
+          child: SingleChildScrollView(
+            child: LeadTimeRatingExplanation(framed: false),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final text = theme.textTheme.bodyMedium;
-    final excellent = _percent(
-      LeadTimeRules.excellentWithin3WorkingDaysPercent,
-    );
-    final good = _percent(LeadTimeRules.goodWithin7WorkingDaysPercent);
-
-    final rules = [
+    // The small body size, so the box stays about as tall as the three
+    // cards beside it.
+    final text = theme.textTheme.bodySmall;
+    // SE's wording, word for word. It is not built from LeadTimeRules: if
+    // a threshold there changes, change these three lines with it.
+    const rules = [
       (
         PerformanceRating.excellent,
-        'At least $excellent of tenders are published within 3 working '
-            'days.',
+        '95% - 100% are published within 3 working days.',
       ),
       (
         PerformanceRating.good,
-        'Not Excellent, but at least $good are published within 7 working '
-            'days (the 1–3 and 4–7 working day bands together).',
+        '90% - 94% are published within 7 working days (the 1–3 '
+            'and 4–7 working day bands together).',
       ),
       (
         PerformanceRating.belowExpectations,
-        'Fewer than $good are published within 7 working days.',
+        'Less than 90% are published after 7 working days.',
       ),
     ];
 
-    return ReportPanel(
-      title: 'How the performance rating is calculated',
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _Step(
-              number: 1,
-              style: text,
-              text:
-                  'Each tender or quotation is given a lead time: the working '
-                  'days from the day VTM receives the eRFC to the day it is '
-                  'first published. Both days count. Weekends and public '
-                  'holidays do not, and publishing again after an addendum '
-                  'does not change it.',
-            ),
-            _Step(
-              number: 2,
-              style: text,
-              text:
-                  'The lead times are sorted into the 1–3, 4–7 and more than '
-                  '7 working day bands. Each band’s percentage is its '
-                  'share of everything published in the period.',
-            ),
-            _Step(
-              number: 3,
-              style: text,
-              text:
-                  'The rating is taken from those shares, separately for '
-                  'Tender and for Quotation:',
-            ),
-            const SizedBox(height: 8),
-            // Badge first, so the colour on the cards and in the table
-            // finds its rule here at a glance. On a phone the badge sits
-            // above its rule; beside it the rule would be a sliver.
-            Padding(
-              padding: const EdgeInsets.only(left: _Step.numberWidth),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final stacked = constraints.maxWidth < 480;
-                  return Column(
+    Widget rulesColumn(bool stacked) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final (rating, rule) in rules)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: stacked
+                ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (final (rating, rule) in rules)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: stacked
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    LeadTimeRatingBadge(rating: rating),
-                                    const SizedBox(height: 4),
-                                    Text(rule, style: text),
-                                  ],
-                                )
-                              : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: LeadTimeRatingBadge(
-                                          rating: rating,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 3),
-                                        child: Text(rule, style: text),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        ),
+                      LeadTimeRatingBadge(rating: rating),
+                      const SizedBox(height: 4),
+                      Text(rule, style: text),
                     ],
-                  );
-                },
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 130,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: LeadTimeRatingBadge(rating: rating),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(rule, style: text),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+      ],
+    );
+
+    final body = Padding(
+      padding: framed
+          ? const EdgeInsets.fromLTRB(12, 10, 12, 10)
+          : EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _Step(
+            number: 1,
+            style: text,
+            text:
+                'Each tender or quotation is given a lead time: the working '
+                'days from the day VTM receives the eRFC to the day it is '
+                'first published. Both days count. Weekends and public '
+                'holidays do not, and publishing again after an addendum '
+                'does not change it.',
+          ),
+          _Step(
+            number: 2,
+            style: text,
+            text:
+                'The lead times are sorted into the 1–3, 4–7 and more than '
+                "7 working day bands. Each band's percentage is its "
+                'share of everything published in the period.',
+          ),
+          _Step(
+            number: 3,
+            style: text,
+            text:
+                'The rating is taken from those shares, separately for '
+                'Tender and for Quotation:',
+          ),
+          const SizedBox(height: 4),
+          // Badge first, so the colour on the cards and in the table
+          // finds its rule here at a glance. On a phone the badge sits
+          // above its rule; beside it the rule would be a sliver.
+          Padding(
+            padding: const EdgeInsets.only(left: _Step.numberWidth),
+            child: switch (stackRules) {
+              final stacked? => rulesColumn(stacked),
+              null => LayoutBuilder(
+                builder: (context, constraints) =>
+                    rulesColumn(constraints.maxWidth < _stackBelowWidth),
               ),
+            },
+          ),
+          const SizedBox(height: 4),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Note: ',
+                  style: text?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const TextSpan(
+                  text:
+                      'The Received by VTM date is derived from the Confirmed '
+                      'to Proceed date.',
+                ),
+              ],
             ),
-          ],
-        ),
+            style: text?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
       ),
     );
+
+    return framed ? ReportPanel(title: title, child: body) : body;
   }
 }
 
@@ -140,12 +199,12 @@ class _Step extends StatelessWidget {
   final TextStyle? style;
 
   /// The column the step numbers sit in; the rules below indent to match.
-  static const double numberWidth = 28;
+  static const double numberWidth = 22;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

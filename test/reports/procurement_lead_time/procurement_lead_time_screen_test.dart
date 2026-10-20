@@ -8,6 +8,8 @@ import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_q
 import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_record.dart';
 import 'package:etender_reports/reports/procurement_lead_time/procurement_lead_time_screen.dart';
 import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_filter_bar.dart';
+import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_rating_explanation.dart';
+import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -281,30 +283,87 @@ void main() {
     expect(find.text('Rating: Good'), findsOneWidget);
   });
 
-  testWidgets('explains the rating once, from the current thresholds', (
+  testWidgets('explains the rating once, beside the Tender rating card', (
     tester,
   ) async {
     await _pump(tester);
+    await tester.pumpAndSettle();
+
+    final explanation = find.text('How the performance rating is calculated');
+    expect(explanation, findsOneWidget);
+    // SE's wording, word for word, and the note.
+    const good =
+        'At least 90% - 94% are published within 7 working days (the 1–3 and '
+        '4–7 working day bands together).';
+    for (final line in [
+      '95% - 100% of tenders are published within 3 working days.',
+      good,
+      'Less than 90% are published after 7 working days.',
+    ]) {
+      expect(find.text(line), findsOneWidget);
+    }
+    expect(
+      find.textContaining(
+        'The Received by VTM date is derived from the Confirmed to Proceed '
+        'date.',
+        findRichText: true,
+      ),
+      findsOneWidget,
+    );
+
+    // Beside the rating card, and level with the card column at both ends:
+    // the first card's top and the rating card's bottom.
+    Rect cardAround(String header) => tester.getRect(
+      find.ancestor(of: find.text(header), matching: find.byType(KpiCard)),
+    );
+    final firstCard = cardAround('WITHIN 3 WORKING DAYS (%)');
+    final ratingCard = cardAround('PERFORMANCE RATING');
+    final panel = tester.getRect(find.byType(LeadTimeRatingExplanation));
+    expect(panel.left, greaterThan(ratingCard.right));
+    expect(panel.top, moreOrLessEquals(firstCard.top, epsilon: 0.5));
+    expect(panel.bottom, moreOrLessEquals(ratingCard.bottom, epsilon: 0.5));
+  });
+
+  testWidgets('All shows the explanation once, in the Tender section', (
+    tester,
+  ) async {
+    final cubit = await _pump(tester);
+    await tester.pumpAndSettle();
+    unawaited(
+      cubit.search(
+        LeadTimeQuery(
+          publishedFrom: _allMockDates.publishedFrom,
+          publishedTo: _allMockDates.publishedTo,
+          type: DocumentTypeFilter.all,
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(
       find.text('How the performance rating is calculated'),
       findsOneWidget,
     );
-    final excellent = LeadTimeRules.excellentWithin3WorkingDaysPercent
-        .toStringAsFixed(0);
-    final good = LeadTimeRules.goodWithin7WorkingDaysPercent.toStringAsFixed(0);
-    expect(
-      find.textContaining(
-        'At least $excellent% of tenders are published '
-        'within 3 working days',
-      ),
-      findsOneWidget,
+  });
+
+  testWidgets('the header link opens the explanation in a dialog', (
+    tester,
+  ) async {
+    await _pump(tester);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('How is the rating calculated?'));
+    await tester.pumpAndSettle();
+
+    final inDialog = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.textContaining('published within 3 working days'),
     );
-    expect(
-      find.textContaining('Fewer than $good% are published within 7'),
-      findsOneWidget,
-    );
+    expect(inDialog, findsOneWidget);
+
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
   });
 
   testWidgets('All rates each document type in the header', (tester) async {
@@ -356,6 +415,9 @@ void main() {
     );
 
     // Tap the 4–7 count.
+    // The summary table sits under the cards and the explanation.
+    await tester.ensureVisible(find.widgetWithText(TextButton, '5'));
+    await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, '5'));
     await tester.pumpAndSettle();
     expect(

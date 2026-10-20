@@ -178,6 +178,9 @@ class _ProcurementLeadTimeScreenState extends State<ProcurementLeadTimeScreen> {
         for (final summary in state.summaries) ...[
           LeadTimeSummarySection(
             summary: summary,
+            // Beside the first section's rating only: the rules are the
+            // same for Tender and Quotation.
+            showExplanation: summary == state.summaries.first,
             selectedBucket: selection.type == summary.documentType
                 ? selection.bucket
                 : null,
@@ -186,9 +189,6 @@ class _ProcurementLeadTimeScreenState extends State<ProcurementLeadTimeScreen> {
           ),
           SizedBox(height: spacing),
         ],
-        // Once, after the sections it explains, and before the rows.
-        const LeadTimeRatingExplanation(),
-        SizedBox(height: spacing),
         LeadTimeDrilldownTable(
           title:
               'Drill-down – '
@@ -269,6 +269,19 @@ class _TitleBand extends StatelessWidget {
                                   '${summary.rating.label}'
                             : 'Rating: ${summary.rating.label}',
                       ),
+                  // Always in view at the top, unlike the panel below.
+                  if (state.summaries.any((summary) => summary.total > 0))
+                    TextButton.icon(
+                      onPressed: () => LeadTimeRatingExplanation.show(context),
+                      icon: const Icon(Icons.info_outline, size: 16),
+                      label: const Text('How is the rating calculated?'),
+                      style: TextButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        minimumSize: const Size(0, 28),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
                   // A period still running will gain tenders yet.
                   if (query.preset.isToDate)
                     StatusChip(
