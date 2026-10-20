@@ -26,9 +26,13 @@ class ReportTablePanel extends StatefulWidget {
     this.isExporting = false,
     this.sortColumnIndex,
     this.sortAscending = true,
+    this.shrinkToRows = false,
   });
 
-  final String title;
+  /// Null drops the header strip, and with it the count pill and the
+  /// Export menu, for a table sitting inside a panel that already has a
+  /// heading of its own.
+  final String? title;
   final String countLabel;
 
   /// Width below which the table scrolls horizontally instead of compressing.
@@ -52,6 +56,16 @@ class ReportTablePanel extends StatefulWidget {
   /// arrive already sorted; these only drive the header indicator.
   final int? sortColumnIndex;
   final bool sortAscending;
+
+  /// Unpinned only: size the panel to its rows exactly, with no minimum
+  /// height and no bottom margin unless the horizontal scrollbar is
+  /// showing. For short, fixed tables such as a two-row summary, where the
+  /// usual 180px floor is mostly blank. An empty table keeps the floor so
+  /// its message has room.
+  final bool shrinkToRows;
+
+  /// Room left under the last row for the horizontal scrollbar's thumb.
+  static const double _scrollbarGutter = 10;
 
   static const double headingHeight = 36;
   static const double rowHeight = 40;
@@ -77,7 +91,7 @@ class _ReportTablePanelState extends State<ReportTablePanel> {
 
   @override
   Widget build(BuildContext context) {
-    final themedTable = Theme(
+    Widget tableWith({required double bottomMargin}) => Theme(
       data: Theme.of(context).copyWith(
         dividerColor: AppColors.divider,
         dataTableTheme: const DataTableThemeData(
@@ -140,7 +154,7 @@ class _ReportTablePanelState extends State<ReportTablePanel> {
         // so it no longer overlaps the last column.
         horizontalMargin: 12,
         columnSpacing: 16,
-        bottomMargin: 18,
+        bottomMargin: bottomMargin,
         scrollController: _verticalController,
         horizontalScrollController: _horizontalController,
         isVerticalScrollBarVisible: true,
@@ -159,11 +173,42 @@ class _ReportTablePanelState extends State<ReportTablePanel> {
 
     // DataTable2 scrolls internally, so it always needs a bounded height:
     // Expanded when the page is pinned, a capped box when the page scrolls.
-    final unpinnedHeight =
-        (ReportTablePanel.headingHeight +
-                ReportTablePanel.rowHeight * widget.rows.length +
-                24)
-            .clamp(180.0, ReportTablePanel.maxUnpinnedHeight);
+    final rowsHeight =
+        ReportTablePanel.headingHeight +
+        ReportTablePanel.rowHeight * widget.rows.length;
+    final unpinnedHeight = (rowsHeight + 24).clamp(
+      180.0,
+      ReportTablePanel.maxUnpinnedHeight,
+    );
+
+    final Widget body;
+    if (widget.fillHeight) {
+      body = tableWith(bottomMargin: 18);
+    } else if (widget.shrinkToRows && widget.rows.isNotEmpty) {
+      // The scrollbar gutter is only spent when there is something to
+      // scroll sideways; otherwise the panel ends at the last row. The
+      // extra 2px absorbs the heading and row dividers, which would
+      // otherwise tip the table into a pointless vertical scroll.
+      body = LayoutBuilder(
+        builder: (context, constraints) {
+          final gutter = constraints.maxWidth < widget.minWidth
+              ? ReportTablePanel._scrollbarGutter
+              : 0.0;
+          return SizedBox(
+            height: (rowsHeight + gutter + 2).clamp(
+              0.0,
+              ReportTablePanel.maxUnpinnedHeight,
+            ),
+            child: tableWith(bottomMargin: gutter),
+          );
+        },
+      );
+    } else {
+      body = SizedBox(
+        height: unpinnedHeight,
+        child: tableWith(bottomMargin: 18),
+      );
+    }
 
     return ReportPanel(
       title: widget.title,
@@ -181,9 +226,7 @@ class _ReportTablePanelState extends State<ReportTablePanel> {
         ],
       ),
       fillHeight: widget.fillHeight,
-      child: widget.fillHeight
-          ? themedTable
-          : SizedBox(height: unpinnedHeight, child: themedTable),
+      child: body,
     );
   }
 }

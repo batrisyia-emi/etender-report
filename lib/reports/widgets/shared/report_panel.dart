@@ -49,15 +49,24 @@ class ReportPanel extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    heading,
-                    style: const TextStyle(
-                      color: AppColors.heading,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
+                  // Flexible so a long title wraps beside the trailing
+                  // pills on a narrow screen instead of overflowing them.
+                  Flexible(
+                    child: Text(
+                      heading,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.heading,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
-                  ?trailing,
+                  if (trailing != null) ...[
+                    const SizedBox(width: 8),
+                    trailing!,
+                  ],
                 ],
               ),
             ),

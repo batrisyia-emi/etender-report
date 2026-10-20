@@ -33,6 +33,10 @@ enum ReportType {
   vtmMonitoring(
     navLabel: 'VTM Monitoring',
     pageTitle: 'VTM Tender/Quotation Monitoring Report',
+  ),
+  procurementLeadTime(
+    navLabel: 'Procurement Lead Time',
+    pageTitle: 'Statistic – Procurement Lead Time',
   );
 
   const ReportType({required this.navLabel, required this.pageTitle});

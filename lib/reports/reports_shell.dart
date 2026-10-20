@@ -11,6 +11,10 @@ import 'package:etender_reports/reports/bloc/tender_summary/tender_summary_bloc.
 import 'package:etender_reports/reports/bloc/toc/toc_bloc.dart';
 import 'package:etender_reports/reports/bloc/vendor_participation/vendor_participation_bloc.dart';
 import 'package:etender_reports/reports/bloc/vtm_monitoring/vtm_monitoring_bloc.dart';
+import 'package:etender_reports/reports/procurement_lead_time/bloc/lead_time_cubit.dart';
+import 'package:etender_reports/reports/procurement_lead_time/data/lead_time_repository.dart';
+import 'package:etender_reports/reports/procurement_lead_time/data/mock_lead_time_repository.dart';
+import 'package:etender_reports/reports/procurement_lead_time/procurement_lead_time_screen.dart';
 import 'package:etender_reports/reports/report_type.dart';
 import 'package:etender_reports/reports/views/dashboard_view.dart';
 import 'package:etender_reports/reports/views/erfc_report_view.dart';
@@ -35,9 +39,14 @@ class ReportsPage extends StatelessWidget {
     super.key,
     this.repository = const MockReportRepository(),
     this.actions = const UnimplementedReportActions(),
+    this.leadTimeRepository = const MockLeadTimeRepository(),
   });
 
   final ReportRepository repository;
+
+  /// The Procurement Lead Time report's own source. Separate from
+  /// [repository] because it also supplies the holiday table.
+  final LeadTimeRepository leadTimeRepository;
 
   /// What the buttons do. The default throws, so an unwired button says so
   /// rather than appearing to work.
@@ -85,6 +94,12 @@ class ReportsPage extends StatelessWidget {
           create: (_) =>
               VtmMonitoringBloc(repository: repository)
                 ..add(const VtmMonitoringDataRequested()),
+        ),
+
+        // Waits for a search rather than loading on open: every figure
+        // depends on the float date range.
+        BlocProvider(
+          create: (_) => LeadTimeCubit(repository: leadTimeRepository),
         ),
       ],
       // Read with context.read<ReportActions>() wherever a button needs
@@ -143,6 +158,10 @@ class ReportsShell extends StatelessWidget {
         fillHeight: fillHeight,
       ),
       ReportType.vtmMonitoring => VtmMonitoringView(
+        sectionSpacing: spacing,
+        fillHeight: fillHeight,
+      ),
+      ReportType.procurementLeadTime => ProcurementLeadTimeScreen(
         sectionSpacing: spacing,
         fillHeight: fillHeight,
       ),

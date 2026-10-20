@@ -49,6 +49,7 @@ class _SidebarNavState extends State<SidebarNav> {
     ReportType.toc,
     ReportType.tenderSecurity,
     ReportType.vtmMonitoring,
+    ReportType.procurementLeadTime,
   ];
 
   static const Color _activeBg = Color(0xFFE0F2FE);
@@ -68,6 +69,7 @@ class _SidebarNavState extends State<SidebarNav> {
   static const Icon _tocReportIcon = Icon(Icons.how_to_vote_outlined);
   static const Icon _tenderSecurityIcon = Icon(Icons.shield_outlined);
   static const Icon _vtmMonitoringIcon = Icon(Icons.fact_check_outlined);
+  static const Icon _leadTimeIcon = Icon(Icons.timer_outlined);
 
   /// The icon each report carries wherever it is listed.
   static Icon _iconFor(ReportType report) => switch (report) {
@@ -80,6 +82,7 @@ class _SidebarNavState extends State<SidebarNav> {
     ReportType.toc => _tocReportIcon,
     ReportType.tenderSecurity => _tenderSecurityIcon,
     ReportType.vtmMonitoring => _vtmMonitoringIcon,
+    ReportType.procurementLeadTime => _leadTimeIcon,
   };
 
   /// 0 = a dropdown or a module link, 1 = a report inside a dropdown.

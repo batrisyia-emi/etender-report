@@ -38,6 +38,15 @@ String formatDate(dynamic value) {
   return '$day/$month/${parsed.year}';
 }
 
+/// dd.MM.yyyy, the form the Procurement Lead Time spec uses for its float
+/// dates. Em dash for null, as [formatDate].
+String formatDottedDate(DateTime? value) {
+  if (value == null) return '—';
+  final day = value.day.toString().padLeft(2, '0');
+  final month = value.month.toString().padLeft(2, '0');
+  return '$day.$month.${value.year}';
+}
+
 /// Time of day without the date, for a column that carries the date in
 /// its own cell beside it. Em dash when there is nothing to show, so the
 /// pair of columns falls back together.
