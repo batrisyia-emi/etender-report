@@ -9,18 +9,9 @@ import 'package:flutter/material.dart';
 /// Within 3 working days, Within 7 working days and the performance
 /// rating, for one summary.
 class LeadTimeKpiCards extends StatelessWidget {
-  const LeadTimeKpiCards({
-    super.key,
-    required this.summary,
-    this.stacked = false,
-  });
+  const LeadTimeKpiCards({super.key, required this.summary});
 
   final LeadTimeSummary summary;
-
-  /// One card above another, rating last, for a column beside the rating
-  /// explanation, sharing out whatever height that column has. Otherwise
-  /// all three share a row.
-  final bool stacked;
 
   static const double _cardWidth = 220;
   static const double _cardSpacing = 12;
@@ -82,21 +73,6 @@ class LeadTimeKpiCards extends StatelessWidget {
               ),
       ),
     ];
-
-    // Each card takes an equal share of the height it is given, so the
-    // column ends level with whatever sits beside it. It must be given a
-    // height: LeadTimeSummarySection wraps it in an IntrinsicHeight.
-    if (stacked) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (var index = 0; index < cards.length; index++) ...[
-            if (index > 0) const SizedBox(height: _cardSpacing),
-            Expanded(child: cards[index]),
-          ],
-        ],
-      );
-    }
 
     // All three in a row, or one per row: never two and then one beside
     // an empty slot.

@@ -9,7 +9,6 @@ import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_r
 import 'package:etender_reports/reports/procurement_lead_time/procurement_lead_time_screen.dart';
 import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_filter_bar.dart';
 import 'package:etender_reports/reports/procurement_lead_time/widgets/lead_time_rating_explanation.dart';
-import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,8 +21,8 @@ class _FailingRepository extends LeadTimeRepository {
 
   @override
   Future<List<LeadTimeRecord>> fetchRecords({
-    required DateTime publishedFrom,
-    required DateTime publishedTo,
+    required DateTime receivedFrom,
+    required DateTime receivedTo,
     DocumentTypeFilter type = DocumentTypeFilter.tender,
     String? procurementMode,
   }) async {
@@ -36,8 +35,8 @@ class _FailingRepository extends LeadTimeRepository {
 final _today = DateTime(2026, 10, 19);
 
 final _allMockDates = LeadTimeQuery(
-  publishedFrom: DateTime(2026, 9, 1),
-  publishedTo: DateTime(2026, 10, 31),
+  receivedFrom: DateTime(2026, 9, 1),
+  receivedTo: DateTime(2026, 10, 31),
 );
 
 Future<LeadTimeCubit> _pump(
@@ -80,17 +79,26 @@ Future<LeadTimeCubit> _pump(
 ChoiceChip _chip(WidgetTester tester, String label) =>
     tester.widget<ChoiceChip>(find.widgetWithText(ChoiceChip, label));
 
-/// Opens the date picker from the field showing [current] and picks [day]
-/// of the month it opens on.
-Future<void> _pickDay(WidgetTester tester, String current, String day) async {
+/// Opens the range picker from the field showing [current] and types
+/// [from] and [to] (MM/dd/yyyy, the test locale's format) into it.
+Future<void> _pickRange(
+  WidgetTester tester,
+  String current,
+  String from,
+  String to,
+) async {
   await tester.tap(_inFilters(current));
   await tester.pumpAndSettle();
-  await tester.tap(
-    find.descendant(
-      of: find.byType(DatePickerDialog),
-      matching: find.text(day),
-    ),
+  // Typed rather than tapped: the calendar lists every month, so a day
+  // number appears many times over.
+  await tester.tap(find.byIcon(Icons.edit_outlined));
+  await tester.pumpAndSettle();
+  final fields = find.descendant(
+    of: find.byType(DateRangePickerDialog),
+    matching: find.byType(TextField),
   );
+  await tester.enterText(fields.at(0), from);
+  await tester.enterText(fields.at(1), to);
   await tester.tap(find.text('OK'));
   await tester.pumpAndSettle();
 }
@@ -113,15 +121,15 @@ void main() {
     expect(cubit.state.query?.preset, PeriodPreset.lastMonth);
     expect(
       find.text(
-        'Result – Tender, published 01.09.2026 to 30.09.2026 '
-        '(Last month) · 10 tenders',
+        'Result – Tender, received 01.09.2026 to 30.09.2026 '
+        '(Last month) · 12 tenders',
       ),
       findsOneWidget,
     );
     expect(find.text(_badge), findsNothing);
   });
 
-  testWidgets('This month fills the dates, searches and flags the result', (
+  testWidgets('This month searches at once and flags the result', (
     tester,
   ) async {
     final cubit = await _pump(tester);
@@ -131,32 +139,55 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(_chip(tester, 'This month').selected, isTrue);
-    expect(_inFilters('01.10.2026'), findsOneWidget);
-    expect(_inFilters('19.10.2026'), findsOneWidget);
     expect(cubit.state.query?.preset, PeriodPreset.thisMonth);
     expect(
       find.text(
-        'Result – Tender, published 01.10.2026 to 19.10.2026 '
-        '(This month) · 5 tenders',
+        'Result – Tender, received 01.10.2026 to 19.10.2026 '
+        '(This month) · 3 tenders',
       ),
       findsOneWidget,
     );
     expect(find.text(_badge), findsOneWidget);
   });
 
-  testWidgets('editing a date selects Custom and waits for Search', (
-    tester,
-  ) async {
+  testWidgets('the date range shows only under Custom', (tester) async {
+    final cubit = await _pump(tester);
+    await tester.pumpAndSettle();
+    final opened = cubit.state;
+    expect(find.text('Received Date'), findsOneWidget);
+    expect(find.text('From – To *'), findsNothing);
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Custom'));
+    await tester.pumpAndSettle();
+
+    // Opens on the dates last searched, and has not searched again.
+    expect(_chip(tester, 'Custom').selected, isTrue);
+    expect(find.text('From – To *'), findsOneWidget);
+    expect(_inFilters('01.09.2026 – 30.09.2026'), findsOneWidget);
+    expect(cubit.state, opened);
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'This month'));
+    await tester.pumpAndSettle();
+    expect(find.text('From – To *'), findsNothing);
+  });
+
+  testWidgets('a custom range waits for Search', (tester) async {
     final cubit = await _pump(tester);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, 'This month'));
     await tester.pumpAndSettle();
     final thisMonth = cubit.state;
 
-    await _pickDay(tester, '01.10.2026', '5');
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Custom'));
+    await tester.pumpAndSettle();
+    await _pickRange(
+      tester,
+      '01.10.2026 – 19.10.2026',
+      '10/05/2026',
+      '10/12/2026',
+    );
 
-    expect(_chip(tester, 'Custom').selected, isTrue);
-    expect(_inFilters('05.10.2026'), findsOneWidget);
+    expect(_inFilters('05.10.2026 – 12.10.2026'), findsOneWidget);
     // The results, and the badge describing them, are still This month's.
     expect(cubit.state, thisMonth);
     expect(find.text(_badge), findsOneWidget);
@@ -165,45 +196,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(cubit.state.query?.preset, PeriodPreset.custom);
     expect(
-      find.textContaining('published 05.10.2026 to 19.10.2026 (Custom)'),
+      find.textContaining('received 05.10.2026 to 12.10.2026 (Custom)'),
       findsOneWidget,
     );
     expect(find.text(_badge), findsNothing);
-  });
-
-  testWidgets('Custom alone changes neither the dates nor the results', (
-    tester,
-  ) async {
-    final cubit = await _pump(tester);
-    await tester.pumpAndSettle();
-    final opened = cubit.state;
-
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Custom'));
-    await tester.pumpAndSettle();
-
-    expect(_chip(tester, 'Custom').selected, isTrue);
-    expect(_inFilters('01.09.2026'), findsOneWidget);
-    expect(cubit.state, opened);
-  });
-
-  testWidgets('an invalid custom range shows the error and does not search', (
-    tester,
-  ) async {
-    final cubit = await _pump(tester);
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, 'This month'));
-    await tester.pumpAndSettle();
-    final before = cubit.state;
-
-    await _pickDay(tester, '01.10.2026', '25'); // after To, 19.10.2026
-    await tester.tap(find.text('Search'));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text('Published Date To must be on or after Published Date From'),
-      findsOneWidget,
-    );
-    expect(cubit.state, before);
   });
 
   testWidgets('offers All modes and only the five published modes', (
@@ -257,8 +253,8 @@ void main() {
     expect(items.every((i) => i.record.procurementMode == '7.2'), isTrue);
     expect(
       find.text(
-        'Result – Tender, 7.2 Selective Tender/Quotation, published '
-        '01.09.2026 to 30.09.2026 (Last month) · 2 tenders',
+        'Result – Tender, 7.2 Selective Tender/Quotation, received '
+        '01.09.2026 to 30.09.2026 (Last month) · 3 tenders',
       ),
       findsOneWidget,
     );
@@ -268,7 +264,7 @@ void main() {
     await tester.tap(find.text('Search'));
     await tester.pumpAndSettle();
     expect(cubit.state.query?.procurementMode, isNull);
-    expect(cubit.state.total, 10);
+    expect(cubit.state.total, 12);
   });
 
   testWidgets('shows the rating in the table and the result header', (
@@ -277,26 +273,28 @@ void main() {
     final cubit = await _pump(tester);
     await tester.pumpAndSettle();
 
-    // Last month, Tender: 8 of 10 within 3 working days, all within 7.
+    // Last month, Tender: 8 of 12 within 3 working days, 11 within 7.
     expect(cubit.state.summaries.single.rating, PerformanceRating.good);
     expect(find.text('Performance Rating'), findsOneWidget);
     expect(find.text('Rating: Good'), findsOneWidget);
   });
 
-  testWidgets('explains the rating once, beside the Tender rating card', (
+  testWidgets('explains the rating beside the search, not too wide', (
     tester,
   ) async {
     await _pump(tester);
     await tester.pumpAndSettle();
 
-    final explanation = find.text('How the performance rating is calculated');
-    expect(explanation, findsOneWidget);
+    expect(
+      find.text('How the performance rating is calculated'),
+      findsOneWidget,
+    );
     // SE's wording, word for word, and the note.
     const good =
-        'At least 90% - 94% are published within 7 working days (the 1–3 and '
-        '4–7 working day bands together).';
+        '90% - 94% are published within 7 working days (the 1–3 and 4–7 '
+        'working day bands together).';
     for (final line in [
-      '95% - 100% of tenders are published within 3 working days.',
+      '95% - 100% are published within 3 working days.',
       good,
       'Less than 90% are published after 7 working days.',
     ]) {
@@ -311,29 +309,39 @@ void main() {
       findsOneWidget,
     );
 
-    // Beside the rating card, and level with the card column at both ends:
-    // the first card's top and the rating card's bottom.
-    Rect cardAround(String header) => tester.getRect(
-      find.ancestor(of: find.text(header), matching: find.byType(KpiCard)),
-    );
-    final firstCard = cardAround('WITHIN 3 WORKING DAYS (%)');
-    final ratingCard = cardAround('PERFORMANCE RATING');
+    // To the right of the search panel, the same height, within its range.
+    final filters = tester.getRect(find.byType(LeadTimeFilterBar));
     final panel = tester.getRect(find.byType(LeadTimeRatingExplanation));
-    expect(panel.left, greaterThan(ratingCard.right));
-    expect(panel.top, moreOrLessEquals(firstCard.top, epsilon: 0.5));
-    expect(panel.bottom, moreOrLessEquals(ratingCard.bottom, epsilon: 0.5));
+    expect(panel.left, greaterThan(filters.right));
+    expect(panel.top, filters.top);
+    expect(panel.bottom, filters.bottom);
+    expect(
+      panel.width,
+      inInclusiveRange(
+        ProcurementLeadTimeScreen.explanationMinWidth,
+        ProcurementLeadTimeScreen.explanationMaxWidth,
+      ),
+    );
+
+    // Still level once Custom adds the date range to the search.
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Custom'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.byType(LeadTimeRatingExplanation)).bottom,
+      tester.getRect(find.byType(LeadTimeFilterBar)).bottom,
+    );
+    // Already on screen, so the header has no link to it.
+    expect(find.text('How is the rating calculated?'), findsNothing);
   });
 
-  testWidgets('All shows the explanation once, in the Tender section', (
-    tester,
-  ) async {
+  testWidgets('All still explains the rating once', (tester) async {
     final cubit = await _pump(tester);
     await tester.pumpAndSettle();
     unawaited(
       cubit.search(
         LeadTimeQuery(
-          publishedFrom: _allMockDates.publishedFrom,
-          publishedTo: _allMockDates.publishedTo,
+          receivedFrom: _allMockDates.receivedFrom,
+          receivedTo: _allMockDates.receivedTo,
           type: DocumentTypeFilter.all,
         ),
       ),
@@ -346,11 +354,12 @@ void main() {
     );
   });
 
-  testWidgets('the header link opens the explanation in a dialog', (
+  testWidgets('narrower, the header link opens the explanation instead', (
     tester,
   ) async {
-    await _pump(tester);
+    await _pump(tester, size: const Size(900, 1000));
     await tester.pumpAndSettle();
+    expect(find.byType(LeadTimeRatingExplanation), findsNothing);
 
     await tester.tap(find.text('How is the rating calculated?'));
     await tester.pumpAndSettle();
@@ -372,8 +381,8 @@ void main() {
     unawaited(
       cubit.search(
         LeadTimeQuery(
-          publishedFrom: _allMockDates.publishedFrom,
-          publishedTo: _allMockDates.publishedTo,
+          receivedFrom: _allMockDates.receivedFrom,
+          receivedTo: _allMockDates.receivedTo,
           type: DocumentTypeFilter.all,
         ),
       ),
@@ -392,7 +401,7 @@ void main() {
 
     expect(
       find.text(
-        'Result – Tender, published 01.09.2026 to 31.10.2026 '
+        'Result – Tender, received 01.09.2026 to 31.10.2026 '
         '(Custom) · 15 tenders',
       ),
       findsOneWidget,
@@ -438,8 +447,8 @@ void main() {
     unawaited(
       cubit.search(
         LeadTimeQuery(
-          publishedFrom: _allMockDates.publishedFrom,
-          publishedTo: _allMockDates.publishedTo,
+          receivedFrom: _allMockDates.receivedFrom,
+          receivedTo: _allMockDates.receivedTo,
           type: DocumentTypeFilter.all,
         ),
       ),
@@ -461,8 +470,8 @@ void main() {
     unawaited(
       cubit.search(
         LeadTimeQuery(
-          publishedFrom: DateTime(2025, 1, 1),
-          publishedTo: DateTime(2025, 1, 31),
+          receivedFrom: DateTime(2025, 1, 1),
+          receivedTo: DateTime(2025, 1, 31),
         ),
       ),
     );

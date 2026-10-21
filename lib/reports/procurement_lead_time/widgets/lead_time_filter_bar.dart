@@ -9,15 +9,14 @@ import 'package:flutter/material.dart';
 /// width at which `ReportsShell` switches to its narrow-screen spacing.
 const double kLeadTimeNarrowWidth = 600;
 
-/// Period, Published Date From and To, Mode of Procurement, Document Type
-/// and Search.
+/// Received Date, Mode of Procurement, Document Type and Search.
 ///
-/// Holds the unsubmitted values itself. A period preset fills the dates and
-/// searches straight away; dates entered by hand switch the period to
-/// Custom and wait for Search, which validates with
-/// [validateLeadTimeDates] first. Errors appear once Search has been
-/// pressed, then track every change, so fixing a date clears its message
-/// without another press.
+/// Holds the unsubmitted values itself. A received date preset fills the
+/// dates and searches straight away. Custom shows a date range field
+/// instead, opened on the dates last searched, and waits for Search, which
+/// validates with [validateLeadTimeDates] first. Errors appear once Search
+/// has been pressed, then track every change, so fixing the range clears
+/// its message without another press.
 class LeadTimeFilterBar extends StatefulWidget {
   const LeadTimeFilterBar({
     super.key,
@@ -43,8 +42,8 @@ class LeadTimeFilterBar extends StatefulWidget {
 }
 
 class _LeadTimeFilterBarState extends State<LeadTimeFilterBar> {
-  late DateTime? _from = widget.initialQuery?.publishedFrom;
-  late DateTime? _to = widget.initialQuery?.publishedTo;
+  late DateTime? _from = widget.initialQuery?.receivedFrom;
+  late DateTime? _to = widget.initialQuery?.receivedTo;
   late DocumentTypeFilter _type =
       widget.initialQuery?.type ?? DocumentTypeFilter.tender;
 
@@ -59,7 +58,7 @@ class _LeadTimeFilterBarState extends State<LeadTimeFilterBar> {
       _submitted ? validateLeadTimeDates(_from, _to) : (from: null, to: null);
 
   /// A preset fills both dates and searches at once. Custom only takes the
-  /// selection: the dates already in the fields are the user's to change.
+  /// selection and shows the range field, still holding the last dates.
   void _selectPeriod(PeriodPreset preset) {
     if (preset == PeriodPreset.custom) {
       setState(() => _preset = preset);
@@ -73,19 +72,17 @@ class _LeadTimeFilterBarState extends State<LeadTimeFilterBar> {
     );
     setState(() {
       _preset = preset;
-      _from = query.publishedFrom;
-      _to = query.publishedTo;
+      _from = query.receivedFrom;
+      _to = query.receivedTo;
       _submitted = false;
     });
     widget.onSearch(query);
   }
 
-  /// A date chosen by hand no longer matches any preset.
-  void _editDate({DateTime? from, DateTime? to}) {
+  void _pickRange(DateTimeRange range) {
     setState(() {
-      _from = from ?? _from;
-      _to = to ?? _to;
-      _preset = PeriodPreset.custom;
+      _from = range.start;
+      _to = range.end;
     });
   }
 
@@ -96,8 +93,8 @@ class _LeadTimeFilterBarState extends State<LeadTimeFilterBar> {
     if (!validateLeadTimeDates(from, to).isValid) return;
     widget.onSearch(
       LeadTimeQuery(
-        publishedFrom: from!,
-        publishedTo: to!,
+        receivedFrom: from!,
+        receivedTo: to!,
         type: _type,
         procurementMode: _mode,
         preset: _preset,
@@ -121,9 +118,9 @@ class _LeadTimeFilterBarState extends State<LeadTimeFilterBar> {
       title: 'Search criteria',
       onReset: _reset,
       builder: (context, layout) {
-        // One width for every box in the form, so From, To and Document
-        // Type line up in a column. On a phone each box takes the full
-        // width under its label.
+        // One width for every box in the form, so the period dropdown and
+        // Document Type line up in a column. On a phone each box takes the
+        // full width under its label.
         final contentWidth = narrow
             ? layout.availableWidth
             : layout.availableWidth - _FormRow.labelWidth - _FormRow.gap;
@@ -148,40 +145,34 @@ class _LeadTimeFilterBarState extends State<LeadTimeFilterBar> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _FormRow(
-              label: 'Period',
+              label: 'Received Date',
               stacked: narrow,
-              child: narrow
-                  ? _PeriodDropdown(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (narrow)
+                    _PeriodDropdown(
                       value: _preset,
                       width: fieldWidth,
                       onChanged: _selectPeriod,
                     )
-                  : _PeriodChips(value: _preset, onSelected: _selectPeriod),
-            ),
-            const SizedBox(height: kFilterRowSpacing),
-            _FormRow(
-              label: 'Published Date',
-              stacked: narrow,
-              child: Wrap(
-                spacing: kFilterFieldSpacing,
-                runSpacing: kFilterRowSpacing,
-                children: [
-                  _DateField(
-                    label: 'From',
-                    pickerTitle: 'Published Date From',
-                    value: _from,
-                    errorText: errors.from,
-                    width: fieldWidth,
-                    onPicked: (date) => _editDate(from: date),
-                  ),
-                  _DateField(
-                    label: 'To',
-                    pickerTitle: 'Published Date To',
-                    value: _to,
-                    errorText: errors.to,
-                    width: fieldWidth,
-                    onPicked: (date) => _editDate(to: date),
-                  ),
+                  else
+                    _PeriodChips(value: _preset, onSelected: _selectPeriod),
+                  // Only Custom has dates of the user's own to enter.
+                  if (_preset == PeriodPreset.custom) ...[
+                    const SizedBox(height: kFilterRowSpacing),
+                    _DateRangeField(
+                      from: _from,
+                      to: _to,
+                      errorText: errors.from ?? errors.to,
+                      // As wide as two boxes, so both dates show in full.
+                      width: narrow
+                          ? fieldWidth
+                          : fieldWidth * 2 + kFilterFieldSpacing,
+                      onPicked: _pickRange,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -274,7 +265,7 @@ class _FormRow extends StatelessWidget {
   }
 }
 
-/// 'Period' and one choice chip per preset, single selection.
+/// One choice chip per received date preset, single selection.
 class _PeriodChips extends StatelessWidget {
   const _PeriodChips({required this.value, required this.onSelected});
 
@@ -423,34 +414,35 @@ class _PeriodDropdown extends StatelessWidget {
   }
 }
 
-/// A required single date, shown dd.MM.yyyy, with its error underneath.
-class _DateField extends StatelessWidget {
-  const _DateField({
-    required this.label,
-    required this.pickerTitle,
-    required this.value,
+/// The Custom received date range, both ends required, shown
+/// dd.MM.yyyy – dd.MM.yyyy with its error underneath. One picker sets both
+/// ends, so To can never come before From.
+class _DateRangeField extends StatelessWidget {
+  const _DateRangeField({
+    required this.from,
+    required this.to,
     required this.errorText,
     required this.onPicked,
     this.width,
   });
 
-  /// In the box, e.g. 'From'; the form row already says 'Published Date'.
-  final String label;
-
-  /// On the date picker, which shows no row label: 'Published Date From'.
-  final String pickerTitle;
-  final DateTime? value;
+  final DateTime? from;
+  final DateTime? to;
   final String? errorText;
-  final ValueChanged<DateTime> onPicked;
+  final ValueChanged<DateTimeRange> onPicked;
   final double? width;
 
   Future<void> _pick(BuildContext context) async {
-    final picked = await showDatePicker(
+    final from = this.from;
+    final to = this.to;
+    final picked = await showDateRangePicker(
       context: context,
-      initialDate: value ?? DateTime.now(),
+      initialDateRange: from != null && to != null && !from.isAfter(to)
+          ? DateTimeRange(start: from, end: to)
+          : null,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-      helpText: pickerTitle,
+      helpText: 'Received Date',
     );
     if (picked != null) onPicked(picked);
   }
@@ -458,23 +450,27 @@ class _DateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final from = this.from;
+    final to = this.to;
+    final empty = from == null && to == null;
+    String show(DateTime? date) => date == null ? '…' : formatDottedDate(date);
     final field = InkWell(
       onTap: () => _pick(context),
       borderRadius: BorderRadius.circular(4),
       child: InputDecorator(
         isEmpty: false,
         decoration: InputDecoration(
-          labelText: '$label *',
-          prefixIcon: const Icon(Icons.event_outlined, size: 18),
+          labelText: 'From – To *',
+          prefixIcon: const Icon(Icons.date_range_outlined, size: 18),
           errorText: errorText,
           errorMaxLines: 2,
         ),
         child: Text(
-          value == null ? 'Select a date' : formatDottedDate(value),
+          empty ? 'Select a date range' : '${show(from)} – ${show(to)}',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: value == null ? theme.colorScheme.onSurfaceVariant : null,
+            color: empty ? theme.colorScheme.onSurfaceVariant : null,
           ),
         ),
       ),

@@ -1,9 +1,9 @@
 // lib/reports/procurement_lead_time/data/mock_lead_time_repository.dart
 //
-// Twenty-five tenders and quotations published between 8 September and
-// 15 October 2026: fifteen Tenders (T.) and ten Quotations (Q. and Zone
-// Quotations, Z.). Search a published date range covering those dates to see
-// them all.
+// Twenty-five tenders and quotations received by VTM between 7 September and
+// 12 October 2026 and published by 15 October: fifteen Tenders (T.) and ten
+// Quotations (Q. and Zone Quotations, Z.). Search a received date range
+// covering those dates to see them all.
 //
 // Fixed dates rather than offsets from today: a lead time depends on which
 // weekdays it spans, so sliding the dates would move records between bands.
@@ -33,26 +33,22 @@ class MockLeadTimeRepository extends LeadTimeRepository {
 
   @override
   Future<List<LeadTimeRecord>> fetchRecords({
-    required DateTime publishedFrom,
-    required DateTime publishedTo,
+    required DateTime receivedFrom,
+    required DateTime receivedTo,
     DocumentTypeFilter type = DocumentTypeFilter.tender,
     String? procurementMode,
   }) async {
     await Future<void>.delayed(latency);
     final from = DateTime(
-      publishedFrom.year,
-      publishedFrom.month,
-      publishedFrom.day,
+      receivedFrom.year,
+      receivedFrom.month,
+      receivedFrom.day,
     );
-    final to = DateTime(
-      publishedTo.year,
-      publishedTo.month,
-      publishedTo.day + 1,
-    );
+    final to = DateTime(receivedTo.year, receivedTo.month, receivedTo.day + 1);
     return [
       for (final record in _records)
-        if (!record.publishedDate.isBefore(from) &&
-            record.publishedDate.isBefore(to) &&
+        if (!record.vtmReceivedDate.isBefore(from) &&
+            record.vtmReceivedDate.isBefore(to) &&
             type.includes(record.documentType) &&
             (procurementMode == null ||
                 record.procurementMode == procurementMode))

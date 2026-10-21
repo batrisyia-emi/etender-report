@@ -76,8 +76,8 @@ class LeadTimeCubit extends Cubit<LeadTimeState> {
       final (holidays, records) = await (
         _repository.fetchHolidays(),
         _repository.fetchRecords(
-          publishedFrom: query.publishedFrom,
-          publishedTo: query.publishedTo,
+          receivedFrom: query.receivedFrom,
+          receivedTo: query.receivedTo,
           type: query.type,
           procurementMode: query.procurementMode,
         ),

@@ -9,22 +9,11 @@ import 'package:flutter/material.dart';
 /// The rule text is SE's own wording, kept verbatim; see the note on
 /// `rules` in [build].
 class LeadTimeRatingExplanation extends StatelessWidget {
-  const LeadTimeRatingExplanation({
-    super.key,
-    this.framed = true,
-    this.stackRules,
-  });
+  const LeadTimeRatingExplanation({super.key, this.framed = true});
 
   /// True on the page, in a titled panel. False inside [show]'s dialog,
   /// whose own title says the same.
   final bool framed;
-
-  /// Whether each rating badge sits above its rule rather than beside it.
-  /// Null measures the width and decides. A parent that sizes this box to
-  /// match its neighbour's height must decide instead: that sizing asks
-  /// for the box's height before laying it out, and a box that measures
-  /// itself first cannot answer.
-  final bool? stackRules;
 
   /// Below this the rule beside its badge would be a sliver.
   static const double _stackBelowWidth = 340;
@@ -32,9 +21,8 @@ class LeadTimeRatingExplanation extends StatelessWidget {
   static const String title = 'How the performance rating is calculated';
 
   /// The same explanation in a dialog, for the link beside the rating in
-  /// the result header: on a laptop screen the panel starts below the
-  /// fold, inside a results area that scrolls on its own, and is easy to
-  /// miss.
+  /// the result header on a screen too narrow for the panel beside the
+  /// search.
   static Future<void> show(BuildContext context) {
     return showDialog<void>(
       context: context,
@@ -59,8 +47,7 @@ class LeadTimeRatingExplanation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // The small body size, so the box stays about as tall as the three
-    // cards beside it.
+    // The small body size, so the box beside the search stays short.
     final text = theme.textTheme.bodySmall;
     // SE's wording, word for word. It is not built from LeadTimeRules: if
     // a threshold there changes, change these three lines with it.
@@ -132,9 +119,7 @@ class LeadTimeRatingExplanation extends StatelessWidget {
             text:
                 'Each tender or quotation is given a lead time: the working '
                 'days from the day VTM receives the eRFC to the day it is '
-                'first published. Both days count. Weekends and public '
-                'holidays do not, and publishing again after an addendum '
-                'does not change it.',
+                'first published.',
           ),
           _Step(
             number: 2,
@@ -142,28 +127,19 @@ class LeadTimeRatingExplanation extends StatelessWidget {
             text:
                 'The lead times are sorted into the 1–3, 4–7 and more than '
                 "7 working day bands. Each band's percentage is its "
-                'share of everything published in the period.',
+                'share of all those received in the period.',
           ),
-          _Step(
-            number: 3,
-            style: text,
-            text:
-                'The rating is taken from those shares, separately for '
-                'Tender and for Quotation:',
-          ),
+          _Step(number: 3, style: text, text: 'The rating is as listed below:'),
           const SizedBox(height: 4),
           // Badge first, so the colour on the cards and in the table
           // finds its rule here at a glance. On a phone the badge sits
           // above its rule; beside it the rule would be a sliver.
           Padding(
             padding: const EdgeInsets.only(left: _Step.numberWidth),
-            child: switch (stackRules) {
-              final stacked? => rulesColumn(stacked),
-              null => LayoutBuilder(
-                builder: (context, constraints) =>
-                    rulesColumn(constraints.maxWidth < _stackBelowWidth),
-              ),
-            },
+            child: LayoutBuilder(
+              builder: (context, constraints) =>
+                  rulesColumn(constraints.maxWidth < _stackBelowWidth),
+            ),
           ),
           const SizedBox(height: 4),
           Text.rich(

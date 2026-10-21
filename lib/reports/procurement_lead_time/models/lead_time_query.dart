@@ -26,12 +26,12 @@ enum DocumentTypeFilter {
   String get description => this == all ? 'Tender and Quotation' : label;
 }
 
-/// A search that has passed [validateLeadTimeDates]. Dates are published
-/// dates, both ends inclusive.
+/// A search that has passed [validateLeadTimeDates]. Dates are the dates VTM
+/// received the eRFC, both ends inclusive.
 class LeadTimeQuery extends Equatable {
   const LeadTimeQuery({
-    required this.publishedFrom,
-    required this.publishedTo,
+    required this.receivedFrom,
+    required this.receivedTo,
     this.type = DocumentTypeFilter.tender,
     this.procurementMode,
     this.preset = PeriodPreset.custom,
@@ -50,16 +50,16 @@ class LeadTimeQuery extends Equatable {
       throw ArgumentError.value(preset, 'preset', 'has no dates of its own');
     }
     return LeadTimeQuery(
-      publishedFrom: range.start,
-      publishedTo: range.end,
+      receivedFrom: range.start,
+      receivedTo: range.end,
       type: type,
       procurementMode: procurementMode,
       preset: preset,
     );
   }
 
-  final DateTime publishedFrom;
-  final DateTime publishedTo;
+  final DateTime receivedFrom;
+  final DateTime receivedTo;
   final DocumentTypeFilter type;
 
   /// One mode's code, e.g. '7.2', or null for all of
@@ -80,15 +80,15 @@ class LeadTimeQuery extends Equatable {
 
   @override
   List<Object?> get props => [
-    publishedFrom,
-    publishedTo,
+    receivedFrom,
+    receivedTo,
     type,
     procurementMode,
     preset,
   ];
 }
 
-/// Inline messages for the two date fields; null where the field is fine.
+/// Messages for the two ends of the date range; null where that end is fine.
 typedef LeadTimeDateErrors = ({String? from, String? to});
 
 /// Both dates are required and From must not be after To. Compared as
@@ -96,13 +96,13 @@ typedef LeadTimeDateErrors = ({String? from, String? to});
 LeadTimeDateErrors validateLeadTimeDates(DateTime? from, DateTime? to) {
   String? fromError;
   String? toError;
-  if (from == null) fromError = 'Published Date From is required';
-  if (to == null) toError = 'Published Date To is required';
+  if (from == null) fromError = 'Received Date From is required';
+  if (to == null) toError = 'Received Date To is required';
   if (from != null && to != null) {
     final start = DateTime(from.year, from.month, from.day);
     final end = DateTime(to.year, to.month, to.day);
     if (start.isAfter(end)) {
-      toError = 'Published Date To must be on or after Published Date From';
+      toError = 'Received Date To must be on or after Received Date From';
     }
   }
   return (from: fromError, to: toError);

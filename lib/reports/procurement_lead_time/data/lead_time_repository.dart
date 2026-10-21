@@ -8,13 +8,14 @@ import 'package:etender_reports/reports/procurement_lead_time/models/lead_time_r
 abstract class LeadTimeRepository {
   const LeadTimeRepository();
 
-  /// Records whose published date (first 'Published') falls between
-  /// [publishedFrom] and [publishedTo], both calendar dates inclusive,
+  /// Published records whose VTM received date falls between
+  /// [receivedFrom] and [receivedTo], both calendar dates inclusive,
   /// narrowed to [type] and,
-  /// when given, to one [procurementMode] code such as '7.2'.
+  /// when given, to one [procurementMode] code such as '7.2'. One not yet
+  /// published has no lead time and is left out.
   Future<List<LeadTimeRecord>> fetchRecords({
-    required DateTime publishedFrom,
-    required DateTime publishedTo,
+    required DateTime receivedFrom,
+    required DateTime receivedTo,
     DocumentTypeFilter type = DocumentTypeFilter.tender,
     String? procurementMode,
   });
