@@ -6,8 +6,8 @@ import 'package:etender_reports/reports/widgets/shared/kpi_card.dart';
 import 'package:etender_reports/reports/widgets/shared/status_chip.dart';
 import 'package:flutter/material.dart';
 
-/// Within 3 working days, Within 7 working days and the performance
-/// rating, for one summary.
+/// Within 3 working days, Within 7 working days, More than 7 working days
+/// and the performance rating, for one summary.
 class LeadTimeKpiCards extends StatelessWidget {
   const LeadTimeKpiCards({super.key, required this.summary});
 
@@ -35,6 +35,7 @@ class LeadTimeKpiCards extends StatelessWidget {
     final empty = summary.total == 0;
     final within3 = summary.countIn(LeadTimeRules.workingDays1To3);
     final within7 = within3 + summary.countIn(LeadTimeRules.workingDays4To7);
+    final over7 = summary.countIn(LeadTimeRules.workingDaysOver7);
 
     final cards = [
       KpiCard(
@@ -58,6 +59,18 @@ class LeadTimeKpiCards extends StatelessWidget {
         ),
       ),
       KpiCard(
+        header: 'MORE THAN 7 WORKING DAYS (%)',
+        value: summary
+            .percentIn(LeadTimeRules.workingDaysOver7)
+            .toStringAsFixed(2),
+        icon: Icons.hourglass_bottom_outlined,
+        iconTint: scheme.tertiaryContainer,
+        iconColor: scheme.onTertiaryContainer,
+        footer: KpiFooterText(
+          '$over7 of ${summary.total} published after 7 working days',
+        ),
+      ),
+      KpiCard(
         header: 'PERFORMANCE RATING',
         value: empty ? '—' : rating.label,
         icon: Icons.emoji_events_outlined,
@@ -74,8 +87,8 @@ class LeadTimeKpiCards extends StatelessWidget {
       ),
     ];
 
-    // All three in a row, or one per row: never two and then one beside
-    // an empty slot.
+    // All four in a row, or one per row: never a partial row beside an
+    // empty slot.
     return LayoutBuilder(
       builder: (context, constraints) {
         final fitsInOneRow =
